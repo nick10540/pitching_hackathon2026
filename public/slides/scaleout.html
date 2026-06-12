@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scale-Out Map — จากเกาะเต่า สู่ทั้งประเทศ · Smart Energy IQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:100%; height:100%; }
+  body {
+    font-family:'Prompt','Segoe UI',sans-serif; background:#060e1d; color:#e2e8f0;
+    display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  .stage { width:1280px; height:720px; position:relative; overflow:hidden;
+           background:radial-gradient(ellipse 1100px 800px at 30% 45%, #0b1830 0%, #060e1d 70%); }
+
+  /* ── header ── */
+  .head { position:absolute; top:26px; left:44px; z-index:20; }
+  .head .t1 { font-size:28px; font-weight:800; color:#f8fafc; line-height:1.3; }
+  .head .t1 .gold { color:#fbbf24; }
+  .head .t2 { font-size:14px; color:#7d96b8; font-weight:300; margin-top:3px; }
+
+  /* ── map ── */
+  #map { position:absolute; left:18px; top:84px; width:470px; height:620px; }
+  #thpath { fill:#0d2036; stroke:#1f4a73; stroke-width:2;
+            filter:drop-shadow(0 0 18px rgba(56,189,248,.18)); }
+  #thpath.lit { stroke:#38bdf8; transition:stroke 1.5s; }
+
+  .isl { opacity:0; }
+  .isl.on { opacity:1; }
+  .isl .core { fill:#fcd34d; }
+  .isl.hub .core { fill:#fbbf24; }
+  .isl .glow { fill:#fbbf24; opacity:.32; animation:glowpulse 2.2s infinite ease-in-out; }
+  @keyframes glowpulse { 0%,100%{opacity:.2} 50%{opacity:.5} }
+  .ripple { fill:none; stroke:#fcd34d; stroke-width:2.5; opacity:0; pointer-events:none; }
+  .ripple.go { animation:rip 1.2s ease-out forwards; }
+  @keyframes rip { 0%{opacity:.95; r:4} 100%{opacity:0; r:34} }
+  .ilabel { font-family:'Prompt'; font-size:13px; font-weight:600; fill:#fde68a;
+            opacity:0; transition:opacity .5s; text-shadow:0 1px 6px #000; }
+  .ilabel.on { opacity:1; }
+  .arc { fill:none; stroke:#38bdf8; stroke-width:2; stroke-linecap:round; opacity:.85;
+         filter:drop-shadow(0 0 5px rgba(56,189,248,.7)); }
+
+  /* finale all-pulse */
+  .isl.party .core { animation:party .9s infinite alternate ease-in-out; }
+  @keyframes party { from{r:4.5} to{r:7} }
+
+  /* ── right panel ── */
+  .panel { position:absolute; right:36px; top:104px; width:430px; display:flex; flex-direction:column; gap:14px; z-index:20; }
+
+  .counters { display:flex; flex-direction:column; gap:12px; }
+  .cnt {
+    background:rgba(13,26,48,.88); border:1.5px solid #1e3a5f; border-radius:16px;
+    padding:13px 20px; display:flex; align-items:center; gap:16px;
+    opacity:0; transform:translateX(30px); transition:all .6s cubic-bezier(.2,.9,.3,1.2);
+  }
+  .cnt.show { opacity:1; transform:translateX(0); }
+  .cnt .ic { font-size:30px; }
+  .cnt .k { font-size:12.5px; color:#7d96b8; }
+  .cnt .v { font-size:31px; font-weight:800; color:#fbbf24; line-height:1.15; font-variant-numeric:tabular-nums; }
+  .cnt .v small { font-size:14px; font-weight:500; color:#94a3b8; }
+  .cnt.green .v { color:#4ade80; }
+  .cnt.blue .v { color:#7dd3fc; }
+
+  .phases { display:flex; flex-direction:column; gap:9px; }
+  .ph {
+    background:rgba(13,26,48,.7); border:1.5px solid #16263f; border-radius:13px;
+    padding:10px 16px; display:flex; gap:12px; align-items:center; opacity:.35;
+    transition:all .6s ease;
+  }
+  .ph.on { opacity:1; border-color:#fbbf24; background:rgba(40,32,12,.45); box-shadow:0 0 18px rgba(251,191,36,.12); }
+  .ph.done { opacity:1; border-color:#16a34a; background:rgba(8,36,20,.5); box-shadow:none; }
+  .ph .no { width:34px; height:34px; border-radius:50%; background:#152741; color:#7dd3fc;
+            display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; flex-shrink:0; }
+  .ph.on .no { background:#92400e; color:#fde68a; }
+  .ph.done .no { background:#14532d; color:#86efac; }
+  .ph .tt { font-size:15px; font-weight:700; color:#e2e8f0; }
+  .ph .ds { font-size:11.5px; color:#7d96b8; margin-top:1px; }
+  .ph .chk { margin-left:auto; font-size:19px; opacity:0; transform:scale(.4); transition:all .4s cubic-bezier(.2,.9,.3,1.5); }
+  .ph.done .chk { opacity:1; transform:scale(1); }
+
+  .confchip {
+    background:rgba(8,32,52,.85); border:1.5px solid #0ea5e9; border-radius:12px;
+    padding:10px 16px; font-size:13.5px; color:#bae6fd; text-align:center; font-weight:500;
+    opacity:0; transform:translateY(14px); transition:all .55s cubic-bezier(.2,.9,.3,1.2);
+  }
+  .confchip.show { opacity:1; transform:translateY(0); }
+  .confchip b { color:#7dd3fc; }
+
+  /* ── finale stamp ── */
+  .stamp {
+    position:absolute; left:50%; bottom:42px; transform:translateX(-50%) scale(.85); z-index:30;
+    background:linear-gradient(135deg,#78350f,#b45309); border:2.5px solid #fcd34d; border-radius:18px;
+    padding:14px 38px; text-align:center; box-shadow:0 12px 40px rgba(245,158,11,.35);
+    opacity:0; transition:all .7s cubic-bezier(.2,.9,.3,1.25);
+  }
+  .stamp.show { opacity:1; transform:translateX(-50%) scale(1); }
+  .stamp .l1 { font-size:23px; font-weight:900; color:#fffbeb; }
+  .stamp .l1 .hl { color:#fde047; }
+  .stamp .l2 { font-size:13.5px; color:#fde68a; font-weight:300; margin-top:3px; }
+
+  .spark { position:absolute; font-size:24px; opacity:0; pointer-events:none; z-index:40; }
+  .spark.go { animation:burst 1.2s ease forwards; }
+  @keyframes burst { 0%{opacity:0; transform:translateY(0) scale(.4)} 25%{opacity:1} 100%{opacity:0; transform:translateY(-80px) scale(1.3) rotate(15deg)} }
+
+  .subwrap { position:absolute; left:0; right:430px; bottom:18px; text-align:center; z-index:25; }
+  .sub { display:inline-block; font-size:18px; font-weight:500; color:#cbd5e1;
+         text-shadow:0 2px 10px #000; opacity:0; transform:translateY(10px); transition:all .7s; }
+  .sub.show { opacity:1; transform:translateY(0); }
+  .sub .em { color:#fbbf24; font-weight:700; }
+
+  .brand { position:absolute; bottom:12px; right:20px; font-size:12px; color:rgba(125,150,184,.75); z-index:30; }
+  .brand b { color:#7dd3fc; font-weight:600; }
+  .controls { position:absolute; top:14px; right:18px; display:flex; gap:8px; opacity:.3; z-index:40; }
+  .controls:hover { opacity:1; }
+  .controls button { background:rgba(30,41,59,.8); color:#cbd5e1; border:1px solid #334155;
+                     border-radius:8px; font-family:'Prompt'; font-size:12px; padding:5px 12px; cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <div class="head">
+    <div class="t1">จาก<span class="gold">หนึ่งเกาะ</span>ที่พิสูจน์แล้ว … สู่<span class="gold">ทั้งประเทศ</span></div>
+    <div class="t2">โมเดลเดียวกัน · Config เดียว · ขยายได้ทุกเกาะในระบบ กฟภ.</div>
+  </div>
+
+  <!-- ════ MAP ════ -->
+  <svg id="map" viewBox="0 0 600 880" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <radialGradient id="hubglow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#fbbf24" stop-opacity=".85"/>
+        <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <!-- Thailand silhouette (stylized) -->
+    <path id="thpath" d="M191,17
+      Q280,40 330,90 Q380,130 515,188
+      Q545,260 561,365
+      Q480,390 363,405
+      Q380,440 389,519
+      Q350,470 300,440 Q260,420 231,399
+      Q210,430 195,463 Q160,520 145,581 Q150,620 152,661 Q190,720 238,770 Q284,788 317,815
+      Q300,850 269,861
+      Q230,830 198,804 Q180,780 172,752 Q150,735 125,718 Q105,710 99,698 Q100,650 106,612 Q130,560 145,524
+      Q120,450 106,382 Q100,300 102,228 Q90,150 64,80 Q120,30 191,17 Z"/>
+    <!-- Phuket island -->
+    <ellipse cx="89" cy="727" rx="9" ry="14" fill="#0d2036" stroke="#1f4a73" stroke-width="2"/>
+
+    <g id="arcs"></g>
+    <g id="islands"></g>
+  </svg>
+
+  <!-- ════ RIGHT PANEL ════ -->
+  <div class="panel">
+    <div class="counters">
+      <div class="cnt blue" id="c_isl"><div class="ic">🏝️</div>
+        <div><div class="k">เกาะที่ครอบคลุม</div><div class="v"><span id="v_isl">0</span><small id="v_isl_p"></small></div></div></div>
+      <div class="cnt" id="c_save"><div class="ic">💰</div>
+        <div><div class="k">ศักยภาพประหยัดให้ กฟภ. (ประมาณการ)</div><div class="v">฿<span id="v_save">0</span><small id="v_save_p"> ล้าน / ปี</small></div></div></div>
+      <div class="cnt green" id="c_arr"><div class="ic">📈</div>
+        <div><div class="k">โอกาสรายได้ธุรกิจ (ARR)</div><div class="v">฿<span id="v_arr">0</span><small> ล้าน / ปี</small></div></div></div>
+    </div>
+
+    <div class="phases">
+      <div class="ph" id="ph1">
+        <div class="no">1</div>
+        <div><div class="tt">เกาะเต่า — จุดพิสูจน์</div><div class="ds">PoC 20 วัน · พิสูจน์แล้ว ฿169M/ปี · ข้อมูลจริง 40,704 แถว</div></div>
+        <div class="chk">✅</div>
+      </div>
+      <div class="ph" id="ph2">
+        <div class="no">2</div>
+        <div><div class="tt">ขยายภาคใต้ — 12 เกาะ</div><div class="ds">สมุย · พะงัน · ภูเก็ต · พีพี · ลันตา · หลีเป๊ะ …</div></div>
+        <div class="chk">✅</div>
+      </div>
+      <div class="ph" id="ph3">
+        <div class="no">3</div>
+        <div><div class="tt">ทั่วประเทศ — 20+ เกาะ</div><div class="ds">ช้าง · กูด · หมาก · เสม็ด · ล้าน · สีชัง …</div></div>
+        <div class="chk">✅</div>
+      </div>
+    </div>
+
+    <div class="confchip" id="confchip">⚙️ <b>Config เดียว</b> — เพิ่มเกาะใหม่ได้ใน 1 วัน · ไม่ต้องเขียนโค้ดใหม่</div>
+  </div>
+
+  <!-- finale -->
+  <div class="stamp" id="stamp">
+    <div class="l1">เครือข่าย <span class="hl">Smart Island</span> แห่งแรกของ PEA</div>
+    <div class="l2">ประหยัดระดับ "พันล้านต่อปี" · เริ่มจากเกาะเดียวที่พิสูจน์แล้ว — เกาะเต่า</div>
+  </div>
+
+  <div class="subwrap"><div class="sub" id="sub"></div></div>
+  <div class="brand">⚡ <b>Smart Energy IQ</b> · Scale-Out · PEA Hackathon 2026</div>
+  <div class="controls">
+    <button onclick="restart()">↻ เล่นใหม่</button>
+    <button id="btnPause" onclick="togglePause()">⏸ พัก</button>
+  </div>
+</div>
+
+<script>
+/* ═════ islands (พิกัด stylized บน viewBox 600×880) ═════ */
+const ISLANDS = [
+  /* phase 1 — จุดพิสูจน์ */
+  { id:'tao',    x:187, y:604, n:'เกาะเต่า',   p:1, major:true,  hub:true },
+  /* phase 2 — ภาคใต้ */
+  { id:'phangan',x:200, y:624, n:'พะงัน',      p:2, major:true },
+  { id:'samui',  x:204, y:640, n:'สมุย',       p:2, major:true },
+  { id:'phayam', x:92,  y:625, n:'พยาม',       p:2 },
+  { id:'yao',    x:106, y:716, n:'เกาะยาว',    p:2 },
+  { id:'panyi',  x:99,  y:703, n:'',           p:2 },
+  { id:'phuket', x:89,  y:727, n:'ภูเก็ต',     p:2, major:true },
+  { id:'phiphi', x:117, y:739, n:'พีพี',       p:2 },
+  { id:'lanta',  x:137, y:746, n:'ลันตา',      p:2 },
+  { id:'mook',   x:152, y:761, n:'',           p:2 },
+  { id:'libong', x:160, y:768, n:'',           p:2 },
+  { id:'sukorn', x:172, y:776, n:'',           p:2 },
+  { id:'lipe',   x:152, y:812, n:'หลีเป๊ะ',    p:2, major:true },
+  /* phase 3 — ตะวันออก/ทั่วประเทศ */
+  { id:'sichang',x:251, y:430, n:'สีชัง',      p:3 },
+  { id:'lan',    x:250, y:445, n:'เกาะล้าน',   p:3, major:true },
+  { id:'samet',  x:294, y:464, n:'เสม็ด',      p:3, major:true },
+  { id:'chang',  x:351, y:494, n:'เกาะช้าง',   p:3, major:true },
+  { id:'mak',    x:362, y:507, n:'หมาก',       p:3 },
+  { id:'kood',   x:366, y:518, n:'กูด',        p:3 },
+];
+
+const SPEED = parseFloat(new URLSearchParams(location.search).get('speed') || '1');
+const sec = s => s * 1000 * SPEED;
+const $ = id => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+
+/* build island nodes */
+const gI = $('islands');
+ISLANDS.forEach(o => {
+  const g = document.createElementNS(NS,'g');
+  g.setAttribute('class','isl' + (o.hub ? ' hub' : ''));
+  g.id = 'isl_' + o.id;
+  const glow = document.createElementNS(NS,'circle');
+  glow.setAttribute('class','glow');
+  glow.setAttribute('cx',o.x); glow.setAttribute('cy',o.y);
+  glow.setAttribute('r', o.hub ? 17 : (o.major ? 12 : 9));
+  const core = document.createElementNS(NS,'circle');
+  core.setAttribute('class','core');
+  core.setAttribute('cx',o.x); core.setAttribute('cy',o.y);
+  core.setAttribute('r', o.hub ? 6.5 : (o.major ? 5 : 3.6));
+  g.appendChild(glow); g.appendChild(core);
+  gI.appendChild(g);
+  if (o.n){
+    const t = document.createElementNS(NS,'text');
+    t.setAttribute('class','ilabel'); t.id = 'lb_' + o.id;
+    const left = o.x < 170;
+    t.setAttribute('x', o.x + (left ? -10 : 12));
+    t.setAttribute('y', o.y + 4.5);
+    t.setAttribute('text-anchor', left ? 'end' : 'start');
+    t.textContent = o.n;
+    gI.appendChild(t);
+  }
+});
+
+function ignite(id){
+  const o = ISLANDS.find(i => i.id === id);
+  $('isl_'+id).classList.add('on');
+  const lb = $('lb_'+id); if (lb) lb.classList.add('on');
+  const r = document.createElementNS(NS,'circle');
+  r.setAttribute('class','ripple'); r.setAttribute('cx',o.x); r.setAttribute('cy',o.y); r.setAttribute('r',4);
+  gI.appendChild(r);
+  requestAnimationFrame(()=>r.classList.add('go'));
+  setTimeout(()=>r.remove(), 1400);
+}
+
+/* arcs from เกาะเต่า ไป cluster หลัก */
+const TAO = ISLANDS[0];
+function arcTo(id, dur=900){
+  const o = ISLANDS.find(i => i.id === id);
+  const path = document.createElementNS(NS,'path');
+  const mx = (TAO.x+o.x)/2 + (o.x>TAO.x? -40 : 40), my = (TAO.y+o.y)/2 - 55;
+  path.setAttribute('d',`M ${TAO.x} ${TAO.y} Q ${mx} ${my} ${o.x} ${o.y}`);
+  path.setAttribute('class','arc');
+  $('arcs').appendChild(path);
+  const L = path.getTotalLength();
+  path.style.strokeDasharray = L;
+  path.style.strokeDashoffset = L;
+  path.animate([{strokeDashoffset:L},{strokeDashoffset:0}],{duration:dur*SPEED,fill:'forwards',easing:'ease-out'});
+  setTimeout(()=>path.animate([{opacity:.85},{opacity:0}],{duration:800,fill:'forwards'}), (dur+1800)*SPEED);
+  setTimeout(()=>path.remove(), (dur+2800)*SPEED);
+}
+
+/* counters */
+const state = { isl:0, save:0, arr:0 };
+function countTo(key, target, dur, el, dec=0, suffixEl=null, suffix=''){
+  const from = state[key]; const t0 = performance.now();
+  (function tick(t){
+    const p = Math.min((t-t0)/(dur*SPEED), 1), e = 1-Math.pow(1-p,3);
+    state[key] = from + (target-from)*e;
+    $(el).textContent = Math.round(state[key]).toLocaleString();
+    if (p<1) requestAnimationFrame(tick);
+    else if (suffixEl) $(suffixEl).textContent = suffix;
+  })(t0);
+}
+
+function sub(html){
+  const el = $('sub'); el.classList.remove('show');
+  setTimeout(()=>{ el.innerHTML = html; el.classList.add('show'); }, 320);
+}
+function sparkle(){
+  const stage = document.querySelector('.stage');
+  const icons = ['✨','🌟','💛','⚡'];
+  for (let i=0;i<12;i++){
+    const s = document.createElement('div');
+    s.className='spark'; s.textContent = icons[i%4];
+    s.style.left = (120 + (i*953)%1000) + 'px';
+    s.style.top  = (140 + (i*577)%420) + 'px';
+    s.style.animationDelay = (i*60)+'ms';
+    stage.appendChild(s);
+    requestAnimationFrame(()=>s.classList.add('go'));
+    setTimeout(()=>s.remove(), 2000+i*60);
+  }
+}
+
+/* ═════ timeline (วินาทีฐาน · รวม ~30 วิ) ═════ */
+const P2 = ISLANDS.filter(i=>i.p===2).map(i=>i.id);
+const P3 = ISLANDS.filter(i=>i.p===3).map(i=>i.id);
+const END = 30, HOLD = 4;
+
+const EVENTS = [
+  [0.4, ()=>{ $('thpath').classList.add('lit'); sub('นี่คือแผนผังการเติบโต — <span class="em">ไม่ใช่ความฝัน แต่คือแผนที่ทำได้จริง</span>'); }],
+  /* Phase 1 */
+  [2.5, ()=>{ $('ph1').classList.add('on'); show('c_isl'); show('c_save'); show('c_arr'); }],
+  [3.2, ()=>{ ignite('tao'); sub('<span class="em">Phase 1 — เกาะเต่า</span> จุดที่เราพิสูจน์ด้วยข้อมูลจริง: ประหยัด ฿169 ล้าน/ปี');
+              countTo('isl',1,800,'v_isl'); countTo('save',169,1600,'v_save'); countTo('arr',8,1600,'v_arr'); }],
+  [6.8, ()=>{ $('ph1').classList.remove('on'); $('ph1').classList.add('done'); }],
+  /* Phase 2 */
+  [7.5, ()=>{ $('ph2').classList.add('on'); sub('<span class="em">Phase 2 — ขยายภาคใต้</span> สมุย · พะงัน · ภูเก็ต · หลีเป๊ะ … ระบบเดียวกัน แค่เปลี่ยน Config');
+              arcTo('samui'); arcTo('phuket',1100); arcTo('lipe',1300); }],
+  [8.3,  ()=>ignite('phangan')], [8.8, ()=>ignite('samui')],
+  [9.4,  ()=>ignite('phayam')],  [9.9, ()=>ignite('yao')], [10.3, ()=>ignite('panyi')],
+  [10.8, ()=>ignite('phuket')],  [11.3,()=>ignite('phiphi')], [11.8,()=>ignite('lanta')],
+  [12.3, ()=>ignite('mook')],    [12.7,()=>ignite('libong')], [13.1,()=>ignite('sukorn')],
+  [13.6, ()=>{ ignite('lipe'); countTo('isl',13,1200,'v_isl'); countTo('save',650,2600,'v_save'); countTo('arr',45,2600,'v_arr'); }],
+  [15.6, ()=>{ $('ph2').classList.remove('on'); $('ph2').classList.add('done'); }],
+  /* Phase 3 */
+  [16.3, ()=>{ $('ph3').classList.add('on'); sub('<span class="em">Phase 3 — ทั่วประเทศ</span> ทุกเกาะที่มีดีเซล + สายส่งจำกัด คือพื้นที่ที่เราประหยัดให้ได้ทันที');
+               arcTo('chang',1300); arcTo('lan',1100); }],
+  [17.2, ()=>ignite('sichang')], [17.7,()=>ignite('lan')], [18.2,()=>ignite('samet')],
+  [18.8, ()=>ignite('chang')],   [19.3,()=>ignite('mak')], [19.8,()=>ignite('kood')],
+  [20.2, ()=>{ countTo('isl',20,1400,'v_isl',0,'v_isl_p','+'); countTo('save',1000,2800,'v_save',0,'v_save_p','+ ล้าน / ปี'); countTo('arr',100,2800,'v_arr'); }],
+  [22.6, ()=>{ $('ph3').classList.remove('on'); $('ph3').classList.add('done'); }],
+  /* finale */
+  [23.4, ()=>{ show('confchip'); }],
+  [24.6, ()=>{ document.querySelectorAll('.isl.on').forEach(i=>i.classList.add('party'));
+               show('stamp'); sparkle();
+               sub('20+ เกาะ · ประหยัดระดับ<span class="em">พันล้านต่อปี</span> · โอกาส ARR <span class="em">฿100 ล้าน</span>'); }],
+  [27.5, ()=>{ sparkle(); }],
+];
+function show(id){ $(id).classList.add('show'); }
+
+let startTs=null, rafId=null, paused=false;
+const fired=new Set();
+function frame(ts){
+  if(paused) return;
+  if(!startTs) startTs=ts;
+  const el=ts-startTs;
+  EVENTS.forEach(([t,fn],i)=>{ if(el>=sec(t)&&!fired.has(i)){fired.add(i);fn();} });
+  if(el<sec(END)) rafId=requestAnimationFrame(frame);
+  /* hold final frame - no loop */;
+}
+function restart(){
+  cancelAnimationFrame(rafId);
+  startTs=null; fired.clear(); paused=false;
+  $('btnPause').textContent='⏸ พัก';
+  $('thpath').classList.remove('lit');
+  document.querySelectorAll('.isl').forEach(i=>i.classList.remove('on','party'));
+  document.querySelectorAll('.ilabel').forEach(l=>l.classList.remove('on'));
+  $('arcs').innerHTML='';
+  ['c_isl','c_save','c_arr','confchip','stamp'].forEach(i=>$(i).classList.remove('show'));
+  ['ph1','ph2','ph3'].forEach(i=>{ $(i).classList.remove('on','done'); });
+  state.isl=0; state.save=0; state.arr=0;
+  $('v_isl').textContent='0'; $('v_save').textContent='0'; $('v_arr').textContent='0';
+  $('v_isl_p').textContent=''; $('v_save_p').textContent=' ล้าน / ปี';
+  $('sub').classList.remove('show'); $('sub').innerHTML='';
+  rafId=requestAnimationFrame(frame);
+}
+function togglePause(){
+  paused=!paused;
+  $('btnPause').textContent=paused?'▶ เล่น':'⏸ พัก';
+  if(!paused) restart();
+}
+restart();
+</script>
+</body>
+</html>

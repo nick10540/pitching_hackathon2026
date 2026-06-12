@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hook เปิดตัว — ตีสองบนเกาะเต่า · Smart Energy IQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:100%; height:100%; }
+  body {
+    font-family:'Prompt','Segoe UI',sans-serif; background:#06101f; color:#e2e8f0;
+    display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  .stage { width:1280px; height:720px; position:relative; overflow:hidden; background:#06101f; }
+
+  /* ── night scene (SVG) ── */
+  #scene { position:absolute; inset:0; transition:filter 1.2s ease, opacity 1.2s ease; }
+  #scene.dark { filter:brightness(.35) saturate(.6); }
+  #scene.dim  { filter:brightness(.7); }
+
+  .star { animation:tw 2.6s infinite alternate ease-in-out; }
+  @keyframes tw { from{opacity:.25} to{opacity:.95} }
+
+  /* cable pulse */
+  #cable { stroke-dasharray:10 7; animation:flow 1.1s linear infinite; transition:stroke 1s ease; }
+  @keyframes flow { to { stroke-dashoffset:-17; } }
+  #cable.hot { animation:flow .45s linear infinite; filter:drop-shadow(0 0 6px rgba(248,113,113,.8)); }
+
+  .vlight { transition:opacity .35s; }
+
+  /* ── HUD: clock + gauge + countdown ── */
+  .hud { position:absolute; top:26px; left:30px; display:flex; gap:14px; align-items:center; opacity:0; transition:opacity .8s; }
+  .hud.show { opacity:1; }
+  .hudbox {
+    background:rgba(10,20,40,.78); border:1px solid #27405f; border-radius:12px;
+    padding:8px 16px; backdrop-filter:blur(3px);
+  }
+  .hudbox .k { font-size:10.5px; color:#7d96b8; letter-spacing:1px; }
+  .hudbox .v { font-size:21px; font-weight:700; color:#bfdcff; font-variant-numeric:tabular-nums; }
+  .hudbox .v.red { color:#f87171; }
+  .lbar { width:150px; height:9px; background:#152741; border-radius:99px; overflow:hidden; margin-top:5px; }
+  .lbar .lf { height:100%; width:60%; border-radius:99px; background:#34d399; transition:width .8s ease, background .8s ease; }
+
+  .countdown {
+    position:absolute; top:26px; right:30px;
+    background:rgba(69,10,10,.82); border:2px solid #ef4444; border-radius:14px;
+    padding:10px 22px; text-align:center; backdrop-filter:blur(3px);
+    opacity:0; transform:scale(.7); transition:all .55s cubic-bezier(.2,.9,.3,1.3);
+  }
+  .countdown.show { opacity:1; transform:scale(1); animation:cdpulse 1.2s infinite .6s; }
+  @keyframes cdpulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.5)} 55%{box-shadow:0 0 0 14px rgba(239,68,68,0)} }
+  .countdown .k { font-size:11px; color:#fca5a5; letter-spacing:1px; }
+  .countdown .v { font-size:34px; font-weight:800; color:#fee2e2; font-variant-numeric:tabular-nums; line-height:1.1; }
+
+  /* ── subtitles ── */
+  .subwrap { position:absolute; left:0; right:0; bottom:54px; text-align:center; pointer-events:none; }
+  .sub {
+    display:inline-block; max-width:980px; font-size:27px; font-weight:600; line-height:1.55;
+    color:#f8fafc; text-shadow:0 2px 14px rgba(0,0,0,.85), 0 0 40px rgba(0,0,0,.6);
+    opacity:0; transform:translateY(14px); transition:all .8s ease;
+  }
+  .sub.show { opacity:1; transform:translateY(0); }
+  .sub .em { color:#fbbf24; font-weight:800; }
+  .sub .red { color:#fca5a5; font-weight:800; }
+
+  /* ── beat 2: impact cards ── */
+  .impacts { position:absolute; top:120px; left:0; right:0; display:flex; justify-content:center; gap:26px; }
+  .imp {
+    width:300px; background:rgba(12,18,34,.92); border:1.5px solid #3b2530; border-radius:16px;
+    padding:20px 20px 16px; text-align:center; backdrop-filter:blur(4px);
+    opacity:0; transform:translateY(26px) scale(.93);
+    transition:all .6s cubic-bezier(.2,.9,.3,1.25);
+  }
+  .imp.show { opacity:1; transform:translateY(0) scale(1); border-color:#b91c1c; box-shadow:0 0 30px rgba(220,38,38,.22); }
+  .imp .ic { font-size:44px; }
+  .imp .tt { font-size:17.5px; font-weight:700; color:#fecaca; margin-top:8px; line-height:1.35; }
+  .imp .ds { font-size:13px; color:#cbd5e1; margin-top:6px; line-height:1.5; font-weight:300; }
+  .imp .alarm { display:inline-block; margin-top:10px; font-size:11.5px; font-weight:700; color:#fff;
+                background:#b91c1c; border-radius:999px; padding:3px 12px; animation:blink 1s infinite; }
+  @keyframes blink { 50%{opacity:.45} }
+
+  /* ── beat 3: money panel ── */
+  .moneywrap {
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:20px; opacity:0; pointer-events:none; transition:opacity .9s ease;
+    background:radial-gradient(ellipse at center, rgba(20,16,8,.55), rgba(6,12,24,.92));
+  }
+  .moneywrap.show { opacity:1; }
+  .mtitle { font-size:25px; font-weight:600; color:#fde68a; }
+  .mrow { display:flex; gap:24px; align-items:stretch; }
+  .mbox {
+    background:rgba(20,24,38,.92); border:1.5px solid #4a3210; border-radius:16px; padding:18px 26px;
+    text-align:center; min-width:250px;
+    opacity:0; transform:translateY(20px); transition:all .55s cubic-bezier(.2,.9,.3,1.25);
+  }
+  .mbox.show { opacity:1; transform:translateY(0); }
+  .mbox .k { font-size:13px; color:#94a3b8; }
+  .mbox .v { font-size:34px; font-weight:800; color:#fbbf24; font-variant-numeric:tabular-nums; }
+  .mbox .v small { font-size:14px; color:#94a3b8; font-weight:500; }
+  .mbox .gauge { width:100%; height:10px; background:#1e293b; border-radius:99px; overflow:hidden; margin-top:8px; }
+  .mbox .gf { height:100%; width:0%; background:linear-gradient(90deg,#f59e0b,#ef4444); border-radius:99px; transition:width 2.2s ease; }
+  .costbars { display:flex; gap:18px; align-items:flex-end; height:96px; justify-content:center; margin-top:4px; }
+  .cb { width:84px; border-radius:8px 8px 3px 3px; position:relative; transition:height 1.2s cubic-bezier(.2,.8,.3,1.1); height:0; }
+  .cb .cl { position:absolute; top:-24px; left:0; right:0; text-align:center; font-size:14px; font-weight:700; }
+  .cb .cn { position:absolute; bottom:-22px; left:0; right:0; text-align:center; font-size:11px; color:#94a3b8; }
+  .cb.diesel { background:linear-gradient(180deg,#ef4444,#7f1d1d); } .cb.diesel .cl { color:#fca5a5; }
+  .cb.grid   { background:linear-gradient(180deg,#34d399,#065f46); } .cb.grid .cl { color:#86efac; }
+  .bigstamp {
+    font-size:46px; font-weight:900; color:#fef3c7;
+    background:rgba(120,53,15,.5); border:3px solid #f59e0b; border-radius:18px; padding:8px 38px;
+    text-shadow:0 0 30px rgba(245,158,11,.5);
+    opacity:0; transform:scale(1.5) rotate(-4deg); transition:all .5s cubic-bezier(.2,.9,.3,1.2);
+  }
+  .bigstamp.show { opacity:1; transform:scale(1) rotate(-2deg); }
+  .bigstamp small { font-size:18px; font-weight:600; color:#fcd34d; }
+
+  /* ── beat 4: solution dawn ── */
+  .dawn {
+    position:absolute; inset:0; opacity:0; pointer-events:none; transition:opacity 1.6s ease;
+    background:linear-gradient(180deg,#0b2545 0%,#13518a 55%,#1e7fb8 100%);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px;
+  }
+  .dawn.show { opacity:1; }
+  .radar { position:relative; width:148px; height:148px; }
+  .radar .ring { position:absolute; inset:0; border:3px solid rgba(125,211,252,.5); border-radius:50%; animation:ripple 2.2s infinite ease-out; }
+  .radar .ring:nth-child(2) { animation-delay:.7s; } .radar .ring:nth-child(3) { animation-delay:1.4s; }
+  @keyframes ripple { from{transform:scale(.4); opacity:1} to{transform:scale(1.5); opacity:0} }
+  .radar .core {
+    position:absolute; inset:24px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:46px; background:radial-gradient(circle,#0ea5e9,#0c4a6e); box-shadow:0 0 50px rgba(14,165,233,.8);
+  }
+  .dname { font-size:42px; font-weight:900; color:#ffffff; text-shadow:0 2px 24px rgba(2,8,23,.5); letter-spacing:.5px;
+           opacity:0; transform:translateY(16px); transition:all .8s ease; }
+  .dname.show { opacity:1; transform:translateY(0); }
+  .dtag { font-size:19px; font-weight:300; color:#e0f2fe; opacity:0; transition:opacity .8s ease .1s; }
+  .dtag.show { opacity:1; }
+  .dchips { display:flex; gap:14px; }
+  .dchip {
+    background:rgba(255,255,255,.14); border:1.5px solid rgba(224,242,254,.55); border-radius:999px;
+    padding:9px 22px; font-size:15.5px; font-weight:600; color:#ffffff; backdrop-filter:blur(4px);
+    opacity:0; transform:translateY(14px); transition:all .5s cubic-bezier(.2,.9,.3,1.2);
+  }
+  .dchip.show { opacity:1; transform:translateY(0); }
+  .dfinal {
+    font-size:24px; font-weight:700; color:#fef9c3; text-shadow:0 2px 14px rgba(2,8,23,.45);
+    opacity:0; transform:scale(.92); transition:all .7s cubic-bezier(.2,.9,.3,1.2);
+  }
+  .dfinal.show { opacity:1; transform:scale(1); }
+
+  /* beat labels + progress */
+  .beatlb {
+    position:absolute; top:24px; left:50%; transform:translateX(-50%);
+    font-size:12px; font-weight:700; letter-spacing:3px; color:#7d96b8;
+    background:rgba(10,20,40,.7); border:1px solid #27405f; border-radius:999px; padding:4px 18px;
+    opacity:0; transition:opacity .6s; z-index:30;
+  }
+  .beatlb.show { opacity:1; }
+  .dots { position:absolute; bottom:16px; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:30; }
+  .dot { width:40px; height:5px; border-radius:99px; background:rgba(148,163,184,.25); overflow:hidden; }
+  .dot .df { height:100%; width:0%; background:#7dd3fc; border-radius:99px; }
+
+  .brand { position:absolute; bottom:12px; right:20px; font-size:12px; color:rgba(148,163,184,.7); z-index:30; }
+  .brand b { color:#7dd3fc; font-weight:600; }
+  .controls { position:absolute; bottom:8px; left:16px; display:flex; gap:8px; opacity:.3; z-index:40; }
+  .controls:hover { opacity:1; }
+  .controls button {
+    background:rgba(30,41,59,.8); color:#cbd5e1; border:1px solid #334155; border-radius:8px;
+    font-family:'Prompt'; font-size:12px; padding:5px 12px; cursor:pointer;
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- ════ NIGHT SCENE ════ -->
+  <svg id="scene" viewBox="0 0 1280 720" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#070f22"/><stop offset="70%" stop-color="#0b1830"/><stop offset="100%" stop-color="#102140"/>
+      </linearGradient>
+      <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#0a1f3d"/><stop offset="100%" stop-color="#050d1d"/>
+      </linearGradient>
+      <radialGradient id="moonglow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#fef9c3" stop-opacity=".95"/><stop offset="55%" stop-color="#fde68a" stop-opacity=".25"/><stop offset="100%" stop-color="#fde68a" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="winglow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#fcd34d" stop-opacity=".9"/><stop offset="100%" stop-color="#fcd34d" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <rect width="1280" height="430" fill="url(#sky)"/>
+    <rect y="430" width="1280" height="290" fill="url(#sea)"/>
+
+    <!-- stars -->
+    <g fill="#dbeafe">
+      <circle class="star" cx="120" cy="70" r="1.7"/><circle class="star" cx="300" cy="120" r="1.3" style="animation-delay:.4s"/>
+      <circle class="star" cx="520" cy="60" r="1.8" style="animation-delay:.9s"/><circle class="star" cx="760" cy="100" r="1.4" style="animation-delay:.2s"/>
+      <circle class="star" cx="980" cy="55" r="1.7" style="animation-delay:1.2s"/><circle class="star" cx="1150" cy="130" r="1.3" style="animation-delay:.6s"/>
+      <circle class="star" cx="420" cy="170" r="1.2" style="animation-delay:1.5s"/><circle class="star" cx="660" cy="200" r="1.1" style="animation-delay:.8s"/>
+      <circle class="star" cx="880" cy="160" r="1.5" style="animation-delay:.3s"/><circle class="star" cx="60" cy="200" r="1.2" style="animation-delay:1s"/>
+      <circle class="star" cx="1230" cy="80" r="1.5" style="animation-delay:1.4s"/><circle class="star" cx="200" cy="260" r="1.1" style="animation-delay:.5s"/>
+    </g>
+
+    <!-- moon -->
+    <circle cx="1080" cy="120" r="80" fill="url(#moonglow)"/>
+    <circle cx="1080" cy="120" r="34" fill="#fef3c7"/>
+    <circle cx="1068" cy="110" r="7" fill="#fde68a" opacity=".6"/><circle cx="1092" cy="130" r="5" fill="#fde68a" opacity=".5"/>
+
+    <!-- moonlight on sea -->
+    <g opacity=".25" fill="#fde68a">
+      <rect x="1040" y="445" width="80" height="3" rx="1.5"/><rect x="1052" y="470" width="58" height="3" rx="1.5"/>
+      <rect x="1035" y="500" width="86" height="3" rx="1.5"/><rect x="1058" y="535" width="46" height="3" rx="1.5"/>
+    </g>
+
+    <!-- wave lines -->
+    <g stroke="#1d3a63" stroke-width="2" opacity=".5" fill="none">
+      <path d="M0 480 Q 90 472 180 480 T 360 480 T 540 480 T 720 480"/>
+      <path d="M520 560 Q 610 552 700 560 T 880 560 T 1060 560 T 1240 560"/>
+      <path d="M80 630 Q 170 622 260 630 T 440 630 T 620 630"/>
+    </g>
+
+    <!-- mainland (left, where power comes from) -->
+    <path d="M0 460 L0 380 Q 60 350 130 372 Q 180 390 210 430 L 215 460 Z" fill="#0d1b33"/>
+    <g id="mainlights" fill="#fcd34d">
+      <circle cx="48" cy="398" r="2.6"/><circle cx="84" cy="385" r="2.6"/><circle cx="120" cy="392" r="2.6"/><circle cx="158" cy="408" r="2.6"/>
+    </g>
+    <text x="30" y="350" font-family="Prompt" font-size="15" fill="#7d96b8">โครงข่ายหลัก (เกาะ B)</text>
+
+    <!-- Koh Tao island (right) -->
+    <g id="island">
+      <path d="M880 480 Q 920 388 1000 372 Q 1075 358 1140 400 Q 1195 436 1210 480 L 1210 500 Q 1045 522 880 500 Z" fill="#0e2236"/>
+      <path d="M955 432 Q 1000 396 1056 404 Q 1108 412 1132 448 L 1128 470 Q 1040 486 952 470 Z" fill="#13314a"/>
+      <!-- village lights -->
+      <g id="vlights">
+        <circle class="vlight" cx="930" cy="468" r="3" fill="#fcd34d"/><circle class="vlight" cx="965" cy="455" r="3" fill="#fcd34d"/>
+        <circle class="vlight" cx="1000" cy="462" r="3" fill="#fcd34d"/><circle class="vlight" cx="1040" cy="448" r="3" fill="#fcd34d"/>
+        <circle class="vlight" cx="1078" cy="458" r="3" fill="#fcd34d"/><circle class="vlight" cx="1115" cy="466" r="3" fill="#fcd34d"/>
+        <circle class="vlight" cx="1150" cy="472" r="3" fill="#fcd34d"/><circle class="vlight" cx="1014" cy="478" r="3" fill="#fcd34d"/>
+      </g>
+      <text x="985" y="345" font-family="Prompt" font-size="17" font-weight="600" fill="#a8c4e2">เกาะเต่า</text>
+    </g>
+
+    <!-- control room hut + operator -->
+    <g id="hut">
+      <circle cx="906" cy="470" r="26" fill="url(#winglow)" id="hutglow"/>
+      <rect x="890" y="455" width="34" height="26" rx="3" fill="#1c2c44" stroke="#33507a" stroke-width="1.5"/>
+      <rect x="897" y="461" width="11" height="9" rx="1.5" fill="#fcd34d" id="hutwin"/>
+      <path d="M886 456 L 907 442 L 928 456 Z" fill="#26405f"/>
+      <!-- operator silhouette in window -->
+      <circle cx="902.5" cy="464" r="2.2" fill="#0f172a"/>
+      <rect x="899.8" y="466" width="5.4" height="4" rx="1.5" fill="#0f172a"/>
+    </g>
+
+    <!-- submarine cable L6 -->
+    <path id="cable" d="M 212 452 Q 380 560 560 575 Q 740 590 884 492"
+          fill="none" stroke="#34d399" stroke-width="5" stroke-linecap="round"/>
+    <text id="cablelb" x="520" y="612" font-family="Prompt" font-size="14.5" font-weight="600" fill="#67e8f9">สายเคเบิลใต้น้ำ L6 — เส้นเลือดเส้นเดียวของเกาะ</text>
+  </svg>
+
+  <!-- HUD -->
+  <div class="hud" id="hud">
+    <div class="hudbox"><div class="k">เวลา</div><div class="v" id="clock">02:00</div></div>
+    <div class="hudbox"><div class="k">โหลดสาย L6</div><div class="v" id="loadv">5.9 <span style="font-size:12px;color:#7d96b8">/ 8 MW</span></div>
+      <div class="lbar"><div class="lf" id="loadf"></div></div></div>
+  </div>
+  <div class="countdown" id="countdown">
+    <div class="k">เวลาตัดสินใจที่เหลือ</div>
+    <div class="v" id="cdv">16:00</div>
+    <div class="k" style="color:#fecaca">นาที ก่อนทั้งเกาะมืด</div>
+  </div>
+
+  <!-- beat label -->
+  <div class="beatlb" id="beatlb"></div>
+
+  <!-- impact cards (beat 2) -->
+  <div class="impacts">
+    <div class="imp" id="im1">
+      <div class="ic">🏥</div>
+      <div class="tt">ผู้ป่วยติดเตียง รพ.สต.</div>
+      <div class="ds">เครื่องผลิตออกซิเจนหยุดทำงาน<br>ตู้เย็นวัคซีนเริ่มอุ่นขึ้นทุกนาที</div>
+      <div class="alarm">⚠ ชีวิตแขวนบนเครื่องสำรอง</div>
+    </div>
+    <div class="imp" id="im2">
+      <div class="ic">❄️</div>
+      <div class="tt">ห้องเย็น & ร้านอาหารทั้งเกาะ</div>
+      <div class="ds">อาหารทะเลเสียหายยกตู้<br>น้ำแข็งละลาย — ขาดทุนทั้งคืน</div>
+      <div class="alarm">💸 เสียหายทันทีคืนนั้น</div>
+    </div>
+    <div class="imp" id="im3">
+      <div class="ic">🏨</div>
+      <div class="tt">นักท่องเที่ยว 3,000+ คน</div>
+      <div class="ds">ตื่นกลางความมืด แอร์ดับ น้ำไม่ไหล<br>รีวิว ★1 กระจายทั่วโลกก่อนพระอาทิตย์ขึ้น</div>
+      <div class="alarm">📉 ชื่อเสียง 30 ปี พังในคืนเดียว</div>
+    </div>
+  </div>
+
+  <!-- beat 3: money -->
+  <div class="moneywrap" id="moneywrap">
+    <div class="mtitle" id="mtitle">แต่ที่น่าตกใจกว่านั้น — <b style="color:#fff">แม้วันที่ไฟ "ไม่ดับ"</b> ก็กำลังเลือดไหลทุกชั่วโมง</div>
+    <div class="mrow">
+      <div class="mbox" id="mb1">
+        <div class="k">เครื่องดีเซล DG9 เดินอยู่</div>
+        <div class="v"><span id="dgpct">0</span><small> % ของเวลา</small></div>
+        <div class="gauge"><div class="gf" id="dgf"></div></div>
+        <div class="k" style="margin-top:6px">แม้ตอนโหลดต่ำ ก็ยังเดิน "เผื่อไว้"</div>
+      </div>
+      <div class="mbox" id="mb2">
+        <div class="k">ต้นทุนต่อหน่วย</div>
+        <div class="costbars">
+          <div class="cb diesel" id="cbd"><div class="cl">12 ฿</div><div class="cn">ดีเซล DG9</div></div>
+          <div class="cb grid" id="cbg"><div class="cl">4.5 ฿</div><div class="cn">สายส่ง</div></div>
+        </div>
+        <div class="k" style="margin-top:26px">แพงกว่าเกือบ <b style="color:#fbbf24">3 เท่า</b></div>
+      </div>
+      <div class="mbox" id="mb3">
+        <div class="k">เงินที่เผาไปกับดีเซล</div>
+        <div class="v">฿<span id="burnv">0</span><small> ล้าน / เดือน</small></div>
+        <div class="k" style="margin-top:6px">ที่เกาะเดียว · ข้อมูลจริง ส.ค. 2568</div>
+      </div>
+    </div>
+    <div class="bigstamp" id="bigstamp">฿22.78 ล้าน <small>/ เดือน · เผาทิ้งโดยไม่จำเป็น</small></div>
+  </div>
+
+  <!-- beat 4: dawn / solution -->
+  <div class="dawn" id="dawn">
+    <div class="radar"><div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="core">⚡</div></div>
+    <div class="dname" id="dname">Smart Energy IQ</div>
+    <div class="dtag" id="dtag">AI ที่มองเห็นอนาคตของโครงข่ายไฟฟ้า — ก่อนวิกฤตจะเกิด</div>
+    <div class="dchips">
+      <div class="dchip" id="dc1">👁️ เห็นล่วงหน้า 16 นาที</div>
+      <div class="dchip" id="dc2">💬 LINE Alert อัตโนมัติ</div>
+      <div class="dchip" id="dc3">⚙️ เดินดีเซลเฉพาะเมื่อจำเป็น</div>
+    </div>
+    <div class="dfinal" id="dfinal">เปลี่ยน "16 นาทีแห่งความเสี่ยง" → ให้เป็น "16 นาทีแห่งความพร้อม"</div>
+  </div>
+
+  <!-- subtitles -->
+  <div class="subwrap"><div class="sub" id="sub"></div></div>
+
+  <!-- progress -->
+  <div class="dots">
+    <div class="dot"><div class="df" id="d1"></div></div><div class="dot"><div class="df" id="d2"></div></div>
+    <div class="dot"><div class="df" id="d3"></div></div><div class="dot"><div class="df" id="d4"></div></div>
+  </div>
+  <div class="brand">⚡ <b>Smart Energy IQ</b> · Hook เปิดตัว · PEA Hackathon 2026</div>
+  <div class="controls">
+    <button onclick="restart()">↻ เล่นใหม่</button>
+    <button id="btnPause" onclick="togglePause()">⏸ พัก</button>
+  </div>
+</div>
+
+<script>
+/* ═════ timeline (วินาที·ฐาน speed=1 ≈ จังหวะพูดจริง 75 วิ) ═════
+   ?speed=0.45 → เวอร์ชันสั้น ~34 วิ สำหรับอัด GIF */
+const SPEED = parseFloat(new URLSearchParams(location.search).get('speed') || '1');
+const sec = s => s * 1000 * SPEED;
+
+const $ = id => document.getElementById(id);
+const show = (id,on=true) => $(id).classList.toggle('show', on);
+
+function sub(html){
+  const el = $('sub');
+  el.classList.remove('show');
+  setTimeout(()=>{ el.innerHTML = html; el.classList.add('show'); }, 350);
+}
+function beat(t){ const el=$('beatlb'); el.textContent=t; el.classList.add('show'); }
+
+/* beat boundaries (base seconds) */
+const B1=0, B2=18, B3=40, B4=58, END=75, HOLD=4;
+
+const EVENTS = [
+  /* ── จังหวะ 1 · ฉากเปิด ── */
+  [0,    ()=>{ beat('จังหวะ 1 · ฉากเปิด — ตีสองบนเกาะเต่า'); show('hud'); }],
+  [1,    ()=>{ sub('ตีสอง… บนเกาะเต่า'); }],
+  [4.5,  ()=>{ sub('เจ้าหน้าที่ กฟภ. <span class="em">หนึ่งคน</span> นั่งเฝ้ามิเตอร์อยู่คนเดียว'); pulseHut(); }],
+  [8.5,  ()=>{ sub('สายเคเบิลใต้น้ำ<span class="em">เส้นเดียว</span>ที่เลี้ยงไฟทั้งเกาะ — กำลังวิ่งเข้าใกล้<span class="red">พิกัดสูงสุด</span>'); heatCable(); }],
+  [13,   ()=>{ show('countdown'); sub('และเขามีเวลา <span class="red">16 นาที</span> ในการตัดสินใจ… ก่อนที่ทั้งเกาะจะมืด'); }],
+  [16.5, ()=>{ sub(''); $('sub').classList.remove('show'); }],   // หยุดหายใจ 1.5 วิ
+
+  /* ── จังหวะ 2 · ใครเจ็บ ── */
+  [B2,     ()=>{ beat('จังหวะ 2 · ลองนึกภาพ — ถ้าคืนนั้นตัดสินใจไม่ทัน'); sub('<span class="em">ลองนึกภาพ…</span> ถ้าคืนนั้น เขาตัดสินใจไม่ทัน'); }],
+  [B2+2,   ()=>{ blackout(); }],
+  [B2+3.5, ()=>{ show('im1'); sub('ที่ รพ.สต.เกาะเต่า — ผู้ป่วยติดเตียงที่พึ่ง<span class="red">เครื่องผลิตออกซิเจน</span>… เครื่องหยุดทำงาน'); }],
+  [B2+8.5, ()=>{ show('im2'); sub('ห้องเย็นร้านอาหารทั้งเกาะ — อาหารทะเล<span class="red">เสียหายยกตู้</span>'); }],
+  [B2+13.5,()=>{ show('im3'); sub('นักท่องเที่ยวกว่า <span class="em">3,000 คน</span> ตื่นกลางความมืด — รีวิวแย่กระจายทั่วโลก<span class="red">ก่อนพระอาทิตย์ขึ้น</span>'); }],
+  [B2+18.5,()=>{ sub('ชื่อเสียงที่เกาะเต่าสร้างมา 30 ปี… <span class="red">เสียได้ในคืนเดียว</span>'); }],
+
+  /* ── จังหวะ 3 · ทุบด้วยตัวเลข ── */
+  [B3,    ()=>{ beat('จังหวะ 3 · และแม้ไฟ "ไม่ดับ" ก็ยังเลือดไหล'); hideImpacts(); show('moneywrap'); sub(''); }],
+  [B3+1.5,()=>{ show('mb1'); animDG(); }],
+  [B3+5,  ()=>{ show('mb2'); $('cbd').style.height='88px'; $('cbg').style.height='33px'; }],
+  [B3+8.5,()=>{ show('mb3'); count('burnv', 22.78, sec(3), 2); }],
+  [B3+13, ()=>{ show('bigstamp'); }],
+  [B3+14.5,()=>{ sub('เผาเงิน <span class="em">22.78 ล้านบาท ทุกเดือน</span> … ที่เกาะเดียว'); }],
+
+  /* ── จังหวะ 4 · สะพานเข้า solution ── */
+  [B4,    ()=>{ beat('จังหวะ 4 · ทางออก'); show('dawn'); $('moneywrap').classList.remove('show'); sub('ปัญหานี้ไม่ได้เกิดจากคนทำงานไม่เก่ง — แต่เขา<span class="em">ไม่มีเครื่องมือที่มองเห็นอนาคต</span>'); }],
+  [B4+4,  ()=>{ show('dname'); show('dtag'); sub(''); }],
+  [B4+6,  ()=>{ show('dc1'); }],
+  [B4+7,  ()=>{ show('dc2'); }],
+  [B4+8,  ()=>{ show('dc3'); }],
+  [B4+10, ()=>{ show('dfinal'); }],
+  [B4+12, ()=>{ sub('วันนี้เรามาพร้อมคำตอบ — <span class="em">Smart Energy IQ</span>'); }],
+];
+
+/* ── scene helpers ── */
+function pulseHut(){ $('hutglow').animate([{opacity:.4},{opacity:1},{opacity:.4}],{duration:1800,iterations:4}); }
+function heatCable(){
+  const c = $('cable');
+  c.style.stroke = '#f59e0b';
+  setTimeout(()=>{ c.style.stroke='#ef4444'; c.classList.add('hot'); $('loadf').style.width='96%'; $('loadf').style.background='#ef4444';
+                   $('loadv').innerHTML='7.7 <span style="font-size:12px;color:#7d96b8">/ 8 MW</span>'; }, sec(2.2));
+}
+function blackout(){
+  const ls = document.querySelectorAll('#vlights .vlight, #mainlights circle');
+  ls.forEach((l,i)=> setTimeout(()=>{ l.style.opacity = 0; }, i*120*SPEED + (i%3)*60));
+  $('hutwin').style.opacity=.25; $('hutglow').style.opacity=.15;
+  setTimeout(()=> $('scene').classList.add('dark'), sec(1));
+  $('cable').style.opacity=.25; $('cable').classList.remove('hot');
+}
+function hideImpacts(){ ['im1','im2','im3'].forEach(i=>show(i,false)); }
+function animDG(){ count('dgpct', 99.5, sec(2.2), 1); $('dgf').style.width='99.5%'; }
+function count(id, target, dur, dec){
+  const t0=performance.now();
+  (function tick(t){
+    const p=Math.min((t-t0)/dur,1), e=1-Math.pow(1-p,3);
+    $(id).textContent=(target*e).toLocaleString(undefined,{minimumFractionDigits:dec,maximumFractionDigits:dec});
+    if(p<1) requestAnimationFrame(tick);
+  })(t0);
+}
+
+/* clock + countdown + dots */
+function hudTick(el){
+  const baseS = el/1000/SPEED;
+  const mins = Math.floor(baseS/12);                 // 02:00 → เดินช้าๆ
+  $('clock').textContent = '02:0' + Math.min(9,mins);
+  if (baseS>=13 && baseS<B2){
+    const left = 16*60 - Math.floor((baseS-13)*22);  // นับถอยหลังเร่งนิดให้เห็นขยับ
+    const m=Math.floor(left/60), s=left%60;
+    $('cdv').textContent = String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  }
+  if (baseS>=B2) $('countdown').classList.remove('show');
+  const segs=[[B1,B2],[B2,B3],[B3,B4],[B4,END]];
+  segs.forEach(([a,b],i)=>{ const p=Math.max(0,Math.min(1,(baseS-a)/(b-a))); $('d'+(i+1)).style.width=(p*100)+'%'; });
+}
+
+let startTs=null, rafId=null, paused=false;
+const fired=new Set();
+function frame(ts){
+  if(paused) return;
+  if(!startTs) startTs=ts;
+  const el=ts-startTs;
+  EVENTS.forEach(([t,fn],i)=>{ if(el>=sec(t)&&!fired.has(i)){fired.add(i);fn();} });
+  hudTick(el);
+  if(el<sec(END)) rafId=requestAnimationFrame(frame);
+  /* hold final frame - no loop */;
+}
+function restart(){
+  cancelAnimationFrame(rafId);
+  startTs=null; fired.clear(); paused=false;
+  $('btnPause').textContent='⏸ พัก';
+  /* reset scene */
+  $('scene').classList.remove('dark','dim');
+  document.querySelectorAll('#vlights .vlight, #mainlights circle').forEach(l=>l.style.opacity=1);
+  $('hutwin').style.opacity=1; $('hutglow').style.opacity=1;
+  const c=$('cable'); c.style.stroke='#34d399'; c.style.opacity=1; c.classList.remove('hot');
+  $('loadf').style.width='60%'; $('loadf').style.background='#34d399';
+  $('loadv').innerHTML='5.9 <span style="font-size:12px;color:#7d96b8">/ 8 MW</span>';
+  $('cdv').textContent='16:00';
+  ['hud','countdown','im1','im2','im3','moneywrap','mb1','mb2','mb3','bigstamp',
+   'dawn','dname','dtag','dc1','dc2','dc3','dfinal','beatlb'].forEach(i=>show(i,false));
+  $('sub').classList.remove('show'); $('sub').innerHTML='';
+  $('cbd').style.height='0'; $('cbg').style.height='0';
+  $('dgf').style.width='0'; $('dgpct').textContent='0'; $('burnv').textContent='0';
+  rafId=requestAnimationFrame(frame);
+}
+function togglePause(){
+  paused=!paused;
+  $('btnPause').textContent=paused?'▶ เล่น':'⏸ พัก';
+  if(!paused) restart();
+}
+restart();
+</script>
+</body>
+</html>

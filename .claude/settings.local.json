@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx -y qrcode -o \"public/img/qr-demo.png\" -w 600 \"http://47.130.226.9:3000/pea/home\")",
+      "Bash(docker compose *)"
+    ]
+  }
+}

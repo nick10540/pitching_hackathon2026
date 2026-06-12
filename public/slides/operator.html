@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operator Journey — ก่อน vs หลัง Smart Energy IQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:100%; height:100%; }
+  body {
+    font-family:'Prompt','Segoe UI',sans-serif;
+    background:#ffffff; color:#334155;
+    display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  .stage { width:1280px; height:720px; padding:30px 44px; display:flex; flex-direction:column; position:relative; background:#ffffff; }
+
+  .head { text-align:center; }
+  .head h1 { font-size:27px; font-weight:700; color:#0f172a; }
+  .head h1 .b { color:#dc2626; } .head h1 .a { color:#16a34a; }
+  .head .sub { font-size:13px; color:#64748b; font-weight:300; margin-top:2px; }
+
+  /* scene clock */
+  .clockbar {
+    margin:10px auto 0; background:#f8fafc; border:1px solid #e2e8f0; border-radius:999px;
+    padding:6px 22px; display:flex; gap:14px; align-items:center; width:fit-content;
+    box-shadow:0 1px 3px rgba(15,23,42,.06);
+  }
+  .clockbar .moon { font-size:18px; }
+  .clockbar .tm { font-size:20px; font-weight:700; color:#0284c7; letter-spacing:2px; font-variant-numeric:tabular-nums; }
+  .clockbar .ev { font-size:13px; color:#b45309; font-weight:500; }
+
+  .cols { flex:1; display:flex; gap:26px; margin-top:14px; }
+  .col { flex:1; border-radius:18px; padding:16px 20px 12px; position:relative; display:flex; flex-direction:column; }
+  .col.before { background:#fef5f5; border:1.5px solid #fecaca; }
+  .col.after  { background:#f2fcf5; border:1.5px solid #bbf7d0; }
+
+  .colhead { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .colhead .nm { font-size:17px; font-weight:700; }
+  .before .colhead .nm { color:#b91c1c; }
+  .after  .colhead .nm { color:#15803d; }
+  .colhead .badge {
+    font-size:11.5px; padding:3px 12px; border-radius:999px; font-weight:600;
+  }
+  .before .badge { background:#fee2e2; color:#b91c1c; border:1px solid #fca5a5; }
+  .after  .badge { background:#dcfce7; color:#15803d; border:1px solid #86efac; }
+
+  /* steps */
+  .steps { flex:1; display:flex; flex-direction:column; gap:7px; }
+  .step {
+    display:flex; gap:12px; align-items:flex-start; padding:8px 12px; border-radius:12px;
+    background:rgba(255,255,255,.55); border:1px solid transparent;
+    opacity:.22; transform:translateX(-8px); transition:all .45s cubic-bezier(.2,.9,.3,1.15);
+  }
+  .step.on { opacity:1; transform:translateX(0); }
+  .before .step.on { border-color:#fca5a5; background:#ffffff; box-shadow:0 2px 6px rgba(220,38,38,.12); }
+  .after  .step.on { border-color:#86efac; background:#ffffff; box-shadow:0 2px 6px rgba(22,163,74,.12); }
+  .step.done { opacity:.62; }
+  .step .ic { font-size:24px; width:32px; text-align:center; flex-shrink:0; }
+  .step .tt { font-size:14px; font-weight:600; color:#0f172a; line-height:1.3; }
+  .step .ds { font-size:11.5px; color:#64748b; line-height:1.35; margin-top:1px; }
+  .step .tmark { margin-left:auto; font-size:11px; font-weight:600; color:#94a3b8; white-space:nowrap; flex-shrink:0; padding-top:2px; }
+  .before .step.on .tmark { color:#dc2626; }
+  .after  .step.on .tmark { color:#16a34a; }
+
+  /* stress meter */
+  .meter { margin-top:10px; }
+  .meter .lb { font-size:11.5px; color:#64748b; display:flex; justify-content:space-between; }
+  .meter .bar { height:9px; background:#e2e8f0; border-radius:99px; overflow:hidden; margin-top:3px; }
+  .meter .fill { height:100%; width:0%; border-radius:99px; transition:width .6s ease; }
+  .before .fill { background:linear-gradient(90deg,#f59e0b,#ef4444); }
+  .after  .fill { background:linear-gradient(90deg,#22c55e,#4ade80); }
+
+  /* result stamp */
+  .stamp {
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    pointer-events:none; opacity:0; transform:scale(1.6) rotate(-8deg);
+    transition:all .5s cubic-bezier(.2,.9,.3,1.2);
+  }
+  .stamp.show { opacity:1; transform:scale(1) rotate(-8deg); }
+  .stamp .inner {
+    font-size:30px; font-weight:800; padding:10px 30px; border-radius:14px; backdrop-filter:blur(2px);
+  }
+  .before .stamp .inner { color:#dc2626; border:4px solid #ef4444; background:rgba(254,226,226,.82); }
+  .after  .stamp .inner { color:#15803d; border:4px solid #22c55e; background:rgba(220,252,231,.82); }
+
+  /* footer compare */
+  .footer { display:flex; gap:26px; margin-top:12px; min-height:58px; }
+  .fbox {
+    flex:1; border-radius:12px; padding:8px 16px; display:flex; gap:18px; align-items:center; justify-content:center;
+    opacity:0; transform:translateY(10px); transition:all .5s ease;
+  }
+  .fbox.show { opacity:1; transform:translateY(0); }
+  .fbox.fb { background:#fef2f2; border:1px solid #fecaca; }
+  .fbox.fa { background:#f0fdf4; border:1px solid #bbf7d0; }
+  .fbox .kv { text-align:center; }
+  .fbox .k { font-size:11px; color:#64748b; }
+  .fbox .v { font-size:19px; font-weight:800; }
+  .fb .v { color:#dc2626; } .fa .v { color:#16a34a; }
+
+  .controls { position:absolute; bottom:8px; right:14px; display:flex; gap:8px; opacity:.35; }
+  .controls:hover { opacity:1; }
+  .controls button {
+    background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; border-radius:8px;
+    font-family:'Prompt'; font-size:12px; padding:5px 12px; cursor:pointer;
+  }
+  .brand { position:absolute; bottom:10px; left:46px; font-size:12px; color:#94a3b8; }
+  .brand b { color:#0284c7; font-weight:600; }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <div class="head">
+    <h1>คืนเดียวกัน เหตุการณ์เดียวกัน — <span class="b">ก่อน</span> vs <span class="a">หลัง</span> Smart Energy IQ</h1>
+    <div class="sub">ตีสองบนเกาะเต่า · โหลดกำลังพุ่ง สายเคเบิลใต้น้ำ L6 ใกล้เต็มพิกัด</div>
+  </div>
+
+  <div class="clockbar">
+    <span class="moon">🌙</span>
+    <span class="tm" id="clock">02:00</span>
+    <span class="ev" id="event">โหลดเกาะเต่าเริ่มไต่ขึ้น…</span>
+  </div>
+
+  <div class="cols">
+
+    <!-- ════ BEFORE ════ -->
+    <div class="col before">
+      <div class="colhead">
+        <div class="nm">😰 ก่อนมีระบบ (วันนี้)</div>
+        <div class="badge" id="bTime">ใช้เวลา 0 นาที</div>
+      </div>
+      <div class="steps">
+        <div class="step" id="b0">
+          <div class="ic">🖥️</div>
+          <div><div class="tt">นั่งเฝ้า panel ทั้งคืน</div><div class="ds">ดูมิเตอร์ด้วยตาเปล่า ไม่มีระบบเตือนล่วงหน้า</div></div>
+          <div class="tmark">02:00</div>
+        </div>
+        <div class="step" id="b1">
+          <div class="ic">😨</div>
+          <div><div class="tt">กว่าจะรู้ว่าโหลดพุ่ง — สายใกล้เต็มแล้ว</div><div class="ds">L6 วิ่งไป 7.6/8 MW ไม่มีใครบอกก่อนหน้า</div></div>
+          <div class="tmark">02:12</div>
+        </div>
+        <div class="step" id="b2">
+          <div class="ic">📻</div>
+          <div><div class="tt">โทรวิทยุตามช่างที่โรงไฟฟ้า</div><div class="ds">ปลุกทีม สื่อสารด้วยเสียง เสี่ยงฟังผิด</div></div>
+          <div class="tmark">02:15</div>
+        </div>
+        <div class="step" id="b3">
+          <div class="ic">⏱️</div>
+          <div><div class="tt">สตาร์ท DG9 ด้วยมือ — ลุ้นให้ทัน</div><div class="ds">เครื่องดีเซลต้อง warm-up · ระหว่างนี้เกาะเสี่ยงไฟดับ</div></div>
+          <div class="tmark">02:16–02:28</div>
+        </div>
+        <div class="step" id="b4">
+          <div class="ic">😮‍💨</div>
+          <div><div class="tt">รอดแบบเฉียดฉิว… คืนนี้</div><div class="ds">ถ้าช้าอีก 3 นาที = ไฟดับทั้งเกาะ นักท่องเที่ยว 3,000+ คน</div></div>
+          <div class="tmark">02:28</div>
+        </div>
+        <div class="step" id="b5">
+          <div class="ic">📝</div>
+          <div><div class="tt">นั่งกรอก Excel รายงานเหตุการณ์</div><div class="ds">บันทึกมือย้อนหลัง + พรุ่งนี้ DG9 ก็เดินเต็มสูบ "เผื่อไว้" ต่อ</div></div>
+          <div class="tmark">03:00</div>
+        </div>
+      </div>
+      <div class="meter">
+        <div class="lb"><span>ระดับความเครียด Operator</span><span id="bStress">0%</span></div>
+        <div class="bar"><div class="fill" id="bFill"></div></div>
+      </div>
+      <div class="stamp" id="bStamp"><div class="inner">เสี่ยง · ช้า · เหนื่อย</div></div>
+    </div>
+
+    <!-- ════ AFTER ════ -->
+    <div class="col after">
+      <div class="colhead">
+        <div class="nm">😌 หลังมี Smart Energy IQ</div>
+        <div class="badge" id="aTime">ใช้เวลา 0 นาที</div>
+      </div>
+      <div class="steps">
+        <div class="step" id="a0">
+          <div class="ic">😴</div>
+          <div><div class="tt">Operator พักผ่อนตามกะปกติ</div><div class="ds">AI เฝ้าระบบแทน · forecast โหลดล่วงหน้าทุก 15 นาที</div></div>
+          <div class="tmark">02:00</div>
+        </div>
+        <div class="step" id="a1">
+          <div class="ic">📱</div>
+          <div><div class="tt">LINE Alert ดัง — เตือนล่วงหน้า 16 นาที</div><div class="ds">"คาดว่า L6 จะเต็มพิกัด 02:16 · แนะนำเดิน DG9 ที่ 1.4 MW"</div></div>
+          <div class="tmark">02:00</div>
+        </div>
+        <div class="step" id="a2">
+          <div class="ic">👨‍🔧</div>
+          <div><div class="tt">Operator ตรวจสอบ → กดยืนยันสั่งเดินเครื่อง</div><div class="ds">Human-in-the-loop · คนตัดสินใจ ระบบแค่แนะนำ</div></div>
+          <div class="tmark">02:03</div>
+        </div>
+        <div class="step" id="a3">
+          <div class="ic">✅</div>
+          <div><div class="tt">DG9 เดินทันเวลา · ระบบ log ให้อัตโนมัติ</div><div class="ds">รายงาน dispatch + ตัวเลขประหยัดเข้าระบบเอง ไม่ต้องกรอกมือ</div></div>
+          <div class="tmark">02:16</div>
+        </div>
+      </div>
+      <div class="meter">
+        <div class="lb"><span>ระดับความเครียด Operator</span><span id="aStress">0%</span></div>
+        <div class="bar"><div class="fill" id="aFill"></div></div>
+      </div>
+      <div class="stamp" id="aStamp"><div class="inner">ปลอดภัย · ทันเวลา · มีหลักฐาน</div></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="fbox fb" id="fb">
+      <div class="kv"><div class="k">เวลาตอบสนอง</div><div class="v">28 นาที</div></div>
+      <div class="kv"><div class="k">รู้ตัวล่วงหน้า</div><div class="v">0 นาที</div></div>
+      <div class="kv"><div class="k">DG9 พรุ่งนี้</div><div class="v">เดินเต็มสูบต่อ</div></div>
+    </div>
+    <div class="fbox fa" id="fa">
+      <div class="kv"><div class="k">เวลาตอบสนอง</div><div class="v">3 นาที</div></div>
+      <div class="kv"><div class="k">รู้ตัวล่วงหน้า</div><div class="v">16 นาที</div></div>
+      <div class="kv"><div class="k">ผลลัพธ์</div><div class="v">ประหยัด ฿14M/เดือน</div></div>
+    </div>
+  </div>
+
+  <div class="brand">⚡ <b>Smart Energy IQ</b> · Operator Journey · PEA Hackathon 2026</div>
+  <div class="controls">
+    <button onclick="restart()">↻ เล่นใหม่</button>
+    <button id="btnPause" onclick="togglePause()">⏸ พัก</button>
+  </div>
+</div>
+
+<script>
+/* ── timeline: [time_ms, fn] ──
+   นาฬิกาฉาก 02:00 → 03:00 วิ่งตาม progress รวม ~14s + hold 4s */
+const TOTAL = 14000, HOLD = 4000;
+
+const EVENTS = [
+  [0,     () => { on('b0'); on('a0'); setEvent('โหลดเกาะเต่าเริ่มไต่ขึ้น…'); }],
+  [1600,  () => { on('a1'); setEvent('⚡ ระบบ forecast เห็นล่วงหน้า — LINE Alert ฝั่งขวาดังแล้ว'); }],
+  [3300,  () => { on('a2'); }],
+  [4800,  () => { done('b0'); on('b1'); setEvent('😨 ฝั่งซ้ายเพิ่งรู้ตัว — L6 ใกล้เต็มพิกัดแล้ว'); }],
+  [6300,  () => { done('b1'); on('b2'); on('a3'); }],
+  [7800,  () => { done('b2'); on('b3'); setEvent('ฝั่งขวาจบงานแล้ว · ฝั่งซ้ายยังลุ้นสตาร์ทเครื่องอยู่'); stamp('aStamp'); }],
+  [9600,  () => { done('b3'); on('b4'); }],
+  [11200, () => { done('b4'); on('b5'); setEvent('ฝั่งซ้ายรอด…แบบเฉียดฉิว แล้วคืนพรุ่งนี้ล่ะ?'); }],
+  [12600, () => { stamp('bStamp'); show('fb'); show('fa'); setEvent('ต่างกัน 25 นาที — และ ฿14 ล้าน/เดือน'); }],
+];
+
+/* stress targets ตาม progress */
+function stressOf(p){
+  return {
+    b: Math.min(95, Math.round(p < .3 ? p*120 : 30 + (p-.3)*95/.7*0.95 + p*40)),
+    a: Math.round(p < .15 ? p*80 : 12 + Math.sin(p*3)*3)
+  };
+}
+
+const $ = id => document.getElementById(id);
+const on    = id => $(id).classList.add('on');
+const done  = id => { $(id).classList.add('done'); };
+const stamp = id => $(id).classList.add('show');
+const show  = id => $(id).classList.add('show');
+const setEvent = t => $('event').textContent = t;
+
+let startTs = null, rafId = null, paused = false;
+const fired = new Set();
+
+function fmtClock(p){
+  const mins = Math.round(p * 60);           // 02:00 → 03:00
+  const h = 2 + Math.floor(mins / 60);
+  const m = mins % 60;
+  return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+}
+
+function frame(ts){
+  if (paused) return;
+  if (!startTs) startTs = ts;
+  const el = ts - startTs;
+  const p = Math.min(el / TOTAL, 1);
+
+  $('clock').textContent = fmtClock(p);
+
+  EVENTS.forEach(([t, fn], i) => {
+    if (el >= t && !fired.has(i)) { fired.add(i); fn(); }
+  });
+
+  /* badges เวลาใช้จริง */
+  const bMin = Math.min(60, Math.round(p*60));
+  $('bTime').textContent = 'ใช้เวลา ' + Math.min(bMin, 60) + ' นาที';
+  const aMin = Math.min(3, Math.round(p*60));
+  $('aTime').textContent = 'ใช้เวลา ' + aMin + ' นาที' + (p > 0.55 ? ' — จบงานแล้ว' : '');
+
+  /* stress */
+  const s = stressOf(p);
+  $('bFill').style.width = s.b + '%'; $('bStress').textContent = s.b + '%';
+  $('aFill').style.width = Math.max(0,s.a) + '%'; $('aStress').textContent = Math.max(0,s.a) + '%';
+
+  if (p < 1) rafId = requestAnimationFrame(frame);
+  /* hold final frame - no loop */;
+}
+
+function restart(){
+  cancelAnimationFrame(rafId);
+  startTs = null; fired.clear(); paused = false;
+  $('btnPause').textContent = '⏸ พัก';
+  document.querySelectorAll('.step').forEach(e => e.classList.remove('on','done'));
+  document.querySelectorAll('.stamp,.fbox').forEach(e => e.classList.remove('show'));
+  setEvent('โหลดเกาะเต่าเริ่มไต่ขึ้น…');
+  rafId = requestAnimationFrame(frame);
+}
+function togglePause(){
+  paused = !paused;
+  $('btnPause').textContent = paused ? '▶ เล่น' : '⏸ พัก';
+  if (!paused) restart();
+}
+restart();
+</script>
+</body>
+</html>
