@@ -102,7 +102,7 @@
   <div class="head">
     <div>
       <div class="t1">AI Forecast ที่<span class="gold">พิสูจน์แล้ว</span> — ไม่ใช่คำโฆษณา</div>
-      <div class="t2">โหลดเกาะเต่า 24 ชั่วโมง · ทุก 15 นาที (96 จุด) · ตรวจกับข้อมูลจริง ส.ค. 2568 · 40,704 แถว</div>
+      <div class="t2">ทดสอบแบบ Recursive — เทรน 389 วัน (37,344 ช่วง) แล้วทำนายเดือนที่โมเดลไม่เคยเห็น · ไม่มีการใช้ข้อมูลอนาคต</div>
     </div>
     <div class="brand">⚡ <b>Smart Energy IQ</b><br>Proven Forecast</div>
   </div>
@@ -129,14 +129,14 @@
     </svg>
     <div class="mape" id="mape">
       <div class="k">ความคลาดเคลื่อนเฉลี่ย</div>
-      <div class="v">MAPE 3.7%</div>
-      <div class="t">เป้ามาตรฐาน &lt; 10% — ผ่านแบบขาดลอย ✓</div>
+      <div class="v">MAPE &lt; 5%</div>
+      <div class="t">Recursive 7 วัน · เป้ามาตรฐาน &lt;10% — ผ่านขาดลอย ✓</div>
     </div>
   </div>
 
   <div class="chips">
-    <div class="chip" id="ch1">🎯 ทาย <b>Peak เย็น</b> ถูกทั้งเวลาและขนาด</div>
-    <div class="chip" id="ch2">🧠 Forecast 2 ชั้น — <b>Similar-day + XGBoost</b></div>
+    <div class="chip" id="ch1">🎯 วันแรก (ข้อมูลจริงครบ) แม่นถึง <b>0.57%</b></div>
+    <div class="chip" id="ch2">🧠 <b>XGBoost</b> · 7 features · เทรน 389 วัน</div>
     <div class="chip" id="ch3">📊 ครอบคลุมความเสี่ยงด้วย <b>P10 / P50 / P90</b></div>
     <div class="chip" id="ch4"><span class="ok">✓</span> พิสูจน์สูตรได้ <b>22/22</b> — เปิดรันสดได้</div>
   </div>
@@ -276,7 +276,7 @@ function frame(ts){
   }
 
   if(el<END) rafId=requestAnimationFrame(frame);
-  /* hold final frame - no loop */;
+  else setTimeout(()=>{ if(!paused) restart(); }, sec(HOLD));
 }
 
 function restart(){

@@ -224,7 +224,7 @@
         <div class="arrow">➜</div>
         <div class="sol">
           <div class="sic">📱</div>
-          <div><div class="stt">AI Forecast + LINE Alert</div><div class="sds">พยากรณ์โหลดแม่น MAPE 3.7% — เตือนก่อนวิกฤต 16 นาที</div></div>
+          <div><div class="stt">AI Forecast + LINE Alert</div><div class="sds">พยากรณ์แม่น MAPE 4.92% (ทดสอบ Recursive 7 วัน) — เตือนก่อนวิกฤต 16 นาที</div></div>
           <div class="schip">รู้ก่อน 16 นาที</div>
         </div>
       </div>
@@ -251,7 +251,7 @@
 
     <div class="impgrid">
       <div class="impbig" id="i1">
-        <div class="lb">💰 ประหยัดสุทธิ / เดือน</div>
+        <div class="lb">💰 ประหยัดสุทธิ / เดือน*</div>
         <div class="vl">฿<span id="n1">0</span><small> ล้าน</small></div>
       </div>
       <div class="impbig" id="i2">
@@ -264,8 +264,10 @@
       </div>
     </div>
 
+    <div style="text-align:center; font-size:11px; color:#94a3b8; margin-top:6px">* คิดจากการเดินเครื่องตามแผนที่ระบบแนะนำ เทียบการเดินแบบเดิม · ต้นทุนดีเซล 12 ฿/kWh (รวม FCF)</div>
+
     <div class="impchips">
-      <div class="ichip" id="c1"><span class="cic">⚙️</span><span>ชั่วโมงเดิน DG9 <b>−61.8%</b> → เครื่องอายุยืนขึ้น ค่าซ่อมลด</span></div>
+      <div class="ichip" id="c1"><span class="cic">⚙️</span><span>ต้นทุน DG9 <b>−61.8%</b> (฿22.78M → ฿8.71M) → เครื่องพักมากขึ้น ค่าซ่อมลด</span></div>
       <div class="ichip" id="c2"><span class="cic">🌱</span><span>CO₂ ลด <b>377 ตัน/เดือน</b> → ตอบ Net Zero 2065</span></div>
       <div class="ichip" id="c3"><span class="cic">💡</span><span>ไฟฟ้ามั่นคงขึ้น → <b>นักท่องเที่ยว 3,000+ คน</b> ไม่เจอไฟดับ</span></div>
       <div class="ichip" id="c4"><span class="cic">😌</span><span>Operator มีระบบช่วยเฝ้า → <b>ลด human error</b> ลดภาระ 24/7</span></div>
@@ -392,14 +394,14 @@ const fired = new Set();
 function frame(ts){
   if (paused) return;
   if (!startTs) startTs = ts;
-  const el = (ts - startTs) * 0.5;  /* half speed */
+  const el = ts - startTs;
 
   EVENTS.forEach(([t,fn],i)=>{ if (el>=t && !fired.has(i)){ fired.add(i); fn(); } });
   if (el > 3800 && el < T_A2) burnTick(el-3800);
   dots(el);
 
   if (el < T_END) rafId = requestAnimationFrame(frame);
-  /* hold final frame - no loop */;
+  else setTimeout(()=>{ if(!paused) restart(); }, HOLD);
 }
 
 function restart(){

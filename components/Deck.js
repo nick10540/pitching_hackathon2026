@@ -11,6 +11,7 @@ import CapexOpex from "./slides/CapexOpex";
 import RoiPayback from "./slides/RoiPayback";
 import BusinessModel from "./slides/BusinessModel";
 import TeamPartners from "./slides/TeamPartners";
+import RecursivePrediction from "./slides/RecursivePrediction";
 
 // Slides with `src` reuse the original self-contained animated HTML files
 // (embedded via iframe so their timelines play exactly as designed);
@@ -31,6 +32,7 @@ const SLIDES = [
   { id: "scale", chapter: "Scale-Out", src: "/slides/scaleout.html" },
   { id: "team", chapter: "ทีม & พันธมิตร", Comp: TeamPartners },
   { id: "demo", chapter: "Live Demo", Comp: LiveDemo },
+  { id: "recursive", chapter: "Backup — Recursive", Comp: RecursivePrediction },
 ];
 
 export default function Deck() {

@@ -2,10 +2,10 @@
 import { useSteps } from "../anim";
 
 const ROWS = [
-  ["ประหยัดรวม (DG9 + Island)", ">฿100M", ">฿500M", "pos"],
+  ["ประหยัดรวม (DG9 + Island)", "฿169M", "฿845M", "pos"],
   ["CAPEX (เฉพาะปีที่ 1)", "−฿1.59M", "−฿1.59M", "neg"],
   ["OPEX", "−฿1.2M", "−฿6M", "neg"],
-  ["ประโยชน์สุทธิต่อ PEA", ">฿97M", ">฿492M", "net"],
+  ["ประโยชน์สุทธิต่อ PEA", "฿166M", "฿837M", "net"],
 ];
 
 export default function RoiPayback({ active }) {
