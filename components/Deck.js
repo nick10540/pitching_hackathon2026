@@ -12,9 +12,9 @@ import RoiPayback from "./slides/RoiPayback";
 import BusinessModel from "./slides/BusinessModel";
 import TeamPartners from "./slides/TeamPartners";
 
-// Slides 1-5 and 12 reuse the original self-contained animated HTML files
-// (embedded via iframe so their timelines play exactly as designed).
-// Slides 6-11 + 13 are native React components built from the deck / architecture art.
+// Slides with `src` reuse the original self-contained animated HTML files
+// (embedded via iframe so their timelines play exactly as designed);
+// slides with `Comp` are native React components.
 const SLIDES = [
   { id: "intro", chapter: "Teaser", Comp: IntroVideo },
   { id: "hook", chapter: "As-is → Pain", src: "/slides/hook.html" },
