@@ -4,7 +4,7 @@ import { useSteps } from "../anim";
 const FLOW = [
   ["1", "พยากรณ์โหลด", "Load_C = No6 + No9"],
   ["2", "เผื่อสำรอง", "Reserve = max(0.3, 10%·Load)"],
-  ["3", "เช็คเฮดรูม", "P6 = min(8, No6 + H-3C)"],
+  ["3", "เช็คเฮดรูม", "P6 = min(8, No6 + Headroom_to_C)"],
 ];
 
 // pentagon geometry — vertices of a 5-sided shape pointing up
@@ -50,19 +50,42 @@ export default function SavingsPrinciple({ active }) {
           </div>
         ))}
 
-        <div className={"fdecision" + (s >= 4 ? " show" : "")}>
-          <div className="dq">โหลด + สำรอง<br />≤ เฮดรูม ?</div>
-        </div>
-        <div className={"farrow" + (s >= 5 ? " show" : "")}>→</div>
-
-        <div className="fresults">
-          <div className={"res a" + (s >= 5 ? " show" : "")}>
-            <span className="tick">✓</span>
-            <div><b>Group A · DG9 OFF</b><span>ใช้ไฟจากสายส่ง · ★ ประหยัดสุด</span></div>
+        <div className="fbranchwrap">
+          <div className={"fdecision" + (s >= 4 ? " show" : "")}>
+            <div className="dq">โหลด + สำรอง<br />≤ เฮดรูม ?</div>
           </div>
-          <div className={"res b" + (s >= 5 ? " show" : "")}>
-            <span className="tick">✗</span>
-            <div><b>Group B · DG9 ON</b><span>เดินใน ECO zone · lead 16 นาที</span></div>
+
+          <svg className={"barrow" + (s >= 5 ? " show" : "")}
+               viewBox="0 0 60 114" width="60" height="114" overflow="visible">
+            <defs>
+              <marker id="mG" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+                <polygon points="0 0, 7 2.5, 0 5" fill="#22c55e"/>
+              </marker>
+              <marker id="mA" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+                <polygon points="0 0, 7 2.5, 0 5" fill="#fbbf24"/>
+              </marker>
+            </defs>
+            {/* center → fork */}
+            <line x1="0" y1="57" x2="26" y2="57" stroke="#3d5e89" strokeWidth="2"/>
+            {/* vertical fork */}
+            <line x1="26" y1="28" x2="26" y2="86" stroke="#3d5e89" strokeWidth="2"/>
+            {/* → Group A */}
+            <line x1="26" y1="28" x2="53" y2="28" stroke="#22c55e" strokeWidth="2.5" markerEnd="url(#mG)"/>
+            {/* → Group B */}
+            <line x1="26" y1="86" x2="53" y2="86" stroke="#fbbf24" strokeWidth="2.5" markerEnd="url(#mA)"/>
+            <text x="29" y="21" fontSize="10" fill="#4ade80" fontFamily="Prompt,sans-serif" fontWeight="700">Yes</text>
+            <text x="29" y="100" fontSize="10" fill="#fbbf24" fontFamily="Prompt,sans-serif" fontWeight="700">No</text>
+          </svg>
+
+          <div className="fresults">
+            <div className={"res a" + (s >= 5 ? " show" : "")}>
+              <span className="tick">✓</span>
+              <div><b>Group A · DG9 OFF</b><span>ใช้ไฟจากสายส่ง · ★ ประหยัดสุด</span></div>
+            </div>
+            <div className={"res b" + (s >= 5 ? " show" : "")}>
+              <span className="tick">✗</span>
+              <div><b>Group B · DG9 ON</b><span>เดินใน ECO zone · lead 16 นาที</span></div>
+            </div>
           </div>
         </div>
       </div>
@@ -115,7 +138,10 @@ export default function SavingsPrinciple({ active }) {
         .head .sub { font-size: 13.5px; color: #7d96b8; font-weight: 300; margin-top: 3px; }
 
         /* ── flow ── */
-        .flow { display: flex; align-items: stretch; justify-content: center; gap: 4px; margin-top: 16px; }
+        .flow { display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 16px; }
+        .fbranchwrap { display: flex; align-items: center; gap: 0; }
+        .barrow { opacity: 0; transition: opacity .4s; flex-shrink: 0; }
+        .barrow.show { opacity: 1; }
         .fitem { display: flex; align-items: center; gap: 4px; }
         .fstep { display: flex; gap: 10px; align-items: center; background: rgba(13,26,48,.75);
           border: 1.5px solid #1e3a5f; border-radius: 13px; padding: 10px 14px; min-width: 168px;
