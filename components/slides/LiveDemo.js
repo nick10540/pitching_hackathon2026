@@ -51,11 +51,6 @@ export default function LiveDemo({ active }) {
         </div>
       </div>
 
-      <div className={"thanks" + (s >= 4 ? " show" : "")}>
-        <span className="big">ขอบคุณครับ</span>
-        <span className="small">⚡ Smart Energy IQ · พร้อมเริ่ม PoC ใน 20 วัน</span>
-      </div>
-
       <div className="brand-tag" style={{ color: "#8aa1c2" }}>
         ⚡ <b>Smart Energy IQ</b> · Live Demo · PEA Hackathon 2026
       </div>

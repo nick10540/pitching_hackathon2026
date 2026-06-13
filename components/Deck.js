@@ -12,6 +12,7 @@ import RoiPayback from "./slides/RoiPayback";
 import BusinessModel from "./slides/BusinessModel";
 import TeamPartners from "./slides/TeamPartners";
 import RecursivePrediction from "./slides/RecursivePrediction";
+import LiveDemoScreens from "./slides/LiveDemoScreens";
 
 // Slides with `src` reuse the original self-contained animated HTML files
 // (embedded via iframe so their timelines play exactly as designed);
@@ -32,14 +33,18 @@ const SLIDES = [
   { id: "scale", chapter: "Scale-Out", src: "/slides/scaleout.html" },
   { id: "team", chapter: "ทีม & พันธมิตร", Comp: TeamPartners },
   { id: "demo", chapter: "Live Demo", Comp: LiveDemo },
+  { id: "demo-screens", chapter: "Live Demo", Comp: LiveDemoScreens },
   { id: "recursive", chapter: "Backup — Recursive", Comp: RecursivePrediction },
 ];
 
 export default function Deck() {
   const [i, setI] = useState(0);
   const [scale, setScale] = useState(1);
+  const [light, setLight] = useState(false);
   const deckRef = useRef(null);
   const iRef = useRef(0);
+
+  const toggleTheme = useCallback(() => setLight((v) => !v), []);
 
   const go = useCallback((n) => {
     setI(Math.max(0, Math.min(SLIDES.length - 1, n)));
@@ -78,14 +83,18 @@ export default function Deck() {
       } else if (e.key === "Home") go(0);
       else if (e.key === "End") go(SLIDES.length - 1);
       else if (e.key.toLowerCase() === "f") toggleFs();
+      else if (e.key.toLowerCase() === "t") toggleTheme();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [next, prev, go, toggleFs]);
+  }, [next, prev, go, toggleFs, toggleTheme]);
 
   return (
     <div className="deck" ref={deckRef}>
-      <div className="deck-scaler" style={{ transform: `scale(${scale})` }}>
+      <div
+        className={"deck-scaler" + (light ? " light" : "")}
+        style={{ transform: `scale(${scale})` }}
+      >
         {SLIDES.map(({ id, Comp, src }, idx) => (
           <div key={id} className={"slide" + (idx === i ? " active" : "")}>
             {src ? (
@@ -108,6 +117,13 @@ export default function Deck() {
       <div className="deck-ui">
         <button onClick={prev} title="ก่อนหน้า (←)">‹</button>
         <button onClick={next} title="ถัดไป (→)">›</button>
+        <button
+          onClick={toggleTheme}
+          title="เปลี่ยนธีม (T)"
+          className={light ? "theme-active" : ""}
+        >
+          {light ? "🌙 มืด" : "☀️ สว่าง"}
+        </button>
         <button onClick={toggleFs} title="เต็มจอ (F)">⛶ เต็มจอ</button>
       </div>
 
@@ -125,6 +141,7 @@ export default function Deck() {
       <div className="hint">
         <span className="kbd">←</span>
         <span className="kbd">→</span> เปลี่ยนสไลด์ ·
+        <span className="kbd">T</span> ธีม ·
         <span className="kbd">F</span> เต็มจอ
       </div>
     </div>
