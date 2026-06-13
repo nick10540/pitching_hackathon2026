@@ -104,11 +104,6 @@ export default function TeamPartners({ active }) {
         </div>
       </div>
 
-      <div className={"thanks" + (s >= 9 ? " show" : "")}>
-        <span className="big">ขอบคุณครับ</span>
-        <span className="small">⚡ Smart Energy IQ · พร้อมเริ่ม PoC บนเกาะเต่าใน 20 วัน</span>
-      </div>
-
       <div className="brand-tag" style={{ color: "#8aa1c2" }}>⚡ <b>Smart Energy IQ</b> · Team &amp; Partners · PEA Hackathon 2026</div>
 
       <style jsx>{`
@@ -159,11 +154,6 @@ export default function TeamPartners({ active }) {
         .logo.big img { max-height: 40px; max-width: 110px; }
         .cloudtx { font-size: 11.5px; color: #cbd5e1; line-height: 1.45; }
 
-        .thanks { margin-top: 12px; display: flex; align-items: baseline; justify-content: center; gap: 16px;
-          opacity: 0; transform: scale(.95); transition: all .6s cubic-bezier(.2,.9,.3,1.2); }
-        .thanks.show { opacity: 1; transform: scale(1); }
-        .thanks .big { font-size: 24px; font-weight: 900; color: #fbbf24; }
-        .thanks .small { font-size: 13px; color: #93b0d4; font-weight: 300; }
       `}</style>
     </div>
   );

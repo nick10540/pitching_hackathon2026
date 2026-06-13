@@ -205,9 +205,9 @@
 
   <!-- ════════ ACT 2 · SOLUTION ════════ -->
   <div class="act" id="act2">
-    <div class="actlabel">ACT 2 · SOLUTION — Smart Energy IQ แก้ให้ทีละข้อ</div>
+    <div class="actlabel">SOLUTION — Smart Energy IQ แก้ให้ทีละข้อ</div>
     <div class="acttitle">ปัญหาเดิมทุกข้อ → ถูกแก้ด้วย AI ที่พิสูจน์แล้ว</div>
-    <div class="actsub">หลักการเดียว: เดินดีเซลเฉพาะเมื่อสายส่งไม่พอ · ทุกสูตรพิสูจน์ได้ 22/22</div>
+    <div class="actsub">หลักการเดียว: เดินดีเซลเฉพาะเมื่อสายส่งไม่พอ</div>
 
     <div class="solrows">
       <div class="srow" id="s1">
@@ -283,7 +283,6 @@
   <!-- progress + brand -->
   <div class="dots">
     <div class="dot"><div class="df" id="d1"></div></div>
-    <div class="dot"><div class="df" id="d2"></div></div>
   </div>
   <div class="brand">⚡ <b>Smart Energy IQ</b> · PEA Hackathon 2026</div>
   <div class="controls">
@@ -293,10 +292,9 @@
 </div>
 
 <script>
-/* ═══ timeline (ตัด ACT 1 PAIN ออก เหลือ SOLUTION → IMPACT) ═══
-   Act2 SOLUTION 0    – 8000
-   Act3 IMPACT   8000 – 17000  + hold 3500 → loop */
-const T_A2 = 0, T_A3 = 8000, T_END = 17000, HOLD = 3500;
+/* ═══ timeline (เหลือแค่ SOLUTION · ตัด PAIN + IMPACT ออก) ═══
+   SOLUTION 0 – 7000  + hold 3500 → loop */
+const T_A2 = 0, T_END = 7000, HOLD = 3500;
 
 const $ = id => document.getElementById(id);
 const cls = (id, c, onoff=true) => $(id).classList.toggle(c, onoff);
@@ -311,18 +309,6 @@ const EVENTS = [
   [T_A2+4100,   () => { cls('s3','show'); }],
   [T_A2+4700,   () => { cls('s3','solved'); }],
   [T_A2+5900,   () => { cls('soltrust','show'); }],
-
-  /* ── ACT 3 ── */
-  [T_A3,        () => { showAct(3); }],
-  [T_A3+600,    () => { cls('i1','show'); count('n1', 13.23, 1300, 2); }],
-  [T_A3+1500,   () => { cls('i2','show'); count('n2', 158.7, 1300, 1); }],
-  [T_A3+2500,   () => { cls('i3','show'); count('n3', 1587, 1500, 0); sparkle(); }],
-  [T_A3+3600,   () => { cls('c1','show'); }],
-  [T_A3+4000,   () => { cls('c2','show'); }],
-  [T_A3+4400,   () => { cls('c3','show'); }],
-  [T_A3+4800,   () => { cls('c4','show'); }],
-  [T_A3+5200,   () => { cls('c5','show'); }],
-  [T_A3+6200,   () => { cls('cta','show'); sparkle(); }],
 ];
 
 function showAct(n){
@@ -363,15 +349,15 @@ function sparkle(){
   }
 }
 
-/* burn money counter (act1) — ฿433/วินาที (22.78M/เดือน) */
+/* burn money counter (act1 · dead code หลังตัด ACT 1 ออก) — (24.70M/เดือน) */
 function burnTick(elapsedInAct1){
-  const baht = Math.round(elapsedInAct1/1000 * 8790);  // ฿8,790/วินาที = 22.78M÷(30วัน×24ชม×3600)×1000 เร่งให้เห็นภาพ
+  const baht = Math.round(elapsedInAct1/1000 * 9529);  // ฿9,529/วินาที = 24.70M÷(30วัน×24ชม×3600)×1000 เร่งให้เห็นภาพ
   $('burnMoney').textContent = '฿' + baht.toLocaleString();
 }
 
 /* dots progress */
 function dots(el){
-  const seg = [[0,T_A3],[T_A3,T_END]];
+  const seg = [[0,T_END]];
   seg.forEach(([a,b],i)=>{
     const p = Math.max(0, Math.min(1, (el-a)/(b-a)));
     $('d'+(i+1)).style.width = (p*100)+'%';

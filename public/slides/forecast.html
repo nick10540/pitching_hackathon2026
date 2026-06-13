@@ -129,7 +129,7 @@
     </svg>
     <div class="mape" id="mape">
       <div class="k">ความคลาดเคลื่อนเฉลี่ย</div>
-      <div class="v">MAPE &lt; 5%</div>
+      <div class="v">PE 4.92%</div>
       <div class="t">Recursive 7 วัน · เป้ามาตรฐาน &lt;10% — ผ่านขาดลอย ✓</div>
     </div>
   </div>
@@ -138,7 +138,6 @@
     <div class="chip" id="ch1">🎯 วันแรก (ข้อมูลจริงครบ) แม่นถึง <b>0.57%</b></div>
     <div class="chip" id="ch2">🧠 <b>XGBoost</b> · 7 features · เทรน 389 วัน</div>
     <div class="chip" id="ch3">📊 ครอบคลุมความเสี่ยงด้วย <b>P10 / P50 / P90</b></div>
-    <div class="chip" id="ch4"><span class="ok">✓</span> พิสูจน์สูตรได้ <b>22/22</b> — เปิดรันสดได้</div>
   </div>
   <div class="punch" id="punch">แม่นขนาดนี้ → วางแผนเดินเครื่องได้ "ล่วงหน้าทั้งวัน" ไม่ใช่แค่ตามแก้หน้างาน</div>
 
@@ -240,7 +239,7 @@ const EVENTS=[
   [11.9, ()=>{ show('dm1'); }],
   [12.4, ()=>{ show('dm2'); }],
   [13.2, ()=>{ show('mape'); sparkle(); }],
-  [14.6, ()=>show('ch1')], [15.1, ()=>show('ch2')], [15.6, ()=>show('ch3')], [16.1, ()=>show('ch4')],
+  [14.6, ()=>show('ch1')], [15.1, ()=>show('ch2')], [15.6, ()=>show('ch3')],
   [17.0, ()=>show('punch')],
 ];
 
@@ -287,7 +286,7 @@ function restart(){
   $('fcrect').setAttribute('width',0);
   $('bandrect').setAttribute('width',0);
   $('dot').setAttribute('opacity',0); $('dotf').setAttribute('opacity',0);
-  ['lg1','lg2','lg3','an_peak','dm0','dm1','dm2','mape','ch1','ch2','ch3','ch4','punch']
+  ['lg1','lg2','lg3','an_peak','dm0','dm1','dm2','mape','ch1','ch2','ch3','punch']
     .forEach(i=>$(i).classList.remove('show'));
   rafId=requestAnimationFrame(frame);
 }
