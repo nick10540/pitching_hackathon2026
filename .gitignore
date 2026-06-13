@@ -3,3 +3,7 @@
 /out
 npm-debug.log*
 .DS_Store
+
+# Oversized unused source GIF — 101MB, exceeds GitHub's 100MB limit.
+# The Live Demo slide uses the smaller demo-*.gif files instead.
+public/livedemo/1_MainC.gif

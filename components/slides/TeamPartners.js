@@ -5,25 +5,25 @@ const TEAM = [
   {
     photo: "/img/team/narawithc.jpg", role: "Project Manager", name: "Narawithc Somna",
     exp: "8 ปี · วิศวกรคอมพิวเตอร์",
-    items: ["SCADA Electrical System ในโรงงาน", "AMR Transformer Coil Transfer", "ระบบ HEMS / FEMS บริหารพลังงาน"],
+    items: ["SCADA Electrical System ในโรงงาน", "AMR Transformer Coil Transfer", "ระบบ HEMS / FEMS บริหารพลังงาน", "Nextxus IoT core — ระบบจัดการข้อมูล IoT device (ใน/นอกองค์กร)", "ISO/IEC 29110 — Project Manager 2026"],
     color: "blue",
   },
   {
     photo: "/img/team/phatsakon.jpg", role: "Electrical & IoT Engineer", name: "Phatsakon Srirak",
-    exp: "10 ปี",
+    exp: "10 ปี · วิศวกรไฟฟ้า/ระบบอัตโนมัติ",
     items: ["ออกแบบ Instrument Transformer", "Peak Shaving — Solar & Battery", "ระบบ MES + เครื่องจักรสู่ IoT/Automation"],
     color: "teal",
   },
   {
     photo: "/img/team/pongsagorn.jpg", role: "Backend & Data Dev", name: "Pongsagorn Ninmongkorn",
     exp: "5 ปี · นักพัฒนาซอฟต์แวร์",
-    items: ["Third-Party ร่วม ERP (Exact & Epicor)", "Finance (PCC) · Billing (PSP) · PEM", "ISO/IEC 29110 — Tech Lead 2026"],
+    items: ["Third-Party ร่วม ERP (Exact & Epicor)", "Finance (PCC) · Billing (PSP) · PEM", "ISO/IEC 29110 — Tech Lead 2026", "Nextxus IoT core — ระบบจัดการข้อมูล IoT device (ใน/นอกองค์กร)"],
     color: "violet",
   },
   {
     photo: "/img/team/pattarong.jpg", role: "Frontend Developer", name: "Pattarong Sombatkaew",
     exp: "2 ปี · Frontend Developer",
-    items: ["ระบบ EMS สำหรับลูกค้าใน/นอกองค์กร", "ระบบ HEMS จัดการพลังงานในบ้าน"],
+    items: ["ระบบ EMS สำหรับลูกค้าใน/นอกองค์กร", "ระบบ HEMS จัดการพลังงานในบ้าน", "Nextxus IoT core — ระบบจัดการข้อมูล IoT device (ใน/นอกองค์กร)"],
     color: "amber",
   },
   {

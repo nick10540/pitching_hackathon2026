@@ -204,3 +204,300 @@ button {
     transform: translateY(0);
   }
 }
+
+.deck-ui button.theme-active {
+  background: rgba(251, 191, 36, 0.18);
+  border-color: #fbbf24;
+  color: #fbbf24;
+}
+
+/* ════════════════ Light theme ════════════════
+ * Real per-slide light styling — NOT a filter:invert (which flipped hues and
+ * the intro video). Every rule is scoped under `.deck-scaler.light`, so the
+ * default (dark) presentation is untouched. Each dark slide's two ancestor
+ * classes give enough specificity to override its own styled-jsx without
+ * !important. Slides that ship light already (capex/roi/biz + operator/
+ * opportunity/story.html) need nothing here; the intro video is never themed.
+ * Light palette: bg #f4f8fd→#e2ebf6 · ink #334155 · head #0f172a ·
+ * sub #64748b · panel #fff · border #cbd5e1 · accents darkened for contrast.
+ * ══════════════════════════════════════════════ */
+
+/* shared: light slide background + dark base text for every dark slide root */
+.deck-scaler.light .arch,
+.deck-scaler.light .sp,
+.deck-scaler.light .tp,
+.deck-scaler.light .ld,
+.deck-scaler.light .lds,
+.deck-scaler.light .rp {
+  background: radial-gradient(ellipse 1100px 800px at 50% -8%, #f4f8fd 0%, #e2ebf6 74%);
+  color: #334155;
+}
+/* shared headings + sub-titles */
+.deck-scaler.light .arch .head h1,
+.deck-scaler.light .sp .head h1,
+.deck-scaler.light .tp .head h1,
+.deck-scaler.light .ld .head h1,
+.deck-scaler.light .lds .head h1,
+.deck-scaler.light .rp .head h1 {
+  color: #0f172a;
+}
+.deck-scaler.light .arch .head .sub,
+.deck-scaler.light .sp .head .sub,
+.deck-scaler.light .tp .head .sub,
+.deck-scaler.light .ld .head .sub,
+.deck-scaler.light .lds .head .sub,
+.deck-scaler.light .rp .head .sub {
+  color: #64748b;
+}
+.deck-scaler.light .arch .head h1 .g,
+.deck-scaler.light .sp .head h1 .g,
+.deck-scaler.light .tp .head h1 .g,
+.deck-scaler.light .ld .head h1 .g,
+.deck-scaler.light .lds .head h1 .g,
+.deck-scaler.light .rp .head h1 .hi {
+  color: #0284c7;
+}
+.deck-scaler.light .ld .eyebrow,
+.deck-scaler.light .lds .eyebrow {
+  color: #b45309;
+}
+
+/* ── PoC / Real Architecture (.arch) ── */
+.deck-scaler.light .arch .badge {
+  background: #e0f2fe;
+  color: #0369a1;
+  border-color: #7dd3fc;
+}
+.deck-scaler.light .arch .pill {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+.deck-scaler.light .arch .imgwrap img {
+  box-shadow: 0 16px 44px rgba(15, 23, 42, 0.18);
+  border-color: #cbd5e1;
+}
+
+/* ── Live Demo (.ld) ── */
+.deck-scaler.light .ld .scan {
+  color: #64748b;
+}
+.deck-scaler.light .ld .card {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+.deck-scaler.light .ld .card .label {
+  color: #64748b;
+}
+.deck-scaler.light .ld .url {
+  color: #0284c7;
+}
+.deck-scaler.light .ld li {
+  color: #334155;
+}
+.deck-scaler.light .ld li::before {
+  color: #0284c7;
+}
+
+/* ── Live Demo Screens (.lds) — keep phone frames dark (real devices) ── */
+.deck-scaler.light .lds .cap-t {
+  color: #0f172a;
+}
+.deck-scaler.light .lds .cap-en {
+  color: #0284c7;
+}
+.deck-scaler.light .lds .cap-d {
+  color: #64748b;
+}
+.deck-scaler.light .lds .footer {
+  color: #334155;
+}
+.deck-scaler.light .lds .footer b {
+  color: #0d9488;
+}
+.deck-scaler.light .lds .tag {
+  color: #94a3b8;
+}
+
+/* ── Savings Principle (.sp) ── */
+.deck-scaler.light .sp .fstep {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+.deck-scaler.light .sp .fno {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+.deck-scaler.light .sp .ftt {
+  color: #0f172a;
+}
+.deck-scaler.light .sp .fds {
+  color: #475569;
+}
+.deck-scaler.light .sp .farrow {
+  color: #94a3b8;
+}
+.deck-scaler.light .sp .res b {
+  color: #0f172a;
+}
+.deck-scaler.light .sp .res span:not(.tick) {
+  color: #475569;
+}
+.deck-scaler.light .sp .pentline {
+  stroke: #cbd5e1;
+  fill: rgba(2, 132, 199, 0.04);
+}
+.deck-scaler.light .sp .dim {
+  background: #ffffff;
+}
+.deck-scaler.light .sp .dt {
+  color: #0f172a;
+}
+.deck-scaler.light .sp .dd {
+  color: #475569;
+}
+.deck-scaler.light .sp .hubt {
+  color: #fff7e0;
+}
+.deck-scaler.light .sp .fcf {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+.deck-scaler.light .sp .fcf b {
+  color: #0284c7;
+}
+
+/* ── Team & Partners (.tp) ── */
+.deck-scaler.light .tp .card {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+.deck-scaler.light .tp .top {
+  border-bottom-color: #e2e8f0;
+}
+.deck-scaler.light .tp .name {
+  color: #0f172a;
+}
+.deck-scaler.light .tp .exp {
+  color: #475569;
+}
+.deck-scaler.light .tp li {
+  color: #334155;
+}
+.deck-scaler.light .tp .pcol {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+.deck-scaler.light .tp .plabel {
+  color: #334155;
+}
+.deck-scaler.light .tp .cloudtx {
+  color: #334155;
+}
+
+/* ── Recursive Prediction (.rp) ── */
+.deck-scaler.light .rp .col-title {
+  color: #0369a1;
+  border-bottom-color: #cbd5e1;
+}
+.deck-scaler.light .rp .daybox {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+.deck-scaler.light .rp .daytitle {
+  color: #1d4ed8;
+}
+.deck-scaler.light .rp .tag.pred {
+  background: #e0f2fe;
+  color: #0369a1;
+  border-color: #7dd3fc;
+}
+.deck-scaler.light .rp .lbl {
+  color: #475569;
+}
+.deck-scaler.light .rp .pred-val {
+  color: #0284c7;
+}
+.deck-scaler.light .rp .chain-arrow {
+  color: #94a3b8;
+}
+.deck-scaler.light .rp .ellipsis {
+  color: #64748b;
+}
+.deck-scaler.light .rp .analogy {
+  background: #eff6ff;
+  border-color: #cbd5e1;
+  color: #1d4ed8;
+}
+.deck-scaler.light .rp .etable th {
+  color: #0369a1;
+  background: #e8eef6;
+  border-bottom-color: #cbd5e1;
+}
+.deck-scaler.light .rp .etable td {
+  border-bottom-color: #e2e8f0;
+}
+.deck-scaler.light .rp .td-day {
+  color: #475569;
+}
+.deck-scaler.light .rp .td-note {
+  color: #64748b;
+}
+.deck-scaler.light .rp .err-note {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+.deck-scaler.light .rp .tl-row.train {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+.deck-scaler.light .rp .tl-row.test {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+.deck-scaler.light .rp .tl-row.prod {
+  background: #fffbeb;
+  border-color: #fcd34d;
+}
+.deck-scaler.light .rp .tl-label {
+  color: #475569;
+}
+.deck-scaler.light .rp .tl-text {
+  color: #0f172a;
+}
+.deck-scaler.light .rp .tl-sub {
+  color: #64748b;
+}
+.deck-scaler.light .rp .tl-tag {
+  background: rgba(15, 23, 42, 0.06);
+  color: #475569;
+}
+.deck-scaler.light .rp .why-box {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+.deck-scaler.light .rp .why-row {
+  color: #475569;
+}
+.deck-scaler.light .rp .why-sol {
+  color: #1e293b;
+}
+.deck-scaler.light .rp .why-warn {
+  background: #fffbeb;
+  color: #b45309;
+}
+.deck-scaler.light .rp .footer {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+.deck-scaler.light .rp .f-label {
+  color: #0369a1;
+}
+.deck-scaler.light .rp .f-text {
+  color: #334155;
+}
+.deck-scaler.light .rp .brand-tag {
+  color: #94a3b8;
+}

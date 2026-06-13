@@ -6,10 +6,11 @@ import { useSteps } from "../anim";
  * QR code. The QR PNG is generated offline into /public/img so it works with
  * no internet; if that asset is ever missing it falls back to a live QR API.
  */
-const DEMO_URL = "http://47.130.226.9:3000/pea/home";
+const DEMO_URL = "https://smartenergyiq.precise.co.th/login";
+const QR_URL = "https://smartenergyiq.precise.co.th/login?viewer=1";
 const QR_FALLBACK =
   "https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=" +
-  encodeURIComponent(DEMO_URL);
+  encodeURIComponent(QR_URL);
 
 export default function LiveDemo({ active }) {
   const s = useSteps(active, [250, 650, 1050, 1450]);
@@ -28,11 +29,8 @@ export default function LiveDemo({ active }) {
         <div className={"qrwrap" + (s >= 2 ? " show" : "")}>
           <div className="qr">
             <img
-              src="/img/qr-demo.png"
+              src={QR_FALLBACK}
               alt="QR code — Smart Energy IQ live demo"
-              onError={(e) => {
-                if (e.currentTarget.src !== QR_FALLBACK) e.currentTarget.src = QR_FALLBACK;
-              }}
             />
           </div>
           <div className="scan">📷 สแกนเพื่อเปิดบนมือถือ</div>
@@ -51,11 +49,6 @@ export default function LiveDemo({ active }) {
             <li>รองรับการใช้งานจริงบนเกาะเต่า</li>
           </ul>
         </div>
-      </div>
-
-      <div className={"thanks" + (s >= 4 ? " show" : "")}>
-        <span className="big">ขอบคุณครับ</span>
-        <span className="small">⚡ Smart Energy IQ · พร้อมเริ่ม PoC ใน 20 วัน</span>
       </div>
 
       <div className="brand-tag" style={{ color: "#8aa1c2" }}>

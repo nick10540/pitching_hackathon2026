@@ -107,7 +107,7 @@
   <div class="head">
     <div>
       <div class="title">ถ้า<span class="red">ไม่ทำอะไรเลย</span> เกาะเต่าเสียโอกาสเท่าไหร่?</div>
-      <div class="subtitle">ค่าเสียโอกาสสะสมจากการเดินเครื่องดีเซลแบบเดิม (DG9 เดิน 99.5% ของเวลา) · ฐานข้อมูลจริง ส.ค. 2568</div>
+      <div class="subtitle">ค่าเสียโอกาสสะสมจากการเดินเครื่องดีเซลแบบเดิม (DG9 เดิน 99.5%) เทียบการเดินตามแผนระบบ · ดีเซล 12 ฿/kWh · ฐานข้อมูลจริง ส.ค. 2568</div>
     </div>
     <div class="brand">
       <div class="nm">⚡ Smart Energy IQ</div>
@@ -199,7 +199,7 @@ gGrid.innerHTML = gridHTML;
 /* milestones */
 const MILESTONES = [
   { yr: 1/12, label: '1 เดือน',  value: '฿14 ล้าน',     dy: -52 },
-  { yr: 1,    label: '1 ปี',     value: '฿169 ล้าน',    dy: -52 },
+  { yr: 1,    label: '1 ปี',     value: '฿169 ล้าน',    dy: -52, dx: 84 },  /* เลื่อนขวา กันทับป้าย 1 เดือน (ความสูงคงเดิม = ตรงจุดจริง) */
   { yr: 5,    label: '5 ปี',     value: '฿845 ล้าน',    dy: -56 },
   { yr: 10,   label: '10 ปี',    value: '฿1,690 ล้าน',  dy: -60 },
 ];
@@ -207,7 +207,7 @@ const gMs = document.getElementById('gMilestones');
 gMs.innerHTML = MILESTONES.map((m,i) => {
   const x = xOf(m.yr), y = yOf(m.yr * M_PER_YEAR);
   const tw = 118;
-  let tx = x - tw/2;
+  let tx = x - tw/2 + (m.dx || 0);
   if (tx < PAD_L) tx = PAD_L;
   if (tx + tw > W - PAD_R) tx = W - PAD_R - tw;
   return `<g class="ms" id="ms${i}">
@@ -274,7 +274,7 @@ function frame(ts){
   punch.classList.toggle('show', p >= 0.985);
 
   if (p < 1) rafId = requestAnimationFrame(frame);
-  /* hold final frame - no loop */;
+  else setTimeout(() => { if(!paused) restart(); }, HOLD);
 }
 
 function restart(){
