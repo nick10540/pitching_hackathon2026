@@ -179,7 +179,7 @@
         <div class="ic">🔥</div>
         <div class="tt">ดีเซลเดินเปล่า เผาเงินทุกชั่วโมง</div>
         <div class="ds">DG9 เดิน <b>99.5% ของเวลา</b> แม้โหลดต่ำ — ต้นทุน 12 ฿/หน่วย แพงกว่าซื้อจากกริดเกือบ 3 เท่า</div>
-        <div class="num">฿22.78M <small>/ เดือน ที่เกาะเดียว</small></div>
+        <div class="num">฿24.70M <small>/ เดือน ที่เกาะเดียว</small></div>
       </div>
       <div class="pcard" id="p2">
         <div class="ic">😰</div>
@@ -211,12 +211,12 @@
 
     <div class="solrows">
       <div class="srow" id="s1">
-        <div class="pain"><span class="pic">🔥</span><span class="ptx">DG9 เดินเปล่า ฿22.78M/เดือน</span></div>
+        <div class="pain"><span class="pic">🔥</span><span class="ptx">DG9 เดินเปล่า ฿24.70M/เดือน</span></div>
         <div class="arrow">➜</div>
         <div class="sol">
           <div class="sic">🤖</div>
           <div><div class="stt">AI Dispatch Optimizer</div><div class="sds">คำนวณทุก 15 นาที — เดินดีเซลเฉพาะเมื่อจำเป็นจริง</div></div>
-          <div class="schip">DG9 −61.8%</div>
+          <div class="schip">DG9 −53.6%</div>
         </div>
       </div>
       <div class="srow" id="s2">
@@ -267,7 +267,7 @@
     <div style="text-align:center; font-size:11px; color:#94a3b8; margin-top:6px">* คิดจากการเดินเครื่องตามแผนที่ระบบแนะนำ เทียบการเดินแบบเดิม · ต้นทุนดีเซล 12 ฿/kWh (รวม FCF)</div>
 
     <div class="impchips">
-      <div class="ichip" id="c1"><span class="cic">⚙️</span><span>ต้นทุน DG9 <b>−61.8%</b> (฿22.78M → ฿8.71M) → เครื่องพักมากขึ้น ค่าซ่อมลด</span></div>
+      <div class="ichip" id="c1"><span class="cic">⚙️</span><span>ต้นทุน DG9 <b>−53.6%</b> (฿24.70M → ฿11.47M) → เครื่องพักมากขึ้น ค่าซ่อมลด</span></div>
       <div class="ichip" id="c2"><span class="cic">🌱</span><span>CO₂ ลด <b>377 ตัน/เดือน</b> → ตอบ Net Zero 2065</span></div>
       <div class="ichip" id="c3"><span class="cic">💡</span><span>ไฟฟ้ามั่นคงขึ้น → <b>นักท่องเที่ยว 3,000+ คน</b> ไม่เจอไฟดับ</span></div>
       <div class="ichip" id="c4"><span class="cic">😌</span><span>Operator มีระบบช่วยเฝ้า → <b>ลด human error</b> ลดภาระ 24/7</span></div>
@@ -284,7 +284,6 @@
   <div class="dots">
     <div class="dot"><div class="df" id="d1"></div></div>
     <div class="dot"><div class="df" id="d2"></div></div>
-    <div class="dot"><div class="df" id="d3"></div></div>
   </div>
   <div class="brand">⚡ <b>Smart Energy IQ</b> · PEA Hackathon 2026</div>
   <div class="controls">
@@ -294,25 +293,16 @@
 </div>
 
 <script>
-/* ═══ timeline ═══
-   Act1 PAIN     0    – 7500
-   Act2 SOLUTION 7500 – 15500
-   Act3 IMPACT   15500– 24500  + hold 3500 → loop */
-const T_A1 = 0, T_A2 = 7500, T_A3 = 15500, T_END = 24500, HOLD = 3500;
+/* ═══ timeline (ตัด ACT 1 PAIN ออก เหลือ SOLUTION → IMPACT) ═══
+   Act2 SOLUTION 0    – 8000
+   Act3 IMPACT   8000 – 17000  + hold 3500 → loop */
+const T_A2 = 0, T_A3 = 8000, T_END = 17000, HOLD = 3500;
 
 const $ = id => document.getElementById(id);
 const cls = (id, c, onoff=true) => $(id).classList.toggle(c, onoff);
 
 const EVENTS = [
-  /* ── ACT 1 ── */
-  [0,     () => { showAct(1); }],
-  [700,   () => { cls('p1','show'); }],
-  [1700,  () => { cls('p2','show'); }],
-  [2700,  () => { cls('p3','show'); }],
-  [3800,  () => { cls('burnbar','show'); }],
-  [5200,  () => { ['p1','p2','p3'].forEach(p => cls(p,'shake')); }],
-
-  /* ── ACT 2 ── */
+  /* ── ACT 2 · SOLUTION ── */
   [T_A2,        () => { showAct(2); }],
   [T_A2+900,    () => { cls('s1','show'); }],
   [T_A2+1500,   () => { cls('s1','solved'); }],
@@ -324,9 +314,9 @@ const EVENTS = [
 
   /* ── ACT 3 ── */
   [T_A3,        () => { showAct(3); }],
-  [T_A3+600,    () => { cls('i1','show'); count('n1', 14.08, 1300, 2); }],
-  [T_A3+1500,   () => { cls('i2','show'); count('n2', 169, 1300, 0); }],
-  [T_A3+2500,   () => { cls('i3','show'); count('n3', 1690, 1500, 0); sparkle(); }],
+  [T_A3+600,    () => { cls('i1','show'); count('n1', 13.23, 1300, 2); }],
+  [T_A3+1500,   () => { cls('i2','show'); count('n2', 158.7, 1300, 1); }],
+  [T_A3+2500,   () => { cls('i3','show'); count('n3', 1587, 1500, 0); sparkle(); }],
   [T_A3+3600,   () => { cls('c1','show'); }],
   [T_A3+4000,   () => { cls('c2','show'); }],
   [T_A3+4400,   () => { cls('c3','show'); }],
@@ -381,7 +371,7 @@ function burnTick(elapsedInAct1){
 
 /* dots progress */
 function dots(el){
-  const seg = [[T_A1,T_A2],[T_A2,T_A3],[T_A3,T_END]];
+  const seg = [[0,T_A3],[T_A3,T_END]];
   seg.forEach(([a,b],i)=>{
     const p = Math.max(0, Math.min(1, (el-a)/(b-a)));
     $('d'+(i+1)).style.width = (p*100)+'%';
@@ -397,7 +387,6 @@ function frame(ts){
   const el = ts - startTs;
 
   EVENTS.forEach(([t,fn],i)=>{ if (el>=t && !fired.has(i)){ fired.add(i); fn(); } });
-  if (el > 3800 && el < T_A2) burnTick(el-3800);
   dots(el);
 
   if (el < T_END) rafId = requestAnimationFrame(frame);
@@ -412,7 +401,7 @@ function restart(){
     .forEach(e=>e.classList.remove('show','solved','shake'));
   ['n1','n2','n3'].forEach(id=>$(id).textContent='0');
   $('burnMoney').textContent='฿0';
-  showAct(1);
+  showAct(2);
   rafId = requestAnimationFrame(frame);
 }
 function togglePause(){

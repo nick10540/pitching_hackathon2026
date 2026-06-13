@@ -26,7 +26,6 @@ const SLIDES = [
   { id: "opp", chapter: "ค่าเสียโอกาส", src: "/slides/opportunity.html" },
   { id: "story", chapter: "Pain → Solution", src: "/slides/story.html" },
   { id: "forecast", chapter: "พิสูจน์ด้วยข้อมูลจริง", src: "/slides/forecast.html" },
-  { id: "savings", chapter: "หลักการประหยัด", Comp: SavingsPrinciple },
   { id: "poc-arch", chapter: "สถาปัตยกรรม", Comp: PocArchitecture },
   { id: "real-arch", chapter: "สถาปัตยกรรม", Comp: RealArchitecture },
   { id: "capex", chapter: "การลงทุน", Comp: CapexOpex },
@@ -37,6 +36,7 @@ const SLIDES = [
   { id: "demo", chapter: "Live Demo", Comp: LiveDemo },
   { id: "demo-screens", chapter: "Live Demo", Comp: LiveDemoScreens },
   { id: "recursive", chapter: "Backup — Recursive", Comp: RecursivePrediction },
+  { id: "savings", chapter: "Backup — หลักการประหยัด", Comp: SavingsPrinciple },
 ];
 
 export default function Deck() {

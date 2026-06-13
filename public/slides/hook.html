@@ -320,7 +320,7 @@
         <div class="k" style="margin-top:6px">ที่เกาะเดียว · ข้อมูลจริง ส.ค. 2568</div>
       </div>
     </div>
-    <div class="bigstamp" id="bigstamp">฿22.78 ล้าน <small>/ เดือน · เผาทิ้งโดยไม่จำเป็น</small></div>
+    <div class="bigstamp" id="bigstamp">฿24.70 ล้าน <small>/ เดือน · ค่าดีเซล ส.ค. 2568</small></div>
   </div>
 
   <!-- beat 4: dawn / solution -->
@@ -342,7 +342,6 @@
   <!-- progress -->
   <div class="dots">
     <div class="dot"><div class="df" id="d1"></div></div><div class="dot"><div class="df" id="d2"></div></div>
-    <div class="dot"><div class="df" id="d3"></div></div><div class="dot"><div class="df" id="d4"></div></div>
   </div>
   <div class="brand">⚡ <b>Smart Energy IQ</b> · Hook เปิดตัว · PEA Hackathon 2026</div>
   <div class="controls">
@@ -368,41 +367,24 @@ function sub(html){
 function beat(t){ const el=$('beatlb'); el.textContent=t; el.classList.add('show'); }
 
 /* beat boundaries (base seconds) */
-const B1=0, B2=18, B3=40, B4=58, END=75, HOLD=4;
+const B1=0, B2=22, END=40, HOLD=4;   // เหลือ 2 จังหวะ: ใครเจ็บ (0–22) · ตัวเลข (22–40)
 
 const EVENTS = [
-  /* ── จังหวะ 1 · ฉากเปิด ── */
-  [0,    ()=>{ beat('จังหวะ 1 · ฉากเปิด — ตีสองบนเกาะเต่า'); show('hud'); }],
-  [1,    ()=>{ sub('ตีสอง… บนเกาะเต่า'); }],
-  [4.5,  ()=>{ sub('เจ้าหน้าที่ กฟภ. <span class="em">หนึ่งคน</span> นั่งเฝ้ามิเตอร์อยู่คนเดียว'); pulseHut(); }],
-  [8.5,  ()=>{ sub('สายเคเบิลใต้น้ำ<span class="em">เส้นเดียว</span>ที่เลี้ยงไฟทั้งเกาะ — กำลังวิ่งเข้าใกล้<span class="red">พิกัดสูงสุด</span>'); heatCable(); }],
-  [13,   ()=>{ show('countdown'); sub('และเขามีเวลา <span class="red">16 นาที</span> ในการตัดสินใจ… ก่อนที่ทั้งเกาะจะมืด'); }],
-  [16.5, ()=>{ sub(''); $('sub').classList.remove('show'); }],   // หยุดหายใจ 1.5 วิ
+  /* ── จังหวะ 1 · ใครเจ็บ — ถ้าคืนนั้นตัดสินใจไม่ทัน ── */
+  [0,      ()=>{ beat('จังหวะ 1 · ลองนึกภาพ — ถ้าคืนนั้นตัดสินใจไม่ทัน'); sub('<span class="em">ลองนึกภาพ…</span> ถ้าคืนนั้น เขาตัดสินใจไม่ทัน'); }],
+  [2,      ()=>{ blackout(); }],
+  [3.5,    ()=>{ show('im1'); sub('ที่ รพ.สต.เกาะเต่า — ผู้ป่วยติดเตียงที่พึ่ง<span class="red">เครื่องผลิตออกซิเจน</span>… เครื่องหยุดทำงาน'); }],
+  [8.5,    ()=>{ show('im2'); sub('ห้องเย็นร้านอาหารทั้งเกาะ — อาหารทะเล<span class="red">เสียหายยกตู้</span>'); }],
+  [13.5,   ()=>{ show('im3'); sub('นักท่องเที่ยวกว่า <span class="em">3,000 คน</span> ตื่นกลางความมืด — รีวิวแย่กระจายทั่วโลก<span class="red">ก่อนพระอาทิตย์ขึ้น</span>'); }],
+  [18.5,   ()=>{ sub('ชื่อเสียงที่เกาะเต่าสร้างมา 30 ปี… <span class="red">เสียได้ในคืนเดียว</span>'); }],
 
-  /* ── จังหวะ 2 · ใครเจ็บ ── */
-  [B2,     ()=>{ beat('จังหวะ 2 · ลองนึกภาพ — ถ้าคืนนั้นตัดสินใจไม่ทัน'); sub('<span class="em">ลองนึกภาพ…</span> ถ้าคืนนั้น เขาตัดสินใจไม่ทัน'); }],
-  [B2+2,   ()=>{ blackout(); }],
-  [B2+3.5, ()=>{ show('im1'); sub('ที่ รพ.สต.เกาะเต่า — ผู้ป่วยติดเตียงที่พึ่ง<span class="red">เครื่องผลิตออกซิเจน</span>… เครื่องหยุดทำงาน'); }],
-  [B2+8.5, ()=>{ show('im2'); sub('ห้องเย็นร้านอาหารทั้งเกาะ — อาหารทะเล<span class="red">เสียหายยกตู้</span>'); }],
-  [B2+13.5,()=>{ show('im3'); sub('นักท่องเที่ยวกว่า <span class="em">3,000 คน</span> ตื่นกลางความมืด — รีวิวแย่กระจายทั่วโลก<span class="red">ก่อนพระอาทิตย์ขึ้น</span>'); }],
-  [B2+18.5,()=>{ sub('ชื่อเสียงที่เกาะเต่าสร้างมา 30 ปี… <span class="red">เสียได้ในคืนเดียว</span>'); }],
-
-  /* ── จังหวะ 3 · ทุบด้วยตัวเลข ── */
-  [B3,    ()=>{ beat('จังหวะ 3 · และแม้ไฟ "ไม่ดับ" ก็ยังเลือดไหล'); hideImpacts(); show('moneywrap'); sub(''); }],
-  [B3+1.5,()=>{ show('mb1'); animDG(); }],
-  [B3+5,  ()=>{ show('mb2'); $('cbd').style.height='88px'; $('cbg').style.height='33px'; }],
-  [B3+8.5,()=>{ show('mb3'); count('burnv', 22.78, sec(3), 2); }],
-  [B3+13, ()=>{ show('bigstamp'); }],
-  [B3+14.5,()=>{ sub('เผาเงิน <span class="em">22.78 ล้านบาท ทุกเดือน</span> … ที่เกาะเดียว'); }],
-
-  /* ── จังหวะ 4 · สะพานเข้า solution ── */
-  [B4,    ()=>{ beat('จังหวะ 4 · ทางออก'); show('dawn'); $('moneywrap').classList.remove('show'); sub('ปัญหานี้ไม่ได้เกิดจากคนทำงานไม่เก่ง — แต่เขา<span class="em">ไม่มีเครื่องมือที่มองเห็นอนาคต</span>'); }],
-  [B4+4,  ()=>{ show('dname'); show('dtag'); sub(''); }],
-  [B4+6,  ()=>{ show('dc1'); }],
-  [B4+7,  ()=>{ show('dc2'); }],
-  [B4+8,  ()=>{ show('dc3'); }],
-  [B4+10, ()=>{ show('dfinal'); }],
-  [B4+12, ()=>{ sub('วันนี้เรามาพร้อมคำตอบ — <span class="em">Smart Energy IQ</span>'); }],
+  /* ── จังหวะ 2 · และแม้ไฟ "ไม่ดับ" ก็ยังเลือดไหล ── */
+  [B2,     ()=>{ beat('จังหวะ 2 · และแม้ไฟ "ไม่ดับ" ก็ยังเลือดไหล'); hideImpacts(); show('moneywrap'); sub(''); }],
+  [B2+1.5, ()=>{ show('mb1'); animDG(); }],
+  [B2+5,   ()=>{ show('mb2'); $('cbd').style.height='88px'; $('cbg').style.height='33px'; }],
+  [B2+8.5, ()=>{ show('mb3'); count('burnv', 24.70, sec(3), 2); }],
+  [B2+13,  ()=>{ show('bigstamp'); }],
+  [B2+14.5,()=>{ sub('ค่าดีเซล <span class="em">24.70 ล้านบาท ทุกเดือน</span> … ที่เกาะเดียว'); }],
 ];
 
 /* ── scene helpers ── */
@@ -434,15 +416,7 @@ function count(id, target, dur, dec){
 /* clock + countdown + dots */
 function hudTick(el){
   const baseS = el/1000/SPEED;
-  const mins = Math.floor(baseS/12);                 // 02:00 → เดินช้าๆ
-  $('clock').textContent = '02:0' + Math.min(9,mins);
-  if (baseS>=13 && baseS<B2){
-    const left = 16*60 - Math.floor((baseS-13)*22);  // นับถอยหลังเร่งนิดให้เห็นขยับ
-    const m=Math.floor(left/60), s=left%60;
-    $('cdv').textContent = String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-  }
-  if (baseS>=B2) $('countdown').classList.remove('show');
-  const segs=[[B1,B2],[B2,B3],[B3,B4],[B4,END]];
+  const segs=[[B1,B2],[B2,END]];
   segs.forEach(([a,b],i)=>{ const p=Math.max(0,Math.min(1,(baseS-a)/(b-a))); $('d'+(i+1)).style.width=(p*100)+'%'; });
 }
 

@@ -2,14 +2,14 @@
 import { useSteps } from "../anim";
 
 const CAPEX = [
-  ["ทีมพัฒนา (6 เดือน, 5 คน)", "฿1.09M", 68],
-  ["การเชื่อมต่อ SCADA (connector + UAT)", "฿0.40M", 25],
-  ["การตั้งค่าเริ่มต้น AWS", "฿0.10M", 7],
+  ["ทีมพัฒนา (Development Team)", "฿2M", 25],
+  ["Edge device + เชื่อมต่อ SCADA Integration", "฿5M", 62.5],
+  ["ตั้งค่าเริ่มต้น AWS (Initial Setup)", "฿1M", 12.5],
 ];
 const OPEX = [
-  ["ทีมบำรุงรักษา (MLOps 0.5 FTE)", "฿420K", 34.5],
-  ["ซัพพอร์ต + ตรวจสอบ SCADA + อบรม", "฿160K", 13.2],
-  ["โครงสร้างพื้นฐาน AWS", "฿636K", 52.3],
+  ["ทีมบำรุงรักษา (MLOps 0.5 FTE)", "฿0.6M", 27.3],
+  ["ซัพพอร์ต + Monitor", "฿0.8M", 36.4],
+  ["โครงสร้างพื้นฐาน AWS", "฿0.8M", 36.4],
 ];
 
 export default function CapexOpex({ active }) {
@@ -18,7 +18,7 @@ export default function CapexOpex({ active }) {
     <div className="co">
       <div className="head">
         <h1>การลงทุน — <span className="g">CAPEX &amp; OPEX</span> ต่อ 1 เกาะ</h1>
-        <div className="sub">Cloud-native · ไม่มี hardware on-premise — AWS เป็นเพียง 52.3% ของ OPEX</div>
+        <div className="sub">ลงทุนเริ่มต้นต่อ 1 เกาะ · Edge + SCADA Integration + Cloud — AWS เป็นเพียง 36.4% ของ OPEX</div>
       </div>
 
       <div className="cols">
@@ -33,7 +33,7 @@ export default function CapexOpex({ active }) {
               </div>
             ))}
           </div>
-          <div className="total cap">CAPEX รวม <b>฿1.59M</b></div>
+          <div className="total cap">CAPEX รวม <b>฿8M</b></div>
         </div>
 
         <div className={"panel opex" + (s >= 5 ? " show" : "")}>
@@ -47,12 +47,12 @@ export default function CapexOpex({ active }) {
               </div>
             ))}
           </div>
-          <div className="total op">OPEX รวม <b>฿1.2M / ปี</b></div>
+          <div className="total op">OPEX รวม <b>฿2.2M / ปี</b></div>
         </div>
       </div>
 
       <div className={"note" + (s >= 9 ? " show" : "")}>
-        💡 ลงทุนครั้งเดียว <b>฿1.59M</b> + ดูแลปีละ <b>฿1.2M</b> — เทียบกับค่าเสียโอกาส <b>฿169M/ปี</b> ที่เกาะเดียว
+        💡 ลงทุนครั้งเดียว <b>฿8M</b> + ดูแลปีละ <b>฿2.2M</b> — เทียบกับค่าเสียโอกาส <b>฿158.7M/ปี</b> ที่เกาะเดียว
       </div>
 
       <div className="brand-tag" style={{ color: "#94a3b8" }}>⚡ <b style={{ color: "#0284c7" }}>Smart Energy IQ</b> · CAPEX &amp; OPEX</div>

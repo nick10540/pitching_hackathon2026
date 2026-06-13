@@ -107,7 +107,7 @@
   <div class="head">
     <div>
       <div class="title">ถ้า<span class="red">ไม่ทำอะไรเลย</span> เกาะเต่าเสียโอกาสเท่าไหร่?</div>
-      <div class="subtitle">ค่าเสียโอกาสสะสมจากการเดินเครื่องดีเซลแบบเดิม (DG9 เดิน 99.5%) เทียบการเดินตามแผนระบบ · ดีเซล 12 ฿/kWh · ฐานข้อมูลจริง ส.ค. 2568</div>
+      <div class="subtitle">ค่าเสียโอกาสสะสมจากการเดินเครื่องดีเซลแบบเดิม (DG9 เดิน 99.5%) เทียบการเดินตามแผนระบบ · ดีเซล 12 ฿/kWh · เทียบข้อมูลจริง มี.ค. 2569 กับ ส.ค. 2568</div>
     </div>
     <div class="brand">
       <div class="nm">⚡ Smart Energy IQ</div>
@@ -147,7 +147,7 @@
 
     <div class="punch" id="punch">
       <div class="b1">10 ปี ที่เกาะเดียว =</div>
-      <div class="b2">฿1,690 ล้าน</div>
+      <div class="b2">฿1,587 ล้าน</div>
       <div class="b3">+ CO₂ 45,240 ตัน ที่ไม่ควรเกิด</div>
     </div>
   </div>
@@ -167,12 +167,12 @@
 
 <script>
 /* ───────────────────────────────────────────
-   ค่าเสียโอกาส: ฿169 ล้าน/ปี (14.08M × 12)
+   ค่าเสียโอกาส: ฿158.7 ล้าน/ปี (13.23M × 12)
    CO₂: 377 ตัน/เดือน = 4,524 ตัน/ปี
    เส้นโค้งสะสมเชิงเส้น 0 → 10 ปี
 ─────────────────────────────────────────── */
 const YEARS = 10;
-const M_PER_YEAR = 169;        // ล้านบาท/ปี
+const M_PER_YEAR = 158.7;      // ล้านบาท/ปี
 const CO2_PER_YEAR = 4524;     // ตัน/ปี
 const DURATION = 9000;         // ms ของช่วงวาดกราฟ
 const HOLD = 4500;             // ms ค้างท้ายก่อน loop
@@ -198,10 +198,10 @@ gGrid.innerHTML = gridHTML;
 
 /* milestones */
 const MILESTONES = [
-  { yr: 1/12, label: '1 เดือน',  value: '฿14 ล้าน',     dy: -52 },
-  { yr: 1,    label: '1 ปี',     value: '฿169 ล้าน',    dy: -52, dx: 84 },  /* เลื่อนขวา กันทับป้าย 1 เดือน (ความสูงคงเดิม = ตรงจุดจริง) */
-  { yr: 5,    label: '5 ปี',     value: '฿845 ล้าน',    dy: -56 },
-  { yr: 10,   label: '10 ปี',    value: '฿1,690 ล้าน',  dy: -60 },
+  { yr: 1/12, label: '1 เดือน',  value: '฿13 ล้าน',     dy: -52 },
+  { yr: 1,    label: '1 ปี',     value: '฿158.7 ล้าน',  dy: -52, dx: 84 },  /* เลื่อนขวา กันทับป้าย 1 เดือน (ความสูงคงเดิม = ตรงจุดจริง) */
+  { yr: 5,    label: '5 ปี',     value: '฿793.5 ล้าน',  dy: -56 },
+  { yr: 10,   label: '10 ปี',    value: '฿1,587 ล้าน',  dy: -60 },
 ];
 const gMs = document.getElementById('gMilestones');
 gMs.innerHTML = MILESTONES.map((m,i) => {
@@ -258,7 +258,7 @@ function frame(ts){
 
   /* year badge */
   if (yr < 1/12*1.5) yearBadge.textContent = 'เดือนแรก…';
-  else if (yr < 1.2) yearBadge.textContent = 'ครบ 1 ปี — ฿169 ล้านหายไปแล้ว';
+  else if (yr < 1.2) yearBadge.textContent = 'ครบ 1 ปี — ฿158.7 ล้านหายไปแล้ว';
   else if (yr < 5.2) yearBadge.textContent = 'ปีที่ ' + Math.floor(yr) + ' — ยังไม่มีใครแก้';
   else yearBadge.textContent = 'ปีที่ ' + Math.floor(yr) + ' — เงินที่หายไปซื้อ EMS ได้หลายสิบระบบ';
 

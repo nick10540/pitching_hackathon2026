@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
  * The iframe is mounted only while the slide is active so the video starts
  * fresh on entry and stops (audio included) the moment we navigate away.
  */
-const VIDEO_ID = "UHItJUPsrcg";
+const VIDEO_ID = "Xd2oP5BqSr0";
 
 export default function IntroVideo({ active }) {
   const [mounted, setMounted] = useState(false);

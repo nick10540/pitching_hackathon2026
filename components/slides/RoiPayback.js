@@ -2,10 +2,10 @@
 import { useSteps } from "../anim";
 
 const ROWS = [
-  ["ประหยัดรวม (DG9 + Island)", "฿169M", "฿845M", "pos"],
-  ["CAPEX (เฉพาะปีที่ 1)", "−฿1.59M", "−฿1.59M", "neg"],
-  ["OPEX", "−฿1.2M", "−฿6M", "neg"],
-  ["ประโยชน์สุทธิต่อ PEA", "฿166M", "฿837M", "net"],
+  ["ประหยัดรวม (DG9 + Island)", "฿158.7M", "฿793.5M", "pos"],
+  ["CAPEX (เฉพาะปีที่ 1)", "−฿8M", "−฿8M", "neg"],
+  ["OPEX", "−฿2.2M", "−฿11M", "neg"],
+  ["ประโยชน์สุทธิต่อ PEA", "฿148.5M", "฿774.5M", "net"],
 ];
 
 export default function RoiPayback({ active }) {
@@ -14,14 +14,14 @@ export default function RoiPayback({ active }) {
     <div className="roi">
       <div className="head">
         <h1>ROI และ<span className="g">ระยะเวลาคืนทุน</span> สำหรับ PEA</h1>
-        <div className="sub">ประมาณการทางการเงิน 5 ปี (ต่อ 1 เกาะ) · อ้างอิงข้อมูลจริง สิงหาคม 2568</div>
+        <div className="sub">ประมาณการทางการเงิน 5 ปี (ต่อ 1 เกาะ) · เทียบข้อมูลจริง มี.ค. 2569 กับ ส.ค. 2568</div>
       </div>
 
       <div className="hero">
         {[
-          ["฿1.59M", "CAPEX รวม", "Dev + integration + setup", "blue", 1],
-          ["฿14.08M", "ประหยัดสุทธิ / เดือน", "ข้อมูลจริง ส.ค. 2568", "green", 2],
-          ["< 1 เดือน", "ระยะเวลาคืนทุน", "ROI ที่เร็วที่สุด", "gold", 3],
+          ["฿8M", "CAPEX รวม", "Dev + Edge/SCADA + setup", "blue", 1],
+          ["฿13.23M", "ประหยัดสุทธิ / เดือน", "เทียบ มี.ค. 2569 กับ ส.ค. 2568", "green", 2],
+          ["< 1 เดือน", "ระยะเวลาคืนทุน", "฿8M ÷ ฿13.23M ≈ 18 วัน", "gold", 3],
         ].map(([v, l, sub, c, st], k) => (
           <div key={k} className={"hcard " + c + (s >= st ? " show" : "")}>
             <div className="hv">{v}</div>

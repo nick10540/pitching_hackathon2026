@@ -12,7 +12,11 @@ export default function Cover({ active }) {
 
   return (
     <div className="cover">
-      <div className={"seal" + (s >= 1 ? " show" : "")} role="img" aria-label="การไฟฟ้าส่วนภูมิภาค (PEA)" />
+      <img
+        src="/img/pea_logo_big.png"
+        alt="การไฟฟ้าส่วนภูมิภาค (PEA)"
+        className={"seal" + (s >= 1 ? " show" : "")}
+      />
 
       <h1 className={"name" + (s >= 2 ? " show" : "")}>
         Smart Energy<span className="iq">IQ</span>
@@ -28,15 +32,8 @@ export default function Cover({ active }) {
       </div>
 
       <div className={"brandmark" + (s >= 5 ? " show" : "")}>
-        <svg className="mark" viewBox="0 0 48 48" aria-hidden="true">
-          <path d="M7 30 L18 12" stroke="#f39c12" strokeWidth="6" strokeLinecap="round" />
-          <path d="M16 36 L31 9" stroke="#27ae60" strokeWidth="6" strokeLinecap="round" />
-          <path d="M26 36 L41 9" stroke="#1b9bd8" strokeWidth="6" strokeLinecap="round" />
-          <circle cx="33" cy="38" r="4.2" fill="#1b9bd8" />
-        </svg>
-        <span className="wm">
-          <span className="p1">PRECISE</span> <span className="p2">NEXTXUS</span>
-        </span>
+        <img src="/img/LOGO_ART_PRECISE.png" alt="Precise" className="precise-logo" />
+        <span className="nextxus">NEXTXUS</span>
       </div>
 
       <style jsx>{`
@@ -54,12 +51,10 @@ export default function Cover({ active }) {
           text-align: center;
         }
 
-        /* PEA round seal cropped from the horizontal lockup */
         .seal {
           width: 168px;
           height: 168px;
-          background: url("/img/partners/pea.png") no-repeat left center;
-          background-size: ${(224 / 80) * 168}px ${168}px;
+          object-fit: contain;
           opacity: 0;
           transform: scale(0.9);
           transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.3);
@@ -106,22 +101,24 @@ export default function Cover({ active }) {
 
         .brandmark {
           display: flex;
-          align-items: center;
-          gap: 12px;
+          align-items: flex-end;
+          gap: 0px;
           margin-top: 26px;
           opacity: 0;
           transform: translateY(12px);
           transition: all 0.7s ease;
         }
         .brandmark.show { opacity: 1; transform: translateY(0); }
-        .mark { width: 52px; height: 52px; flex-shrink: 0; }
-        .wm {
-          font-size: 42px;
+        .precise-logo { height: 90px; width: auto; display: block; }
+        .nextxus {
+          font-size: 76px;
           font-weight: 800;
-          letter-spacing: 1px;
           color: #1b9bd8;
+          letter-spacing: 1px;
+          line-height: 1;
+          font-family: "Prompt", "Segoe UI", sans-serif;
+          transform: translateY(0);
         }
-        .wm .p2 { text-decoration: underline; text-underline-offset: 4px; }
       `}</style>
     </div>
   );

@@ -158,7 +158,7 @@
     <div class="phases">
       <div class="ph" id="ph1">
         <div class="no">1</div>
-        <div><div class="tt">เกาะเต่า — จุดพิสูจน์</div><div class="ds">PoC 20 วัน · พิสูจน์แล้ว ฿169M/ปี · ข้อมูลจริง 40,704 แถว</div></div>
+        <div><div class="tt">เกาะเต่า — จุดพิสูจน์</div><div class="ds">PoC 20 วัน · พิสูจน์แล้ว ฿158.7M/ปี · ข้อมูลจริง 40,704 แถว</div></div>
         <div class="chk">✅</div>
       </div>
       <div class="ph" id="ph2">
@@ -286,7 +286,7 @@ function countTo(key, target, dur, el, dec=0, suffixEl=null, suffix=''){
   (function tick(t){
     const p = Math.min((t-t0)/(dur*SPEED), 1), e = 1-Math.pow(1-p,3);
     state[key] = from + (target-from)*e;
-    $(el).textContent = Math.round(state[key]).toLocaleString();
+    $(el).textContent = state[key].toLocaleString(undefined,{minimumFractionDigits:dec,maximumFractionDigits:dec});
     if (p<1) requestAnimationFrame(tick);
     else if (suffixEl) $(suffixEl).textContent = suffix;
   })(t0);
@@ -320,8 +320,8 @@ const EVENTS = [
   [0.4, ()=>{ $('thpath').classList.add('lit'); sub('นี่คือแผนผังการเติบโต — <span class="em">ไม่ใช่ความฝัน แต่คือแผนที่ทำได้จริง</span>'); }],
   /* Phase 1 */
   [2.5, ()=>{ $('ph1').classList.add('on'); show('c_isl'); show('c_save'); show('c_arr'); }],
-  [3.2, ()=>{ ignite('tao'); sub('<span class="em">Phase 1 — เกาะเต่า</span> จุดที่เราพิสูจน์ด้วยข้อมูลจริง: ประหยัด ฿169 ล้าน/ปี');
-              countTo('isl',1,800,'v_isl'); countTo('save',169,1600,'v_save'); countTo('arr',8,1600,'v_arr'); }],
+  [3.2, ()=>{ ignite('tao'); sub('<span class="em">Phase 1 — เกาะเต่า</span> จุดที่เราพิสูจน์ด้วยข้อมูลจริง: ประหยัด ฿158.7 ล้าน/ปี');
+              countTo('isl',1,800,'v_isl'); countTo('save',158.7,1600,'v_save',1); countTo('arr',8,1600,'v_arr'); }],
   [6.8, ()=>{ $('ph1').classList.remove('on'); $('ph1').classList.add('done'); }],
   /* Phase 2 */
   [7.5, ()=>{ $('ph2').classList.add('on'); sub('<span class="em">Phase 2 — ขยายภาคใต้</span> สมุย · พะงัน · ภูเก็ต · หลีเป๊ะ … ระบบเดียวกัน แค่เปลี่ยน Config');
