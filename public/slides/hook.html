@@ -68,9 +68,9 @@
   .impacts { position:absolute; top:120px; left:0; right:0; display:flex; justify-content:center; gap:26px; }
   .imp {
     width:300px; background:rgba(12,18,34,.92); border:1.5px solid #3b2530; border-radius:16px;
-    padding:20px 20px 16px; text-align:center; backdrop-filter:blur(4px);
+    padding:20px 20px 16px; text-align:center;
     opacity:0; transform:translateY(26px) scale(.93);
-    transition:all .6s cubic-bezier(.2,.9,.3,1.25);
+    transition:transform .6s cubic-bezier(.2,.9,.3,1.25), opacity .6s cubic-bezier(.2,.9,.3,1.25);
   }
   .imp.show { opacity:1; transform:translateY(0) scale(1); border-color:#b91c1c; box-shadow:0 0 30px rgba(220,38,38,.22); }
   .imp .ic { font-size:44px; }
@@ -92,7 +92,7 @@
   .mbox {
     background:rgba(20,24,38,.92); border:1.5px solid #4a3210; border-radius:16px; padding:18px 26px;
     text-align:center; min-width:250px;
-    opacity:0; transform:translateY(20px); transition:all .55s cubic-bezier(.2,.9,.3,1.25);
+    opacity:0; transform:translateY(20px); transition:transform .55s cubic-bezier(.2,.9,.3,1.25), opacity .55s cubic-bezier(.2,.9,.3,1.25);
   }
   .mbox.show { opacity:1; transform:translateY(0); }
   .mbox .k { font-size:13px; color:#94a3b8; }
