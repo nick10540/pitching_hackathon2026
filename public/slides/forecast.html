@@ -129,7 +129,7 @@
     </svg>
     <div class="mape" id="mape">
       <div class="k">ความคลาดเคลื่อนเฉลี่ย</div>
-      <div class="v">PE 4.92%</div>
+      <div class="v">MAPE 4.92%</div>
       <div class="t">Recursive 7 วัน · เป้ามาตรฐาน &lt;10% — ผ่านขาดลอย ✓</div>
     </div>
   </div>
@@ -275,7 +275,7 @@ function frame(ts){
   }
 
   if(el<END) rafId=requestAnimationFrame(frame);
-  else setTimeout(()=>{ if(!paused) restart(); }, sec(HOLD));
+  /* ค้างเฟรมสุดท้าย — ไม่เล่นซ้ำ (กด ↻ เล่นใหม่ ได้เอง) */
 }
 
 function restart(){

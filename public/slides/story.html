@@ -376,7 +376,7 @@ function frame(ts){
   dots(el);
 
   if (el < T_END) rafId = requestAnimationFrame(frame);
-  else setTimeout(()=>{ if(!paused) restart(); }, HOLD);
+  /* ค้างเฟรมสุดท้าย — ไม่เล่นซ้ำ (กด ↻ เล่นใหม่ ได้เอง) */
 }
 
 function restart(){
