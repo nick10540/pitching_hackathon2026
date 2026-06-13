@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
 import IframeSlide from "./IframeSlide";
+import Cover from "./slides/Cover";
 import IntroVideo from "./slides/IntroVideo";
 import LiveDemo from "./slides/LiveDemo";
 import SavingsPrinciple from "./slides/SavingsPrinciple";
@@ -18,6 +19,7 @@ import LiveDemoScreens from "./slides/LiveDemoScreens";
 // (embedded via iframe so their timelines play exactly as designed);
 // slides with `Comp` are native React components.
 const SLIDES = [
+  { id: "cover", chapter: "ปก", Comp: Cover },
   { id: "intro", chapter: "Teaser", Comp: IntroVideo },
   { id: "hook", chapter: "As-is → Pain", src: "/slides/hook.html" },
   { id: "journey", chapter: "As-is → Pain", src: "/slides/operator.html" },
