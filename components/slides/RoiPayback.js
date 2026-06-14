@@ -21,7 +21,7 @@ export default function RoiPayback({ active }) {
         {[
           ["฿8M", "CAPEX รวม", "Dev + Edge/SCADA + setup", "blue", 1],
           ["฿13.23M", "ประหยัดสุทธิ / เดือน", "เทียบ มี.ค. 2569 กับ ส.ค. 2568", "green", 2],
-          ["< 1 เดือน", "ระยะเวลาคืนทุน", "฿8M ÷ ฿13.23M ≈ 18 วัน", "gold", 3],
+          ["18 วัน", "ระยะเวลาคืนทุน", "฿8M ÷ ฿13.23M/เดือน · Best case*", "gold", 3],
         ].map(([v, l, sub, c, st], k) => (
           <div key={k} className={"hcard " + c + (s >= st ? " show" : "")}>
             <div className="hv">{v}</div>
@@ -52,6 +52,10 @@ export default function RoiPayback({ active }) {
           <div className="ex">🛡️ ป้องกันไฟดับแบบ N-1 บน Island C</div>
           <div className="ex">😊 มลพิษลด → ความพึงพอใจลูกค้าสูงขึ้น</div>
         </div>
+      </div>
+
+      <div className={"note" + (s >= 4 ? " show" : "")}>
+        * <b>Best case</b> — กรณีเดินเครื่องตามที่ระบบแนะนำ และพฤติกรรมโหลดปกติ เทียบกับการเดินเครื่องดีเซล 99.5% เหมือนเดิม
       </div>
 
       <div className="brand-tag" style={{ color: "#94a3b8" }}>⚡ <b style={{ color: "#0284c7" }}>Smart Energy IQ</b> · ROI &amp; Payback</div>
@@ -94,6 +98,10 @@ export default function RoiPayback({ active }) {
         .extras { flex: 1; display: flex; flex-direction: column; gap: 10px; justify-content: center; }
         .ex { background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 11px 16px;
           font-size: 13px; color: #475569; font-weight: 500; }
+        .note { font-size: 11.5px; color: #94a3b8; text-align: center; margin-top: 10px;
+          opacity: 0; transition: opacity .5s ease; }
+        .note.show { opacity: 1; }
+        .note b { color: #b45309; font-weight: 700; }
       `}</style>
     </div>
   );

@@ -179,7 +179,7 @@
         <div class="ic">🔥</div>
         <div class="tt">ดีเซลเดินเปล่า เผาเงินทุกชั่วโมง</div>
         <div class="ds">DG9 เดิน <b>99.5% ของเวลา</b> แม้โหลดต่ำ — ต้นทุน 12 ฿/หน่วย แพงกว่าซื้อจากกริดเกือบ 3 เท่า</div>
-        <div class="num">฿24.70M <small>/ เดือน ที่เกาะเดียว</small></div>
+        <div class="num">฿22.66M <small>/ เดือน ที่เกาะเดียว</small></div>
       </div>
       <div class="pcard" id="p2">
         <div class="ic">😰</div>
@@ -211,7 +211,7 @@
 
     <div class="solrows">
       <div class="srow" id="s1">
-        <div class="pain"><span class="pic">🔥</span><span class="ptx">DG9 เดินเปล่า ฿24.70M/เดือน</span></div>
+        <div class="pain"><span class="pic">🔥</span><span class="ptx">DG9 เดินเปล่า ฿22.66M/เดือน</span></div>
         <div class="arrow">➜</div>
         <div class="sol">
           <div class="sic">🤖</div>
@@ -267,7 +267,7 @@
     <div style="text-align:center; font-size:11px; color:#94a3b8; margin-top:6px">* คิดจากการเดินเครื่องตามแผนที่ระบบแนะนำ เทียบการเดินแบบเดิม · ต้นทุนดีเซล 12 ฿/kWh (รวม FCF)</div>
 
     <div class="impchips">
-      <div class="ichip" id="c1"><span class="cic">⚙️</span><span>ต้นทุน DG9 <b>−53.6%</b> (฿24.70M → ฿11.47M) → เครื่องพักมากขึ้น ค่าซ่อมลด</span></div>
+      <div class="ichip" id="c1"><span class="cic">⚙️</span><span>ต้นทุน DG9 <b>−53.6%</b> (฿22.66M → ฿11.47M) → เครื่องพักมากขึ้น ค่าซ่อมลด</span></div>
       <div class="ichip" id="c2"><span class="cic">🌱</span><span>CO₂ ลด <b>377 ตัน/เดือน</b> → ตอบ Net Zero 2065</span></div>
       <div class="ichip" id="c3"><span class="cic">💡</span><span>ไฟฟ้ามั่นคงขึ้น → <b>นักท่องเที่ยว 3,000+ คน</b> ไม่เจอไฟดับ</span></div>
       <div class="ichip" id="c4"><span class="cic">😌</span><span>Operator มีระบบช่วยเฝ้า → <b>ลด human error</b> ลดภาระ 24/7</span></div>
@@ -349,9 +349,9 @@ function sparkle(){
   }
 }
 
-/* burn money counter (act1 · dead code หลังตัด ACT 1 ออก) — (24.70M/เดือน) */
+/* burn money counter (act1 · dead code หลังตัด ACT 1 ออก) — (22.66M/เดือน) */
 function burnTick(elapsedInAct1){
-  const baht = Math.round(elapsedInAct1/1000 * 9529);  // ฿9,529/วินาที = 24.70M÷(30วัน×24ชม×3600)×1000 เร่งให้เห็นภาพ
+  const baht = Math.round(elapsedInAct1/1000 * 8742);  // ฿8,742/วินาที = 22.66M÷(30วัน×24ชม×3600)×1000 เร่งให้เห็นภาพ
   $('burnMoney').textContent = '฿' + baht.toLocaleString();
 }
 
