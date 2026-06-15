@@ -21,50 +21,49 @@
   .head { display:flex; justify-content:space-between; align-items:flex-start; }
   .title { font-size:30px; font-weight:700; color:#0f172a; line-height:1.25; }
   .title .red { color:#dc2626; }
-  .subtitle { font-size:14px; color:#64748b; margin-top:4px; font-weight:300; }
+  .subtitle { font-size:14px; color:#64748b; margin-top:4px; font-weight:300; max-width:880px; }
   .brand { text-align:right; }
   .brand .nm { font-size:15px; font-weight:600; color:#0284c7; }
   .brand .tg { font-size:11px; color:#94a3b8; }
 
-  /* ── big counters ── */
-  .counters { display:flex; gap:18px; margin-top:18px; }
-  .counter {
-    flex:1; background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px;
-    padding:14px 18px; position:relative; overflow:hidden;
-    box-shadow:0 1px 3px rgba(15,23,42,.05);
+  /* ── hero numbers ── */
+  .hero { flex:1; display:flex; gap:26px; margin-top:22px; align-items:stretch; }
+  .card {
+    flex:1; border-radius:20px; padding:30px 34px;
+    display:flex; flex-direction:column; justify-content:center;
+    position:relative; overflow:hidden;
+    opacity:0; transform:translateY(18px);
+    transition:all .7s cubic-bezier(.2,.9,.3,1.2);
   }
-  .counter .lb { font-size:12.5px; color:#64748b; font-weight:400; }
-  .counter .vl { font-size:30px; font-weight:800; margin-top:2px; letter-spacing:.5px; }
-  .counter .un { font-size:13px; font-weight:500; color:#94a3b8; margin-left:4px; }
-  .c-money .vl { color:#dc2626; }
-  .c-co2 .vl { color:#d97706; }
-  .c-time .vl { color:#0284c7; }
-  .counter::after {
-    content:''; position:absolute; left:0; bottom:0; height:3px; width:100%;
-    background:linear-gradient(90deg,#dc2626,#d97706); opacity:.5;
+  .card.show { opacity:1; transform:translateY(0); }
+  .card .tagline { font-size:18px; font-weight:600; }
+  .card .big {
+    font-size:104px; font-weight:800; line-height:1; letter-spacing:.5px;
+    margin-top:10px; display:flex; align-items:baseline; gap:6px;
   }
+  .card .big .cur { font-size:54px; font-weight:700; }
+  .card .big .un { font-size:30px; font-weight:600; }
+  .card .per { font-size:22px; font-weight:700; margin-top:2px; opacity:.85; }
+  .card .note { font-size:14.5px; font-weight:300; margin-top:16px; line-height:1.5; }
+  .card .note b { font-weight:600; }
+  .card .ic { position:absolute; right:26px; top:24px; font-size:34px; opacity:.9; }
 
-  /* ── chart area ── */
-  .chartwrap { flex:1; margin-top:16px; position:relative; }
-  svg { width:100%; height:100%; overflow:visible; }
-  .axis-lb { font-size:12px; fill:#94a3b8; font-family:'Prompt',sans-serif; }
-  .grid { stroke:#e8edf4; stroke-width:1; }
+  /* money card */
+  .c-money { background:linear-gradient(155deg,#fef2f2,#fee2e2); border:1px solid #fecaca; }
+  .c-money .tagline { color:#b91c1c; }
+  .c-money .big, .c-money .per { color:#dc2626; }
+  .c-money .note { color:#7f1d1d; }
+  .c-money::after { content:''; position:absolute; left:0; bottom:0; width:100%; height:5px; background:#dc2626; }
 
-  .area { fill:url(#gradArea); opacity:0; }
-  .line { fill:none; stroke:#dc2626; stroke-width:3.5; filter:drop-shadow(0 2px 5px rgba(220,38,38,.3)); }
+  /* co2 card */
+  .c-co2 { background:linear-gradient(155deg,#fffbeb,#fef3c7); border:1px solid #fde68a; }
+  .c-co2 .tagline { color:#b45309; }
+  .c-co2 .big, .c-co2 .per { color:#d97706; }
+  .c-co2 .note { color:#78350f; }
+  .c-co2::after { content:''; position:absolute; left:0; bottom:0; width:100%; height:5px; background:#d97706; }
 
-  /* milestone */
-  .ms { opacity:0; transition:opacity .5s; }
-  .ms.show { opacity:1; }
-  .ms circle { fill:#ffffff; stroke:#dc2626; stroke-width:3; }
-  .ms .tag-bg { fill:#ffffff; stroke:#fca5a5; stroke-width:1.4; rx:8;
-                filter:drop-shadow(0 2px 5px rgba(15,23,42,.12)); }
-  .ms text { font-family:'Prompt',sans-serif; }
-  .ms .tag-t { font-size:12px; fill:#64748b; }
-  .ms .tag-v { font-size:17px; font-weight:700; fill:#dc2626; }
-
-  /* non-finance toast row */
-  .toasts { display:flex; gap:12px; margin-top:6px; min-height:64px; }
+  /* ── non-finance toast row (เหมือนเดิม) ── */
+  .toasts { display:flex; gap:12px; margin-top:18px; min-height:64px; }
   .toast {
     flex:1; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px;
     padding:9px 14px; display:flex; gap:10px; align-items:center;
@@ -75,23 +74,6 @@
   .toast .ic { font-size:22px; }
   .toast .tx { font-size:12.5px; line-height:1.4; color:#475569; }
   .toast .tx b { color:#b45309; font-weight:600; }
-
-  /* final punch */
-  .punch {
-    position:absolute; right:64px; top:170px; text-align:right;
-    opacity:0; transform:scale(.85); transition:all .7s cubic-bezier(.2,.9,.3,1.25);
-  }
-  .punch.show { opacity:1; transform:scale(1); }
-  .punch .b1 { font-size:16px; color:#64748b; }
-  .punch .b2 { font-size:52px; font-weight:800; color:#dc2626; text-shadow:0 2px 18px rgba(220,38,38,.25); line-height:1.1; }
-  .punch .b3 { font-size:15px; color:#b45309; margin-top:4px; }
-
-  /* progress year badge */
-  .yearbadge {
-    position:absolute; left:50%; transform:translateX(-50%); top:-6px;
-    background:#eff6ff; border:1px solid #7dd3fc; color:#0369a1;
-    font-size:13px; font-weight:600; border-radius:999px; padding:4px 16px;
-  }
 
   .controls { position:absolute; bottom:10px; right:16px; display:flex; gap:8px; opacity:.35; }
   .controls:hover { opacity:1; }
@@ -107,7 +89,7 @@
   <div class="head">
     <div>
       <div class="title">ถ้า<span class="red">ไม่ทำอะไรเลย</span> เกาะเต่าเสียโอกาสเท่าไหร่?</div>
-      <div class="subtitle">ค่าเสียโอกาสสะสมจากการเดินเครื่องดีเซลแบบเดิม (DG9 เดิน 99.5%) เทียบการเดินตามแผนระบบ · ดีเซล 12 ฿/kWh · เทียบข้อมูลจริง มี.ค. 2569 กับ ส.ค. 2568</div>
+      <div class="subtitle">ค่าเสียโอกาสจากการเดินเครื่องดีเซลแบบเดิม (DG9 เดิน 99.5%) เทียบการเดินตามแผนระบบ · ดีเซล 12 ฿/kWh · เทียบข้อมูลจริง มี.ค. 2569 กับ ส.ค. 2568</div>
     </div>
     <div class="brand">
       <div class="nm">⚡ Smart Energy IQ</div>
@@ -115,40 +97,21 @@
     </div>
   </div>
 
-  <div class="counters">
-    <div class="counter c-time">
-      <div class="lb">เวลาผ่านไป</div>
-      <div class="vl"><span id="cYear">0.0</span><span class="un">ปี</span></div>
+  <div class="hero">
+    <div class="card c-money" id="cardMoney">
+      <div class="ic">🔥</div>
+      <div class="tagline">ค่าเสียโอกาส 1 ปีเต็ม</div>
+      <div class="big">฿<span id="nMoney">0</span><span class="un">ล้านบาท</span></div>
+      <div class="per">= เงินที่เผาทิ้งทุกปี</div>
+      <div class="note">เฉลี่ย <b>฿13.2 ล้าน/เดือน</b> ที่หายไปเงียบ ๆ จากการเดินดีเซลเกินจำเป็น — สะสม 10 ปี = <b>฿1,587 ล้าน</b></div>
     </div>
-    <div class="counter c-money">
-      <div class="lb">เงินที่เผาทิ้งสะสม (ค่าเสียโอกาส)</div>
-      <div class="vl">฿<span id="cMoney">0</span><span class="un">ล้านบาท</span></div>
-    </div>
-    <div class="counter c-co2">
-      <div class="lb">CO₂ ปล่อยเกินจำเป็นสะสม</div>
-      <div class="vl"><span id="cCo2">0</span><span class="un">ตัน</span></div>
-    </div>
-  </div>
 
-  <div class="chartwrap">
-    <div class="yearbadge" id="yearBadge">เริ่มนับ…</div>
-    <svg id="chart" viewBox="0 0 1180 340" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="gradArea" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#dc2626" stop-opacity=".22"/>
-          <stop offset="100%" stop-color="#dc2626" stop-opacity=".02"/>
-        </linearGradient>
-      </defs>
-      <g id="gGrid"></g>
-      <path id="areaPath" class="area"/>
-      <path id="linePath" class="line"/>
-      <g id="gMilestones"></g>
-    </svg>
-
-    <div class="punch" id="punch">
-      <div class="b1">10 ปี ที่เกาะเดียว =</div>
-      <div class="b2">฿1,587 ล้าน</div>
-      <div class="b3">+ CO₂ 45,240 ตัน ที่ไม่ควรเกิด</div>
+    <div class="card c-co2" id="cardCo2">
+      <div class="ic">🌫️</div>
+      <div class="tagline">CO₂ ที่ DG9 ปล่อย 1 ปี</div>
+      <div class="big"><span id="nCo2">0</span><span class="un">ตัน</span></div>
+      <div class="per">= คาร์บอนจากการเดินเครื่องดีเซล/ปี</div>
+      <div class="note">EMS เดินตามแผนระบบช่วย<b>ลด CO₂ ได้ถึง 13,132 ตัน/ปี</b> — ตรงเป้า <b>Thailand Net Zero 2065</b></div>
     </div>
   </div>
 
@@ -161,134 +124,47 @@
 
   <div class="controls">
     <button onclick="restart()">↻ เล่นใหม่</button>
-    <button id="btnPause" onclick="togglePause()">⏸ พัก</button>
   </div>
 </div>
 
 <script>
 /* ───────────────────────────────────────────
-   ค่าเสียโอกาส: ฿158.7 ล้าน/ปี (13.23M × 12)
-   CO₂: 377 ตัน/เดือน = 4,524 ตัน/ปี
-   เส้นโค้งสะสมเชิงเส้น 0 → 10 ปี
+   เน้นตัวเลข 1 ปีเต็ม:
+   • ค่าเสียโอกาส 158.7 ล้านบาท/ปี (13.23M × 12)
+   • CO₂ ที่ DG9 ปล่อย 14,413 ตัน/ปี
 ─────────────────────────────────────────── */
-const YEARS = 10;
-const M_PER_YEAR = 158.7;      // ล้านบาท/ปี
-const CO2_PER_YEAR = 4524;     // ตัน/ปี
-const DURATION = 9000;         // ms ของช่วงวาดกราฟ
-const HOLD = 4500;             // ms ค้างท้ายก่อน loop
+const MONEY = 158.7;     // ล้านบาท/ปี
+const CO2   = 14413;     // ตัน/ปี (DG9 เดิมปล่อย)
+const DUR   = 1900;      // ms นับเลข
 
-const W = 1180, H = 340, PAD_L = 60, PAD_R = 40, PAD_T = 26, PAD_B = 30;
-const plotW = W - PAD_L - PAD_R, plotH = H - PAD_T - PAD_B;
-const maxY = YEARS * M_PER_YEAR * 1.07;
-
-const xOf = yr => PAD_L + (yr / YEARS) * plotW;
-const yOf = m  => PAD_T + plotH - (m / maxY) * plotH;
-
-/* grid + axis */
-const gGrid = document.getElementById('gGrid');
-let gridHTML = '';
-for (let y = 0; y <= 1600; y += 400) {
-  gridHTML += `<line class="grid" x1="${PAD_L}" y1="${yOf(y)}" x2="${W-PAD_R}" y2="${yOf(y)}"/>`;
-  gridHTML += `<text class="axis-lb" x="${PAD_L-8}" y="${yOf(y)+4}" text-anchor="end">฿${y.toLocaleString()}M</text>`;
-}
-for (let yr = 0; yr <= YEARS; yr += 1) {
-  gridHTML += `<text class="axis-lb" x="${xOf(yr)}" y="${H-8}" text-anchor="middle">ปีที่ ${yr}</text>`;
-}
-gGrid.innerHTML = gridHTML;
-
-/* milestones */
-const MILESTONES = [
-  { yr: 1/12, label: '1 เดือน',  value: '฿13 ล้าน',     dy: -52 },
-  { yr: 1,    label: '1 ปี',     value: '฿158.7 ล้าน',  dy: -52, dx: 84 },  /* เลื่อนขวา กันทับป้าย 1 เดือน (ความสูงคงเดิม = ตรงจุดจริง) */
-  { yr: 5,    label: '5 ปี',     value: '฿793.5 ล้าน',  dy: -56 },
-  { yr: 10,   label: '10 ปี',    value: '฿1,587 ล้าน',  dy: -60 },
-];
-const gMs = document.getElementById('gMilestones');
-gMs.innerHTML = MILESTONES.map((m,i) => {
-  const x = xOf(m.yr), y = yOf(m.yr * M_PER_YEAR);
-  const tw = 118;
-  let tx = x - tw/2 + (m.dx || 0);
-  if (tx < PAD_L) tx = PAD_L;
-  if (tx + tw > W - PAD_R) tx = W - PAD_R - tw;
-  return `<g class="ms" id="ms${i}">
-    <circle cx="${x}" cy="${y}" r="7"/>
-    <rect class="tag-bg" x="${tx}" y="${y + m.dy}" width="${tw}" height="44" rx="8"/>
-    <text class="tag-t" x="${tx + tw/2}" y="${y + m.dy + 17}" text-anchor="middle">${m.label}</text>
-    <text class="tag-v" x="${tx + tw/2}" y="${y + m.dy + 36}" text-anchor="middle">${m.value}</text>
-  </g>`;
-}).join('');
-
-const linePath = document.getElementById('linePath');
-const areaPath = document.getElementById('areaPath');
-const cYear  = document.getElementById('cYear');
-const cMoney = document.getElementById('cMoney');
-const cCo2   = document.getElementById('cCo2');
-const yearBadge = document.getElementById('yearBadge');
-const punch  = document.getElementById('punch');
+const nMoney = document.getElementById('nMoney');
+const nCo2   = document.getElementById('nCo2');
+const cardMoney = document.getElementById('cardMoney');
+const cardCo2   = document.getElementById('cardCo2');
 const toasts = ['t1','t2','t3','t4'].map(id => document.getElementById(id));
-const toastAt = [0.12, 0.35, 0.6, 0.82];   // สัดส่วน progress ที่ toast โผล่
 
-let startTs = null, paused = false, pauseAt = 0, rafId = null;
-
+let startTs = null, rafId = null;
 function easeOutCubic(t){ return 1 - Math.pow(1-t, 3); }
 
 function frame(ts){
-  if (paused) return;
   if (!startTs) startTs = ts;
-  const elapsed = ts - startTs;
-  const p = Math.min(elapsed / DURATION, 1);
-  const pe = easeOutCubic(p);
-  const yr = pe * YEARS;
-
-  /* build path up to current year */
-  const steps = 80;
-  let d = `M ${xOf(0)} ${yOf(0)}`;
-  for (let s = 1; s <= steps; s++) {
-    const yy = (s/steps) * yr;
-    d += ` L ${xOf(yy)} ${yOf(yy * M_PER_YEAR)}`;
-  }
-  linePath.setAttribute('d', d);
-  areaPath.setAttribute('d', d + ` L ${xOf(yr)} ${yOf(0)} Z`);
-  areaPath.style.opacity = 1;
-
-  /* counters */
-  cYear.textContent  = yr.toFixed(1);
-  cMoney.textContent = Math.round(yr * M_PER_YEAR).toLocaleString();
-  cCo2.textContent   = Math.round(yr * CO2_PER_YEAR).toLocaleString();
-
-  /* year badge */
-  if (yr < 1/12*1.5) yearBadge.textContent = 'เดือนแรก…';
-  else if (yr < 1.2) yearBadge.textContent = 'ครบ 1 ปี — ฿158.7 ล้านหายไปแล้ว';
-  else if (yr < 5.2) yearBadge.textContent = 'ปีที่ ' + Math.floor(yr) + ' — ยังไม่มีใครแก้';
-  else yearBadge.textContent = 'ปีที่ ' + Math.floor(yr) + ' — เงินที่หายไปซื้อ EMS ได้หลายสิบระบบ';
-
-  /* milestones */
-  MILESTONES.forEach((m,i) => {
-    document.getElementById('ms'+i).classList.toggle('show', yr >= m.yr - 0.01);
-  });
-
-  /* toasts */
-  toasts.forEach((t,i) => t.classList.toggle('show', p >= toastAt[i]));
-
-  /* final punch */
-  punch.classList.toggle('show', p >= 0.985);
-
+  const p = Math.min((ts - startTs) / DUR, 1);
+  const e = easeOutCubic(p);
+  nMoney.textContent = (e * MONEY).toFixed(1);
+  nCo2.textContent   = Math.round(e * CO2).toLocaleString();
   if (p < 1) rafId = requestAnimationFrame(frame);
 }
 
 function restart(){
   cancelAnimationFrame(rafId);
-  startTs = null; paused = false;
-  document.getElementById('btnPause').textContent = '⏸ พัก';
-  punch.classList.remove('show');
+  startTs = null;
+  cardMoney.classList.remove('show'); cardCo2.classList.remove('show');
   toasts.forEach(t => t.classList.remove('show'));
-  MILESTONES.forEach((m,i) => document.getElementById('ms'+i).classList.remove('show'));
-  rafId = requestAnimationFrame(frame);
-}
-function togglePause(){
-  paused = !paused;
-  document.getElementById('btnPause').textContent = paused ? '▶ เล่น' : '⏸ พัก';
-  if (!paused){ startTs = null; restart(); }
+  nMoney.textContent = '0'; nCo2.textContent = '0';
+  setTimeout(() => cardMoney.classList.add('show'), 120);
+  setTimeout(() => cardCo2.classList.add('show'), 320);
+  setTimeout(() => { rafId = requestAnimationFrame(frame); }, 420);
+  [700, 850, 1000, 1150].forEach((d,i) => setTimeout(() => toasts[i].classList.add('show'), d));
 }
 restart();
 </script>

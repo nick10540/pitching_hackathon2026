@@ -1,35 +1,97 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * Opening slide (shown before slide 1): a full-bleed YouTube teaser.
- * The iframe is mounted only while the slide is active so the video starts
+ * The player is created only while the slide is active so the video starts
  * fresh on entry and stops (audio included) the moment we navigate away.
+ *
+ * Playback runs at 1.25× — YouTube has no URL param for speed, so we drive
+ * it via the IFrame Player API (setPlaybackRate on ready + on play, because
+ * autoplay can reset the rate back to 1×).
  */
-const VIDEO_ID = "Xd2oP5BqSr0";
+const VIDEO_ID = "96Gc2Jjd6EM";
+const PLAYBACK_RATE = 1.25;
+
+// Load the YouTube IFrame API exactly once and resolve when YT is ready.
+let ytApiPromise = null;
+function loadYouTubeApi() {
+  if (typeof window === "undefined") return Promise.resolve(null);
+  if (window.YT && window.YT.Player) return Promise.resolve(window.YT);
+  if (ytApiPromise) return ytApiPromise;
+  ytApiPromise = new Promise((resolve) => {
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      if (typeof prev === "function") prev();
+      resolve(window.YT);
+    };
+    const tag = document.createElement("script");
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(tag);
+  });
+  return ytApiPromise;
+}
 
 export default function IntroVideo({ active }) {
   const [mounted, setMounted] = useState(false);
+  const hostRef = useRef(null);
+  const playerRef = useRef(null);
+
   useEffect(() => {
     // (re)mount on enter, unmount on leave to start/stop playback cleanly
     setMounted(active);
   }, [active]);
 
-  const src =
-    `https://www.youtube.com/embed/${VIDEO_ID}` +
-    `?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+  useEffect(() => {
+    if (!mounted) return;
+    let cancelled = false;
+
+    loadYouTubeApi().then((YT) => {
+      if (cancelled || !YT || !hostRef.current) return;
+      // YT.Player REPLACES the node it's given with its <iframe>. Hand it a
+      // throwaway child we create here — never the React-owned hostRef <div> —
+      // so React's own unmount (removeChild of hostRef) always succeeds.
+      const inner = document.createElement("div");
+      hostRef.current.appendChild(inner);
+
+      const setRate = (e) => {
+        try {
+          e.target.setPlaybackRate(PLAYBACK_RATE);
+        } catch {
+          /* rate not yet settable — retried on the next event */
+        }
+      };
+      playerRef.current = new YT.Player(inner, {
+        videoId: VIDEO_ID,
+        playerVars: { autoplay: 1, rel: 0, modestbranding: 1, playsinline: 1 },
+        events: {
+          onReady: (e) => {
+            setRate(e);
+            e.target.playVideo();
+          },
+          onStateChange: (e) => {
+            if (e.data === YT.PlayerState.PLAYING) setRate(e);
+          },
+        },
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      try {
+        if (playerRef.current && playerRef.current.destroy) playerRef.current.destroy();
+      } catch {
+        /* iframe already gone — nothing to clean up */
+      }
+      playerRef.current = null;
+    };
+  }, [mounted]);
 
   return (
     <div className="iv">
       <div className="frame">
         {mounted ? (
-          <iframe
-            src={src}
-            title="Smart Energy IQ — Teaser"
-            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-            allowFullScreen
-            frameBorder="0"
-          />
+          <div ref={hostRef} className="ytplayer" />
         ) : (
           <a
             className="poster"

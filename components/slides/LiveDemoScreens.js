@@ -110,11 +110,6 @@ export default function LiveDemoScreens({ active }) {
         </aside>
       </div>
 
-      <div className={"footer" + (s >= 7 ? " show" : "")}>
-        <span className="big">ขอบคุณครับ</span>
-        <span className="small">⚡ <b>Smart Energy IQ</b> · พร้อมเริ่ม PoC บนเกาะเต่าใน 20 วัน</span>
-      </div>
-
       <div className="tag">⚡ Smart Energy IQ · Live Demo · PEA Hackathon 2026</div>
 
       <style jsx>{`
@@ -270,33 +265,6 @@ export default function LiveDemoScreens({ active }) {
           line-height: 1.4;
           margin-top: 3px;
           padding: 0 4px;
-        }
-        .footer {
-          display: flex;
-          align-items: baseline;
-          justify-content: center;
-          gap: 16px;
-          margin-top: 10px;
-          opacity: 0;
-          transform: translateY(10px);
-          transition: all 0.5s ease;
-        }
-        .footer.show {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        .footer .big {
-          font-size: 24px;
-          font-weight: 900;
-          color: #fbbf24;
-        }
-        .footer .small {
-          font-size: 13px;
-          color: #93b0d4;
-          font-weight: 300;
-        }
-        .footer b {
-          color: #5eead4;
         }
         .tag {
           position: absolute;

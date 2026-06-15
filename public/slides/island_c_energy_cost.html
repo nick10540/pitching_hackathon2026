@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Island C – ค่าไฟฟ้า 14 เดือน</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Sarabun', sans-serif; background: #f5f4f0; color: #1a1a1a; min-height: 100vh; }
+
+  /* HERO */
+  .hero { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); color: #fff; padding: 2.5rem 2rem 2rem; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 70% 30%, rgba(55,138,221,0.18) 0%, transparent 60%); pointer-events: none; }
+  .hero-title { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 0.35rem; }
+  .hero-sub { font-size: 1rem; color: rgba(255,255,255,0.6); margin-bottom: 1.75rem; }
+  .hero-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 860px; margin: 0 auto; }
+  .hero-card { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 1rem 0.75rem; text-align: center; }
+  .hero-card-label { font-size: 11px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .hero-card-value { font-size: 1.55rem; font-weight: 700; }
+  .hero-card-sub { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 3px; }
+  .v-orange { color: #ef9f27; }
+  .v-green  { color: #5dcaa5; }
+  .v-blue   { color: #85b7eb; }
+  .v-white  { color: #fff; }
+
+  /* CONTENT */
+  .content { max-width: 900px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+
+  /* TABS */
+  .tab-row { display: flex; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .tab { background: #fff; border: 1.5px solid #ddd; border-radius: 8px; padding: 7px 18px; font-size: 13px; font-family: 'Sarabun', sans-serif; cursor: pointer; color: #555; transition: all 0.2s; }
+  .tab:hover { border-color: #378ADD; color: #378ADD; }
+  .tab.active { background: #378ADD; color: #fff; border-color: #378ADD; font-weight: 600; }
+
+  /* CHART CARD */
+  .chart-card { background: #fff; border-radius: 16px; padding: 1.5rem 1.5rem 1rem; box-shadow: 0 2px 16px rgba(0,0,0,0.06); margin-bottom: 1.5rem; }
+  .chart-card-title { font-size: 14px; font-weight: 600; color: #444; margin-bottom: 10px; }
+  .legend-row { display: flex; gap: 18px; margin-bottom: 14px; font-size: 12px; color: #777; align-items: center; flex-wrap: wrap; }
+  .leg { display: flex; align-items: center; gap: 5px; }
+  .leg-sq { width: 10px; height: 10px; border-radius: 2px; }
+  .chart-wrap { position: relative; width: 100%; height: 270px; }
+
+  /* ERA CARDS */
+  .era-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
+  .era-card { background: #fff; border-radius: 14px; padding: 1.1rem 1.1rem 0.9rem; box-shadow: 0 2px 12px rgba(0,0,0,0.05); border-top: 4px solid #ddd; }
+  .era-card.orange { border-top-color: #D85A30; }
+  .era-card.yellow { border-top-color: #EF9F27; }
+  .era-card.blue   { border-top-color: #378ADD; }
+  .era-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .era-period { font-size: 11px; color: #999; margin-bottom: 8px; }
+  .era-stat { font-size: 12px; color: #555; line-height: 1.6; }
+  .era-big { font-size: 1.35rem; font-weight: 700; display: block; margin-bottom: 2px; }
+  .progress { height: 7px; background: #f0f0f0; border-radius: 4px; margin-top: 8px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 4px; transition: width 1.4s cubic-bezier(.4,0,.2,1); width: 0; }
+
+  /* AUGUST DETAIL */
+  .aug-card { background: #fff; border-radius: 16px; padding: 1.5rem; box-shadow: 0 2px 16px rgba(0,0,0,0.06); border: 2px solid #378ADD; margin-bottom: 1.5rem; }
+  .aug-title { font-size: 15px; font-weight: 700; color: #378ADD; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+  .aug-badge { background: #E6F1FB; color: #185FA5; font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+  .aug-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid #f5f5f5; font-size: 13px; }
+  .aug-row:last-child { border-bottom: none; }
+  .aug-row-label { color: #666; }
+  .aug-row-value { font-weight: 600; color: #1a1a1a; }
+  .aug-dg-bar { width: 100%; background: #f5f5f5; border-radius: 6px; height: 22px; margin-top: 1rem; overflow: hidden; position: relative; }
+  .aug-dg-fill { height: 100%; background: linear-gradient(90deg, #D85A30 0%, #EF9F27 100%); border-radius: 6px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font-size: 11px; font-weight: 700; color: #fff; transition: width 1.4s cubic-bezier(.4,0,.2,1); width: 0; }
+  .aug-grid-bar-wrap { position: absolute; top: 0; right: 0; height: 100%; display: flex; align-items: center; padding-right: 6px; }
+
+  /* INSIGHT BOX */
+  .insight-card { background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%); color: #fff; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .insight-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 1rem; color: #85b7eb; }
+  .insight-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 13px; line-height: 1.55; color: rgba(255,255,255,0.82); }
+  .insight-icon { font-size: 18px; margin-top: -1px; flex-shrink: 0; }
+  strong.hl { color: #ef9f27; }
+
+  /* ANIMATE IN */
+  .fade-up { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade-up.visible { opacity: 1; transform: none; }
+
+  /* FOOTER */
+  .footer { text-align: center; font-size: 11px; color: #aaa; padding-top: 0.5rem; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-title">Island C — ค่าไฟฟ้า 14 เดือน</div>
+  <div class="hero-sub">ม.ค. 2568 – ก.พ. 2569</div>
+  <div class="hero-cards">
+    <div class="hero-card">
+      <div class="hero-card-label">ค่าไฟรวมทั้งหมด</div>
+      <div class="hero-card-value v-white" id="totalCost">0</div>
+      <div class="hero-card-sub">บาท</div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-card-label">เฉลี่ย / วัน</div>
+      <div class="hero-card-value v-blue">714K</div>
+      <div class="hero-card-sub">บาท/วัน (424 วัน)</div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-card-label">แพงสุด</div>
+      <div class="hero-card-value v-orange">30.65M</div>
+      <div class="hero-card-sub">พ.ค. 68 · DG9 100%</div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-card-label">ถูกสุด</div>
+      <div class="hero-card-value v-green">9.83M</div>
+      <div class="hero-card-sub">พ.ย. 68 · Grid 73%</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content">
+
+  <!-- CHART SECTION -->
+  <div class="chart-card fade-up">
+    <div class="tab-row">
+      <button class="tab active" onclick="setView('cost',this)">ค่าใช้จ่าย (บาท)</button>
+      <button class="tab" onclick="setView('energy',this)">พลังงาน (kWh)</button>
+      <button class="tab" onclick="setView('pct',this)">สัดส่วน DG9 (%)</button>
+    </div>
+    <div class="chart-card-title" id="chartTitle">ค่าใช้จ่ายรายเดือน แยก DG9 vs Grid (ล้านบาท)</div>
+    <div class="legend-row" id="legendRow">
+      <span class="leg"><span class="leg-sq" style="background:#D85A30;"></span>DG9 ดีเซล (12 บาท/kWh)</span>
+      <span class="leg"><span class="leg-sq" style="background:#378ADD;"></span>Grid กริด (3-4.5 บาท/kWh)</span>
+      <span style="font-size:11px; color:#bbb;">* Hover แถบเพื่อดูตัวเลข</span>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="mainChart" role="img" aria-label="กราฟค่าไฟฟ้า Island C 14 เดือน"></canvas>
+    </div>
+  </div>
+
+  <!-- 3 ERA CARDS -->
+  <div style="font-size:15px; font-weight:700; color:#333; margin-bottom:12px;" class="fade-up">3 ยุคการใช้พลังงาน Island C</div>
+  <div class="era-grid fade-up">
+    <div class="era-card orange">
+      <div class="era-title" style="color:#D85A30;">ยุค 1: DG9 เต็มรูปแบบ</div>
+      <div class="era-period">ม.ค. – มิ.ย. 2568 (6 เดือน)</div>
+      <span class="era-big" style="color:#D85A30;">~27.2M</span>
+      <div class="era-stat">บาท/เดือน เฉลี่ย<br>DG9 ≈ 100% ไม่มีกริดเข้าเลย</div>
+      <div class="progress"><div class="progress-fill" style="background:#D85A30;" data-width="100"></div></div>
+    </div>
+    <div class="era-card yellow">
+      <div class="era-title" style="color:#BA7517;">ยุค 2: ช่วงเปลี่ยนผ่าน</div>
+      <div class="era-period">ก.ค. – พ.ย. 2568 (5 เดือน)</div>
+      <span class="era-big" style="color:#BA7517;">~18.8M</span>
+      <div class="era-stat">บาท/เดือน เฉลี่ย<br>Grid เข้ามาผสม ค่าไฟลดลงเรื่อยๆ</div>
+      <div class="progress"><div class="progress-fill" style="background:#EF9F27;" data-width="62"></div></div>
+    </div>
+    <div class="era-card blue">
+      <div class="era-title" style="color:#185FA5;">ยุค 3: Grid เป็นหลัก</div>
+      <div class="era-period">ธ.ค. 2568 – ก.พ. 2569 (3 เดือน)</div>
+      <span class="era-big" style="color:#185FA5;">~15.7M</span>
+      <div class="era-stat">บาท/เดือน เฉลี่ย<br>ประหยัดกว่ายุค 1 ถึง 42%</div>
+      <div class="progress"><div class="progress-fill" style="background:#378ADD;" data-width="35"></div></div>
+    </div>
+  </div>
+
+  <!-- AUGUST DETAIL -->
+  <div class="aug-card fade-up">
+    <div class="aug-title">
+      สิงหาคม 2568 — เจาะลึกรายเดือน
+      <span class="aug-badge">ตัวอย่าง</span>
+    </div>
+    <div class="aug-row">
+      <span class="aug-row-label">ค่าไฟรวมเดือนนี้</span>
+      <span class="aug-row-value" style="color:#1a1a1a; font-size:1.1rem;">24,576,619 บาท</span>
+    </div>
+    <div class="aug-row">
+      <span class="aug-row-label">DG9: 1,888,846 kWh × 12 บาท</span>
+      <span class="aug-row-value" style="color:#D85A30;">22,666,155 บาท (92.2%)</span>
+    </div>
+    <div class="aug-row">
+      <span class="aug-row-label">Grid Peak: 213,062 kWh × 4.5 บาท</span>
+      <span class="aug-row-value">958,779 บาท</span>
+    </div>
+    <div class="aug-row">
+      <span class="aug-row-label">Grid Off-peak: 314,144 kWh × 3.0 บาท</span>
+      <span class="aug-row-value">942,432 บาท</span>
+    </div>
+    <div class="aug-row">
+      <span class="aug-row-label">ราคาเฉลี่ยรวม</span>
+      <span class="aug-row-value">10.17 บาท/kWh</span>
+    </div>
+    <div style="margin-top:12px;">
+      <div style="font-size:11px; color:#999; margin-bottom:4px;">สัดส่วนค่าใช้จ่าย: DG9 vs Grid</div>
+      <div style="position:relative; height:28px; background:#E6F1FB; border-radius:8px; overflow:hidden;">
+        <div id="augDgBar" style="position:absolute; left:0; top:0; height:100%; background:linear-gradient(90deg,#D85A30,#EF9F27); border-radius:8px; transition:width 1.6s cubic-bezier(.4,0,.2,1); width:0; display:flex; align-items:center; padding-left:10px;">
+          <span style="font-size:12px; font-weight:700; color:#fff;">DG9 92.2%</span>
+        </div>
+        <div style="position:absolute; right:8px; top:50%; transform:translateY(-50%); font-size:11px; font-weight:700; color:#185FA5;">Grid 7.8%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSIGHT -->
+  <div class="insight-card fade-up">
+    <h3>Key Insights</h3>
+    <div class="insight-item">
+      <span class="insight-icon"></span>
+      <span>DG9 ใช้พลังงาน <strong class="hl">75%</strong> แต่กินค่าใช้จ่ายถึง <strong class="hl">90.9%</strong> เพราะแพงกว่ากริดเกือบ <strong class="hl">3-4 เท่า</strong></span>
+    </div>
+    <div class="insight-item">
+      <span class="insight-icon"></span>
+      <span>การเปิดใช้กริดตั้งแต่ ก.ค. 68 ช่วยลดค่าไฟจาก <strong class="hl">30.65 ล้าน/เดือน</strong> เหลือ <strong class="hl">9.83 ล้าน/เดือน</strong> ใน พ.ย. 68</span>
+    </div>
+    <div class="insight-item">
+      <span class="insight-icon"></span>
+      <span>ส่วนต่างระหว่างเดือนแพงสุดและถูกสุดคือ <strong class="hl">20.8 ล้านบาท/เดือน</strong> หรือ <strong class="hl">249 ล้านบาท/ปี</strong></span>
+    </div>
+    <div class="insight-item">
+      <span class="insight-icon"></span>
+      <span>ทุกๆ 10% ที่เพิ่ม Grid แทน DG9 ประหยัดได้ราว <strong class="hl">2-3 ล้านบาท/เดือน</strong> เพราะราคาต่างกัน 8.5 บาท/kWh</span>
+    </div>
+  </div>
+
+  <div class="footer">
+    Data Period: ม.ค. 2568 – ก.พ. 2569 · Updated: มิ.ย. 2569
+  </div>
+</div>
+
+<script>
+const months = ['ม.ค.68','ก.พ.68','มี.ค.68','เม.ย.68','พ.ค.68','มิ.ย.68','ก.ค.68','ส.ค.68','ก.ย.68','ต.ค.68','พ.ย.68','ธ.ค.68','ม.ค.69','ก.พ.69'];
+const dg9Cost  = [24009938,22918603,29195805,29336729,30652897,25995157,24097365,22666155,14781810,12144195,5407020,6967830,10764390,16667250];
+const gridCost = [0,0,0,0,0,0,1715842,1910464,3153669,3520916,4420372,4798746,4857442,3128919];
+const dg9Kwh   = [2000828,1909884,2432984,2444727,2554408,2166263,2008114,1888846,1231818,1012016,450585,580652,897032,1388938];
+const gridKwh  = [0,0,0,0,0,0,468950,527206,864270,955715,1223271,1326296,1330454,901659];
+const dg9Pct   = [100,100,100,100,100,100,81.1,78.2,58.8,51.4,26.9,30.4,40.3,60.6];
+
+let currentView = 'cost';
+let chart;
+
+function getDatasets(v) {
+  if (v === 'cost') return [
+    { label:'DG9', data: dg9Cost.map(x=>+(x/1e6).toFixed(3)), backgroundColor:'#D85A30', stack:'s', borderRadius:3 },
+    { label:'Grid', data: gridCost.map(x=>+(x/1e6).toFixed(3)), backgroundColor:'#378ADD', stack:'s', borderRadius:3 }
+  ];
+  if (v === 'energy') return [
+    { label:'DG9', data: dg9Kwh.map(x=>Math.round(x/1000)), backgroundColor:'#D85A30', stack:'s', borderRadius:3 },
+    { label:'Grid', data: gridKwh.map(x=>Math.round(x/1000)), backgroundColor:'#378ADD', stack:'s', borderRadius:3 }
+  ];
+  return [{
+    label:'DG9 %',
+    data: dg9Pct,
+    backgroundColor: dg9Pct.map(v => v > 80 ? '#D85A30' : v > 50 ? '#EF9F27' : '#378ADD'),
+    borderRadius: 3
+  }];
+}
+
+function setView(v, btn) {
+  currentView = v;
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const titles = {
+    cost:'ค่าใช้จ่ายรายเดือน แยก DG9 vs Grid (ล้านบาท)',
+    energy:'พลังงานที่ใช้รายเดือน แยก DG9 vs Grid (พัน kWh)',
+    pct:'สัดส่วน DG9 รายเดือน (%) — สีส้ม=แพง, สีน้ำเงิน=ถูกลง'
+  };
+  const yLabels = { cost:'ล้านบาท', energy:'พัน kWh', pct:'%' };
+  document.getElementById('chartTitle').textContent = titles[v];
+  document.getElementById('legendRow').style.display = v === 'pct' ? 'none' : 'flex';
+  chart.data.datasets = getDatasets(v);
+  chart.options.scales.y.title.text = yLabels[v];
+  chart.options.scales.x.stacked = v !== 'pct';
+  chart.options.scales.y.stacked = v !== 'pct';
+  chart.update('active');
+}
+
+// Animate counter
+function animCount(el, target, suffix) {
+  let s = 0; const dur = 1400; const steps = 60;
+  const inc = target / steps;
+  let i = 0;
+  const t = setInterval(() => {
+    s = Math.min(s + inc, target);
+    el.textContent = (s/1e6).toFixed(1) + suffix;
+    if (++i >= steps) clearInterval(t);
+  }, dur / steps);
+}
+
+// Intersection observer for fade-up
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // Animate progress bars inside
+      e.target.querySelectorAll('.progress-fill[data-width]').forEach(bar => {
+        setTimeout(() => bar.style.width = bar.dataset.width + '%', 200);
+      });
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+window.addEventListener('load', () => {
+  animCount(document.getElementById('totalCost'), 303111515, 'M');
+
+  setTimeout(() => {
+    document.getElementById('augDgBar').style.width = '92.2%';
+  }, 600);
+
+  const ctx = document.getElementById('mainChart').getContext('2d');
+  chart = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: months, datasets: getDatasets('cost') },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 900, easing: 'easeOutQuart' },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1a2e',
+          titleColor: '#aaa',
+          bodyColor: '#fff',
+          padding: 10,
+          callbacks: {
+            label: ctx => {
+              const v = ctx.parsed.y;
+              if (currentView === 'cost')   return ` ${ctx.dataset.label}: ${v.toFixed(2)} ล้านบาท`;
+              if (currentView === 'energy') return ` ${ctx.dataset.label}: ${v.toLocaleString()} พัน kWh`;
+              return ` DG9: ${v}%`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          stacked: true,
+          grid: { display: false },
+          ticks: { font: { size: 10, family: 'Sarabun' }, color: '#999' }
+        },
+        y: {
+          stacked: true,
+          title: { display: true, text: 'ล้านบาท', font: { size: 11 }, color: '#bbb' },
+          grid: { color: 'rgba(0,0,0,0.06)' },
+          ticks: { font: { size: 10 }, color: '#999' }
+        }
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>

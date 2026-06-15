@@ -104,7 +104,10 @@ export default function TeamPartners({ active }) {
         </div>
       </div>
 
-      <div className="brand-tag" style={{ color: "#8aa1c2" }}>⚡ <b>Smart Energy IQ</b> · Team &amp; Partners · PEA Hackathon 2026</div>
+      <div className={"cta-footer" + (s >= 8 ? " show" : "")}>
+        <span className="ty">ขอบคุณครับ</span>
+        <span className="ty-sub">⚡ <b>Smart Energy IQ</b> · พร้อมเริ่ม PoC บนเกาะเต่าใน 20 วัน</span>
+      </div>
 
       <style jsx>{`
         .tp { position: absolute; inset: 0; padding: 24px 40px 16px; display: flex; flex-direction: column;
@@ -115,32 +118,40 @@ export default function TeamPartners({ active }) {
         .head h1 .g { color: #38bdf8; }
         .head .sub { font-size: 13px; color: #7d96b8; font-weight: 300; margin-top: 3px; }
 
-        .grid { flex: 1; display: flex; gap: 12px; margin-top: 14px; }
+        .grid { flex: 1; display: flex; gap: 10px; margin-top: 8px; }
         .card { flex: 1; background: rgba(13,26,48,.7); border: 1.5px solid #1e3a5f; border-radius: 16px;
-          padding: 14px 13px; display: flex; flex-direction: column; opacity: 0;
+          padding: 10px 11px; display: flex; flex-direction: column; opacity: 0;
           transform: translateY(24px); transition: all .5s cubic-bezier(.2,.9,.3,1.25); }
         .card.show { opacity: 1; transform: translateY(0); }
-        .top { display: flex; gap: 11px; align-items: center; padding-bottom: 11px;
+        .top { display: flex; gap: 9px; align-items: center; padding-bottom: 7px;
           border-bottom: 1px solid rgba(120,160,210,.18); }
-        .avatar { width: 56px; height: 56px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
-          border: 2.5px solid; box-shadow: 0 4px 12px rgba(0,0,0,.35); }
+        .avatar { width: 46px; height: 46px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+          border: 2px solid; box-shadow: 0 4px 12px rgba(0,0,0,.35); }
         .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .blue .avatar { border-color: #3b82f6; }
         .teal .avatar { border-color: #14b8a6; }
         .violet .avatar { border-color: #8b5cf6; }
         .amber .avatar { border-color: #f59e0b; }
         .green .avatar { border-color: #22c55e; }
-        .role { font-size: 10.5px; font-weight: 700; letter-spacing: .3px; text-transform: uppercase; }
+        .role { font-size: 10px; font-weight: 700; letter-spacing: .3px; text-transform: uppercase; }
         .blue .role { color: #7dd3fc; } .teal .role { color: #5eead4; }
         .violet .role { color: #c4b5fd; } .amber .role { color: #fcd34d; } .green .role { color: #86efac; }
-        .name { font-size: 14.5px; font-weight: 700; color: #f1f5f9; line-height: 1.2; margin-top: 1px; }
-        .exp { font-size: 10.5px; color: #93b0d4; margin-top: 2px; }
-        ul { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
-        li { font-size: 11px; color: #cbd5e1; line-height: 1.35; padding-left: 15px; position: relative; }
+        .name { font-size: 13px; font-weight: 700; color: #f1f5f9; line-height: 1.2; margin-top: 1px; }
+        .exp { font-size: 10px; color: #93b0d4; margin-top: 1px; }
+        ul { list-style: none; margin: 7px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+        li { font-size: 10.5px; color: #cbd5e1; line-height: 1.3; padding-left: 14px; position: relative; }
         li::before { content: "▹"; position: absolute; left: 0; color: #38bdf8; }
 
-        .partners { display: flex; gap: 14px; margin-top: 12px; opacity: 0; transform: translateY(14px);
+        .partners { display: flex; gap: 12px; margin-top: 6px; opacity: 0; transform: translateY(14px);
           transition: all .55s ease; }
+        .cta-footer { display: flex; align-items: baseline; justify-content: center; gap: 18px;
+          padding: 8px 0 2px; opacity: 0; transform: translateY(10px);
+          transition: all .6s cubic-bezier(.2,.9,.3,1.25); }
+        .cta-footer.show { opacity: 1; transform: translateY(0); }
+        .ty { font-size: 26px; font-weight: 900; color: #fbbf24;
+          text-shadow: 0 2px 14px rgba(251,191,36,.4); }
+        .ty-sub { font-size: 14px; color: #93b0d4; font-weight: 300; }
+        .ty-sub b { color: #38bdf8; }
         .partners.show { opacity: 1; transform: translateY(0); }
         .pcol { background: rgba(8,20,36,.6); border: 1.5px solid #16263f; border-radius: 14px; padding: 11px 16px; }
         .pcol.cloud { flex: 1.15; } .pcol { flex: 1; } .pcol.equip { flex: 1.9; }
