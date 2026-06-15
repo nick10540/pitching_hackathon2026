@@ -47,18 +47,18 @@
   @keyframes party { from{r:4.5} to{r:7} }
 
   /* ── right panel ── */
-  .panel { position:absolute; right:36px; top:104px; width:430px; display:flex; flex-direction:column; gap:14px; z-index:20; }
+  .panel { position:absolute; right:36px; top:104px; width:430px; display:flex; flex-direction:column; gap:11px; z-index:20; }
 
-  .counters { display:flex; flex-direction:column; gap:12px; }
+  .counters { display:flex; flex-direction:column; gap:9px; }
   .cnt {
     background:rgba(13,26,48,.88); border:1.5px solid #1e3a5f; border-radius:16px;
-    padding:13px 20px; display:flex; align-items:center; gap:16px;
+    padding:10px 18px; display:flex; align-items:center; gap:16px;
     opacity:0; transform:translateX(30px); transition:all .6s cubic-bezier(.2,.9,.3,1.2);
   }
   .cnt.show { opacity:1; transform:translateX(0); }
   .cnt .ic { font-size:30px; }
   .cnt .k { font-size:12.5px; color:#7d96b8; }
-  .cnt .v { font-size:31px; font-weight:800; color:#fbbf24; line-height:1.15; font-variant-numeric:tabular-nums; }
+  .cnt .v { font-size:26px; font-weight:800; color:#fbbf24; line-height:1.15; font-variant-numeric:tabular-nums; }
   .cnt .v small { font-size:14px; font-weight:500; color:#94a3b8; }
   .cnt.green .v { color:#4ade80; }
   .cnt.blue .v { color:#7dd3fc; }
@@ -66,7 +66,7 @@
   .phases { display:flex; flex-direction:column; gap:9px; }
   .ph {
     background:rgba(13,26,48,.7); border:1.5px solid #16263f; border-radius:13px;
-    padding:10px 16px; display:flex; gap:12px; align-items:center; opacity:.35;
+    padding:7px 14px; display:flex; gap:12px; align-items:center; opacity:.35;
     transition:all .6s ease;
   }
   .ph.on { opacity:1; border-color:#fbbf24; background:rgba(40,32,12,.45); box-shadow:0 0 18px rgba(251,191,36,.12); }
@@ -79,6 +79,12 @@
   .ph .ds { font-size:11.5px; color:#7d96b8; margin-top:1px; }
   .ph .chk { margin-left:auto; font-size:19px; opacity:0; transform:scale(.4); transition:all .4s cubic-bezier(.2,.9,.3,1.5); }
   .ph.done .chk { opacity:1; transform:scale(1); }
+  .ph .tag { font-size:10.5px; font-weight:700; letter-spacing:.4px; color:#7dd3fc; margin-bottom:1px; }
+  .ph .tag.gold { color:#fbbf24; }
+
+  /* climax counter (ลูกค้า PEA · ตลาดต่อยอด) — collapsed until the phase-3 reveal */
+  .cnt.climax { max-height:0; padding-top:0; padding-bottom:0; border-width:0; overflow:hidden; }
+  .cnt.climax.show { max-height:130px; padding-top:10px; padding-bottom:10px; border-width:1.5px; }
 
   .confchip {
     background:rgba(8,32,52,.85); border:1.5px solid #0ea5e9; border-radius:12px;
@@ -123,7 +129,7 @@
 
   <div class="head">
     <div class="t1">จาก<span class="gold">หนึ่งเกาะ</span>ที่พิสูจน์แล้ว … สู่<span class="gold">ทั้งประเทศ</span></div>
-    <div class="t2">โมเดลเดียวกัน · Config เดียว · ขยายได้ทุกเกาะในระบบ กฟภ.</div>
+    <div class="t2">โมเดลเดียวกัน · Config เดียว · จากเกาะเต่า → ทุกเกาะ กฟภ. → ลูกค้า PEA 22.3 ล้านราย</div>
   </div>
 
   <!-- ════ MAP ════ -->
@@ -151,35 +157,45 @@
         <div><div class="k">เกาะที่ครอบคลุม</div><div class="v"><span id="v_isl">0</span><small id="v_isl_p"></small></div></div></div>
       <div class="cnt" id="c_save"><div class="ic">💰</div>
         <div><div class="k">ศักยภาพประหยัดให้ กฟภ. (ประมาณการ)</div><div class="v">฿<span id="v_save">0</span><small id="v_save_p"> ล้าน / ปี</small></div></div></div>
-      <div class="cnt green" id="c_arr"><div class="ic">📈</div>
-        <div><div class="k">โอกาสรายได้ธุรกิจ (ARR)</div><div class="v">฿<span id="v_arr">0</span><small> ล้าน / ปี</small></div></div></div>
+      <div class="cnt green climax" id="c_arr"><div class="ic">👥</div>
+        <div><div class="k">ลูกค้า PEA ที่เข้าถึงได้ (ตลาดต่อยอด)</div><div class="v"><span id="v_arr">0</span><small> ล้านราย</small></div></div></div>
     </div>
 
     <div class="phases">
       <div class="ph" id="ph1">
         <div class="no">1</div>
-        <div><div class="tt">เกาะเต่า — จุดพิสูจน์</div><div class="ds">PoC 20 วัน · พิสูจน์แล้ว ฿158.7M/ปี · ข้อมูลจริง 40,704 แถว</div></div>
+        <div>
+          <div class="tag">ชั้น 1 · พิสูจน์แล้ว</div>
+          <div class="tt">เกาะเต่า — ของจริง วันนี้</div>
+          <div class="ds">รันบนข้อมูลจริง · ระบบใช้งานได้แล้ว · ประหยัด ฿158.7M/ปี</div>
+        </div>
         <div class="chk">✅</div>
       </div>
       <div class="ph" id="ph2">
         <div class="no">2</div>
-        <div><div class="tt">ขยายภาคใต้ — 12 เกาะ</div><div class="ds">สมุย · พะงัน · ภูเก็ต · พีพี · ลันตา · หลีเป๊ะ …</div></div>
+        <div>
+          <div class="tag">ชั้น 2 · ทำซ้ำได้ทันที</div>
+          <div class="tt">ทุกเกาะ กฟภ. ที่มีดีเซล + สายส่งจำกัด</div>
+          <div class="ds">หลีเป๊ะ · กูด · หมาก · พะงัน · Microgrid + BESS + Solar — ระบบเดียวกัน เปลี่ยนแค่ Config</div>
+        </div>
         <div class="chk">✅</div>
       </div>
       <div class="ph" id="ph3">
         <div class="no">3</div>
-        <div><div class="tt">ทั่วประเทศ — 20+ เกาะ</div><div class="ds">ช้าง · กูด · หมาก · เสม็ด · ล้าน · สีชัง …</div></div>
+        <div>
+          <div class="tag gold">ชั้น 3 · ตลาดมหาศาล</div>
+          <div class="tt">PEA ขายบริการพลังงาน ให้ลูกค้าตัวเอง</div>
+          <div class="ds">บ้าน Solar · โรงแรม · โรงงาน · EV charging — แพลตฟอร์มเดียวกัน → รายได้ใหม่ของ PEA</div>
+        </div>
         <div class="chk">✅</div>
       </div>
     </div>
-
-    <div class="confchip" id="confchip">⚙️ <b>Config เดียว</b> — เพิ่มเกาะใหม่ได้ใน 1 วัน · ไม่ต้องเขียนโค้ดใหม่</div>
   </div>
 
   <!-- finale -->
   <div class="stamp" id="stamp">
-    <div class="l1">เครือข่าย <span class="hl">Smart Island</span> แห่งแรกของ PEA</div>
-    <div class="l2">ประหยัดระดับ "พันล้านต่อปี" · เริ่มจากเกาะเดียวที่พิสูจน์แล้ว — เกาะเต่า</div>
+    <div class="l1">เปลี่ยน PEA เป็น <span class="hl">บริษัทขายบริการพลังงาน</span></div>
+    <div class="l2">ไม่ได้ขายแค่เฉพาะเกาะ — PEA มีลูกค้ารออยู่แล้ว 22.3 ล้านราย</div>
   </div>
 
   <div class="subwrap"><div class="sub" id="sub"></div></div>
@@ -319,31 +335,30 @@ const END = 30, HOLD = 4;
 const EVENTS = [
   [0.4, ()=>{ $('thpath').classList.add('lit'); sub('นี่คือแผนผังการเติบโต — <span class="em">ไม่ใช่ความฝัน แต่คือแผนที่ทำได้จริง</span>'); }],
   /* Phase 1 */
-  [2.5, ()=>{ $('ph1').classList.add('on'); show('c_isl'); show('c_save'); show('c_arr'); }],
-  [3.2, ()=>{ ignite('tao'); sub('<span class="em">Phase 1 — เกาะเต่า</span> จุดที่เราพิสูจน์ด้วยข้อมูลจริง: ประหยัด ฿158.7 ล้าน/ปี');
-              countTo('isl',1,800,'v_isl'); countTo('save',158.7,1600,'v_save',1); countTo('arr',8,1600,'v_arr'); }],
+  [2.5, ()=>{ $('ph1').classList.add('on'); show('c_isl'); show('c_save'); }],
+  [3.2, ()=>{ ignite('tao'); sub('<span class="em">ชั้น 1 — เกาะเต่า</span> พิสูจน์แล้วด้วยข้อมูลจริง: ประหยัด ฿158.7 ล้าน/ปี');
+              countTo('isl',1,800,'v_isl'); countTo('save',158.7,1600,'v_save',1); }],
   [6.8, ()=>{ $('ph1').classList.remove('on'); $('ph1').classList.add('done'); }],
   /* Phase 2 */
-  [7.5, ()=>{ $('ph2').classList.add('on'); sub('<span class="em">Phase 2 — ขยายภาคใต้</span> สมุย · พะงัน · ภูเก็ต · หลีเป๊ะ … ระบบเดียวกัน แค่เปลี่ยน Config');
+  [7.5, ()=>{ $('ph2').classList.add('on'); sub('<span class="em">ชั้น 2 — ทำซ้ำได้ทันที</span> ทุกเกาะที่มีดีเซล + สายส่งจำกัด · ระบบเดียวกัน แค่เปลี่ยน Config');
               arcTo('samui'); arcTo('phuket',1100); arcTo('lipe',1300); }],
   [8.3,  ()=>ignite('phangan')], [8.8, ()=>ignite('samui')],
   [9.4,  ()=>ignite('phayam')],  [9.9, ()=>ignite('yao')], [10.3, ()=>ignite('panyi')],
   [10.8, ()=>ignite('phuket')],  [11.3,()=>ignite('phiphi')], [11.8,()=>ignite('lanta')],
   [12.3, ()=>ignite('mook')],    [12.7,()=>ignite('libong')], [13.1,()=>ignite('sukorn')],
-  [13.6, ()=>{ ignite('lipe'); countTo('isl',13,1200,'v_isl'); countTo('save',650,2600,'v_save'); countTo('arr',45,2600,'v_arr'); }],
+  [13.6, ()=>{ ignite('lipe'); countTo('isl',13,1200,'v_isl'); countTo('save',650,2600,'v_save'); }],
   [15.6, ()=>{ $('ph2').classList.remove('on'); $('ph2').classList.add('done'); }],
   /* Phase 3 */
-  [16.3, ()=>{ $('ph3').classList.add('on'); sub('<span class="em">Phase 3 — ทั่วประเทศ</span> ทุกเกาะที่มีดีเซล + สายส่งจำกัด คือพื้นที่ที่เราประหยัดให้ได้ทันที');
+  [16.3, ()=>{ $('ph3').classList.add('on'); sub('<span class="em">ชั้น 3 — ตลาดมหาศาล</span> PEA ขายบริการพลังงานให้ลูกค้าตัวเอง — รายได้ใหม่ทั้งองค์กร');
                arcTo('chang',1300); arcTo('lan',1100); }],
   [17.2, ()=>ignite('sichang')], [17.7,()=>ignite('lan')], [18.2,()=>ignite('samet')],
   [18.8, ()=>ignite('chang')],   [19.3,()=>ignite('mak')], [19.8,()=>ignite('kood')],
-  [20.2, ()=>{ countTo('isl',20,1400,'v_isl',0,'v_isl_p','+'); countTo('save',1000,2800,'v_save',0,'v_save_p','+ ล้าน / ปี'); countTo('arr',100,2800,'v_arr'); }],
+  [20.2, ()=>{ show('c_arr'); countTo('isl',20,1400,'v_isl',0,'v_isl_p','+'); countTo('save',1000,2800,'v_save',0,'v_save_p','+ ล้าน / ปี'); countTo('arr',22.3,2600,'v_arr',1); }],
   [22.6, ()=>{ $('ph3').classList.remove('on'); $('ph3').classList.add('done'); }],
   /* finale */
-  [23.4, ()=>{ show('confchip'); }],
   [24.6, ()=>{ document.querySelectorAll('.isl.on').forEach(i=>i.classList.add('party'));
                show('stamp'); sparkle();
-               sub('20+ เกาะ · ประหยัดระดับ<span class="em">พันล้านต่อปี</span> · โอกาส ARR <span class="em">฿100 ล้าน</span>'); }],
+               sub('ลูกค้า PEA <span class="em">22.3 ล้านราย</span> รออยู่แล้ว · นี่คือตลาดที่เราปลดล็อกให้ กฟภ.'); }],
   [27.5, ()=>{ sparkle(); }],
 ];
 function show(id){ $(id).classList.add('show'); }
@@ -366,7 +381,7 @@ function restart(){
   document.querySelectorAll('.isl').forEach(i=>i.classList.remove('on','party'));
   document.querySelectorAll('.ilabel').forEach(l=>l.classList.remove('on'));
   $('arcs').innerHTML='';
-  ['c_isl','c_save','c_arr','confchip','stamp'].forEach(i=>$(i).classList.remove('show'));
+  ['c_isl','c_save','c_arr','stamp'].forEach(i=>$(i).classList.remove('show'));
   ['ph1','ph2','ph3'].forEach(i=>{ $(i).classList.remove('on','done'); });
   state.isl=0; state.save=0; state.arr=0;
   $('v_isl').textContent='0'; $('v_save').textContent='0'; $('v_arr').textContent='0';

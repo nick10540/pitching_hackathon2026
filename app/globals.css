@@ -94,21 +94,95 @@ button {
   border: 1px solid rgba(120, 150, 190, 0.18);
 }
 .dot {
-  width: 22px;
-  height: 6px;
-  border-radius: 99px;
-  background: rgba(148, 163, 184, 0.32);
-  border: none;
-  padding: 0;
-  transition: all 0.3s ease;
+  position: relative;
+  min-width: 22px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 6px;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  background: rgba(56, 189, 248, 0.12);
+  color: rgba(186, 214, 240, 0.75);
+  font-size: 10.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.dot .dot-num {
+  display: block;
+}
+/* backup group — amber */
+.dot.backup {
+  border-color: rgba(251, 191, 36, 0.4);
+  background: rgba(251, 191, 36, 0.12);
+  color: rgba(253, 224, 150, 0.78);
+}
+/* divider before the first backup slide */
+.dot.sep {
+  margin-left: 14px;
+}
+.dot.sep::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 2px;
+  bottom: 2px;
+  width: 1px;
+  background: rgba(120, 150, 190, 0.45);
 }
 .dot:hover {
-  background: rgba(148, 163, 184, 0.6);
+  border-color: rgba(56, 189, 248, 0.7);
+  background: rgba(56, 189, 248, 0.25);
+  color: #fff;
+}
+.dot.backup:hover {
+  border-color: rgba(251, 191, 36, 0.75);
+  background: rgba(251, 191, 36, 0.25);
 }
 .dot.on {
-  width: 34px;
   background: #38bdf8;
+  border-color: #38bdf8;
+  color: #04101f;
   box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+}
+.dot.backup.on {
+  background: #fbbf24;
+  border-color: #fbbf24;
+  color: #2a1c02;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.7);
+}
+/* hover tooltip — slide name */
+.dot .dot-tip {
+  position: absolute;
+  bottom: calc(100% + 9px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  white-space: nowrap;
+  background: rgba(8, 14, 26, 0.95);
+  color: #e2e8f0;
+  border: 1px solid rgba(120, 150, 190, 0.3);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 11.5px;
+  font-weight: 500;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 80;
+}
+.dot .dot-tip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(8, 14, 26, 0.95);
+}
+.dot:hover .dot-tip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 .deck-ui {

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
  * via an iframe. Remounts the iframe each time the slide becomes active so the
  * built-in animation timeline restarts from the beginning every visit.
  */
-export default function IframeSlide({ active, src }) {
+export default function IframeSlide({ active, src, scroll = false }) {
   const [nonce, setNonce] = useState(0);
   useEffect(() => {
     if (active) setNonce((n) => n + 1);
@@ -19,7 +19,7 @@ export default function IframeSlide({ active, src }) {
         src={src}
         title={src}
         className="frame"
-        scrolling="no"
+        scrolling={scroll ? "yes" : "no"}
         frameBorder="0"
       />
       <style jsx>{`

@@ -23,7 +23,6 @@ const SLIDES = [
   { id: "forecast", chapter: "พิสูจน์ด้วยข้อมูลจริง", src: "/slides/forecast.html" },
   { id: "demo", chapter: "Live Demo", Comp: LiveDemo },
   { id: "demo-screens", chapter: "Live Demo", Comp: LiveDemoScreens },
-  { id: "poc-arch", chapter: "สถาปัตยกรรม", Comp: PocArchitecture },
   { id: "capex", chapter: "การลงทุน", Comp: CapexOpex },
   { id: "roi", chapter: "คืนทุน", Comp: RoiPayback },
   { id: "biz", chapter: "รูปแบบธุรกิจ", src: "/slides/EMS_BusinessModel_v2.html" },
@@ -32,6 +31,9 @@ const SLIDES = [
   { id: "recursive", chapter: "Backup — Recursive", Comp: RecursivePrediction },
   { id: "savings", chapter: "Backup — หลักการประหยัด", Comp: SavingsPrinciple },
   { id: "real-arch", chapter: "Backup — สถาปัตยกรรม", Comp: RealArchitecture },
+  { id: "poc-arch", chapter: "Backup — สถาปัตยกรรม PoC", Comp: PocArchitecture },
+  { id: "energy-cost", chapter: "Backup — ค่าไฟฟ้า 14 เดือน", src: "/slides/island_c_energy_cost.html", scroll: true },
+  { id: "biz-qa", chapter: "Backup — Business Model Q&A", src: "/livedemo/Backup_BusinessModel_QA.pdf#toolbar=0&navpanes=0&view=FitH" },
 ];
 
 export default function Deck() {
@@ -92,10 +94,10 @@ export default function Deck() {
         className={"deck-scaler" + (light ? " light" : "")}
         style={{ transform: `scale(${scale})` }}
       >
-        {SLIDES.map(({ id, Comp, src }, idx) => (
+        {SLIDES.map(({ id, Comp, src, scroll }, idx) => (
           <div key={id} className={"slide" + (idx === i ? " active" : "")}>
             {src ? (
-              <IframeSlide active={idx === i} src={src} />
+              <IframeSlide active={idx === i} src={src} scroll={scroll} />
             ) : (
               <Comp active={idx === i} />
             )}
@@ -125,14 +127,28 @@ export default function Deck() {
       </div>
 
       <div className="dots">
-        {SLIDES.map((s, idx) => (
-          <button
-            key={s.id}
-            className={"dot" + (idx === i ? " on" : "")}
-            onClick={() => go(idx)}
-            title={`${idx + 1}. ${s.chapter}`}
-          />
-        ))}
+        {SLIDES.map((s, idx) => {
+          const backup = s.chapter.startsWith("Backup");
+          const prevBackup = idx > 0 && SLIDES[idx - 1].chapter.startsWith("Backup");
+          const firstBackup = backup && !prevBackup;
+          return (
+            <button
+              key={s.id}
+              className={
+                "dot" +
+                (idx === i ? " on" : "") +
+                (backup ? " backup" : "") +
+                (firstBackup ? " sep" : "")
+              }
+              onClick={() => go(idx)}
+            >
+              <span className="dot-num">{idx + 1}</span>
+              <span className="dot-tip">
+                {idx + 1}. {s.chapter}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       <div className="hint">
