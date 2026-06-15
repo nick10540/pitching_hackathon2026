@@ -2,9 +2,9 @@
 import { useSteps } from "../anim";
 
 const CAPEX = [
-  ["ทีมพัฒนา (Development Team)", "฿2M", 25],
-  ["Edge device + เชื่อมต่อ SCADA Integration", "฿5M", 62.5],
-  ["ตั้งค่าเริ่มต้น AWS (Initial Setup)", "฿1M", 12.5],
+  ["ทีมพัฒนา (Development Team)", "฿1M", 14.3],
+  ["Edge device + เชื่อมต่อ SCADA Integration", "฿5M", 71.4],
+  ["ตั้งค่าเริ่มต้น AWS (Initial Setup)", "฿1M", 14.3],
 ];
 const OPEX = [
   ["ทีมบำรุงรักษา (MLOps 0.5 FTE)", "฿0.6M", 27.3],
@@ -33,7 +33,7 @@ export default function CapexOpex({ active }) {
               </div>
             ))}
           </div>
-          <div className="total cap">CAPEX รวม <b>฿8M</b></div>
+          <div className="total cap">CAPEX รวม <b>฿7M</b></div>
         </div>
 
         <div className={"panel opex" + (s >= 5 ? " show" : "")}>
@@ -52,7 +52,7 @@ export default function CapexOpex({ active }) {
       </div>
 
       <div className={"note" + (s >= 9 ? " show" : "")}>
-        💡 ลงทุนครั้งเดียว <b>฿8M</b> + ดูแลปีละ <b>฿2.2M</b> — เทียบกับค่าเสียโอกาส <b>฿158.7M/ปี</b> ที่เกาะเดียว
+        💡 ลงทุนครั้งเดียว <b>฿7M</b> + ดูแลปีละ <b>฿2.2M</b> — เทียบกับค่าเสียโอกาส <b>฿158.7M/ปี</b> ที่เกาะเดียว
       </div>
 
       <div className="brand-tag" style={{ color: "#94a3b8" }}>⚡ <b style={{ color: "#0284c7" }}>Smart Energy IQ</b> · CAPEX &amp; OPEX</div>

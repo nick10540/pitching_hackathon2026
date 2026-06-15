@@ -274,7 +274,6 @@ function frame(ts){
   punch.classList.toggle('show', p >= 0.985);
 
   if (p < 1) rafId = requestAnimationFrame(frame);
-  else setTimeout(() => { if(!paused) restart(); }, HOLD);
 }
 
 function restart(){

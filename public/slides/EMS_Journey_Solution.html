@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Journey + Solution รวมหน้าเดียว</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Prompt','Segoe UI',sans-serif;background:#fff;width:1280px;height:720px;overflow:hidden}
+  .stage{width:1280px;height:720px;background:#fff;padding:22px 36px;position:relative}
+
+  .head{text-align:center}
+  .head h1{font-size:25px;font-weight:800;color:#0f172a}
+  .head h1 .b{color:#dc2626} .head h1 .a{color:#16a34a}
+  .head .sub{font-size:13px;color:#64748b;font-weight:300;margin-top:1px}
+  .brand{position:absolute;top:24px;right:40px;text-align:right;font-size:11.5px;color:#94a3b8}
+  .brand b{color:#0284c7;font-weight:700;font-size:13px}
+
+  /* คอลัมน์หัว */
+  .colhead{display:flex;gap:16px;margin-top:14px}
+  .ch{flex:1;border-radius:12px;padding:8px 16px;display:flex;justify-content:space-between;align-items:center;
+    opacity:0;transform:translateY(8px);transition:all .5s}
+  .ch.on{opacity:1;transform:translateY(0)}
+  .ch.before{background:#fef2f2;border:1.5px solid #fecaca}
+  .ch.after{background:#f0fdf4;border:1.5px solid #bbf7d0}
+  .ch .nm{font-size:16px;font-weight:800}
+  .ch.before .nm{color:#b91c1c} .ch.after .nm{color:#15803d}
+  .ch .tag{font-size:12px;font-weight:700;border-radius:999px;padding:3px 12px}
+  .ch.before .tag{background:#fee2e2;color:#b91c1c} .ch.after .tag{background:#dcfce7;color:#15803d}
+
+  /* 3 แถวจับคู่ ปัญหา → วิธีแก้ */
+  .rows{margin-top:11px;display:flex;flex-direction:column;gap:10px}
+  .pair{display:flex;align-items:stretch;gap:0}
+  .prob{width:46%;background:#fef5f5;border:1.5px solid #fecaca;border-radius:12px;padding:11px 15px;
+    opacity:0;transform:translateX(-26px);transition:all .55s cubic-bezier(.2,.9,.3,1.15)}
+  .pair.on .prob{opacity:1;transform:translateX(0)}
+  .arrow{width:56px;display:flex;align-items:center;justify-content:center;font-size:24px;color:#0284c7;font-weight:800;
+    opacity:0;transform:scale(.4);transition:all .45s cubic-bezier(.2,.9,.3,1.5)}
+  .pair.on .arrow{opacity:1;transform:scale(1)}
+  .sol{flex:1;background:#f0f9ff;border:2px solid #7dd3fc;border-radius:12px;padding:11px 15px;
+    display:flex;gap:12px;align-items:center;box-shadow:0 3px 10px rgba(2,132,199,.08);
+    opacity:0;transform:translateX(26px);transition:all .55s cubic-bezier(.2,.9,.3,1.15)}
+  .pair.on .sol{opacity:1;transform:translateX(0)}
+
+  .prob .ic{font-size:18px} .prob .pt{font-size:14px;font-weight:700;color:#b91c1c;display:inline}
+  .prob .pd{font-size:11.5px;color:#64748b;margin-top:3px;line-height:1.35}
+  .prob .time{float:right;font-size:11px;font-weight:700;color:#dc2626}
+
+  .sol .sic{font-size:26px;flex-shrink:0}
+  .sol .stt{font-size:15px;font-weight:800;color:#075985}
+  .sol .sds{font-size:11.5px;color:#475569;margin-top:1px;line-height:1.35}
+  .sol .chip{margin-left:auto;flex-shrink:0;background:#dcfce7;color:#15803d;border:1px solid #86efac;
+    font-size:12px;font-weight:800;border-radius:999px;padding:4px 12px;white-space:nowrap;text-align:center}
+
+  /* แถบสรุปล่าง: ความเครียด + ผลลัพธ์ */
+  .foot{display:flex;gap:16px;margin-top:12px}
+  .fbox{flex:1;border-radius:12px;padding:10px 16px;opacity:0;transform:translateY(10px);transition:all .55s}
+  .fbox.on{opacity:1;transform:translateY(0)}
+  .fbox.fb{background:#fef2f2;border:1.5px solid #fecaca}
+  .fbox.fa{background:#f0fdf4;border:1.5px solid #bbf7d0}
+  .frow{display:flex;justify-content:space-between;align-items:center}
+  .fk{font-size:11.5px;color:#64748b} .fb .fk{color:#7f1d1d} .fa .fk{color:#166534}
+  .fv{font-size:15px;font-weight:800} .fb .fv{color:#dc2626} .fa .fv{color:#16a34a}
+  .bar{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-top:6px}
+  .bar .fill{height:100%;border-radius:99px;width:0;transition:width 1s ease}
+  .fb .fill{background:linear-gradient(90deg,#f59e0b,#ef4444)} .fa .fill{background:linear-gradient(90deg,#22c55e,#4ade80)}
+
+  .result{margin-top:11px;background:linear-gradient(135deg,#ecfdf5,#eff6ff);border:2px solid #86efac;border-radius:13px;
+    padding:11px 22px;text-align:center;opacity:0;transform:scale(.95);transition:all .6s cubic-bezier(.2,.9,.3,1.2)}
+  .result.on{opacity:1;transform:scale(1)}
+  .result .r{font-size:16.5px;font-weight:800;color:#0f172a}
+  .result .r .g{color:#15803d} .result .r .b{color:#0284c7}
+  .secure{font-size:11px;color:#64748b;margin-top:3px}
+  .secure b{color:#15803d}
+
+  .controls{position:absolute;bottom:4px;left:14px;display:flex;gap:8px;opacity:.3;z-index:50}
+  .controls:hover{opacity:1}
+  .controls button{background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;border-radius:8px;font-family:'Prompt';font-size:12px;padding:5px 12px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head">
+    <h1>คืนเดียวกัน เหตุการณ์เดียวกัน — <span class="b">ปัญหาเดิม</span> → <span class="a">ถูกแก้ทีละข้อ</span></h1>
+    <div class="sub">ตีสองบนเกาะเต่า · โหลดพุ่ง สายเคเบิลใต้น้ำ L6 ใกล้เต็มพิกัด · หลักการเดียว: เดินดีเซลเฉพาะเมื่อจำเป็น</div>
+  </div>
+  <div class="brand">⚡ <b>Smart Energy IQ</b><br>Journey + Solution</div>
+
+  <div class="colhead">
+    <div class="ch before" id="chb"><div class="nm">😰 ก่อนมีระบบ (วันนี้)</div><div class="tag">ใช้เวลา ~60 นาที · เครียด 95%</div></div>
+    <div class="ch after" id="cha"><div class="nm">😌 หลังมี Smart Energy IQ</div><div class="tag">ใช้เวลา 3 นาที · เครียด 12%</div></div>
+  </div>
+
+  <div class="rows">
+    <!-- คู่ 1 -->
+    <div class="pair" id="p1">
+      <div class="prob">
+        <span class="time">02:00–02:12</span>
+        <span class="ic">🔥</span> <span class="pt">เฝ้าจอเดาเอง · ดีเซลเดินเปล่า</span>
+        <div class="pd">DG9 เดินทิ้งไว้ "เผื่อ" — เผาเงิน ฿22.66M/เดือน กว่าจะรู้ว่าโหลดพุ่งก็เกือบเต็มสาย</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="sol">
+        <span class="sic">🤖</span>
+        <div><div class="stt">AI Dispatch Optimizer</div><div class="sds">คำนวณทุก 15 นาที — เดินดีเซลเฉพาะเมื่อจำเป็นจริง</div></div>
+        <div class="chip">DG9 −53.6%</div>
+      </div>
+    </div>
+    <!-- คู่ 2 -->
+    <div class="pair" id="p2">
+      <div class="prob">
+        <span class="time">02:12–02:15</span>
+        <span class="ic">📟</span> <span class="pt">ไม่มีระบบเตือนล่วงหน้า</span>
+        <div class="pd">ต้องวิทยุตามช่าง สื่อสารด้วยเสียง เสี่ยงคลาดเคลื่อน — รู้ตัวช้าทุกครั้ง</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="sol">
+        <span class="sic">📱</span>
+        <div><div class="stt">AI Forecast + LINE Alert</div><div class="sds">พยากรณ์แม่น MAPE 4.92% (Recursive 7 วัน) — เตือนก่อนวิกฤต</div></div>
+        <div class="chip">รู้ก่อน 16 นาที</div>
+      </div>
+    </div>
+    <!-- คู่ 3 -->
+    <div class="pair" id="p3">
+      <div class="prob">
+        <span class="time">02:16–02:28</span>
+        <span class="ic">🔌</span> <span class="pt">เกิดเหตุ = แก้เฉพาะหน้า</span>
+        <div class="pd">สายใต้น้ำขาด = ลุ้นกันสด ไม่มีแผนรับมือ → เสี่ยงดับทั้งเกาะ นักท่องเที่ยว 3,000+ คน</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="sol">
+        <span class="sic">🗺️</span>
+        <div><div class="stt">Scenario Simulation 9 เหตุการณ์</div><div class="sds">ซ้อมรับมือ L6 Trip · Ferranti · Peak ล่วงหน้า พร้อมแผน UFLS</div></div>
+        <div class="chip">มีแผนทุกเคส</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="fbox fb" id="fb">
+      <div class="frow"><span class="fk">ระดับความเครียด Operator (ก่อน)</span><span class="fv">95%</span></div>
+      <div class="bar"><div class="fill" id="fillb"></div></div>
+    </div>
+    <div class="fbox fa" id="fa">
+      <div class="frow"><span class="fk">ระดับความเครียด Operator (หลัง)</span><span class="fv">12%</span></div>
+      <div class="bar"><div class="fill" id="filla"></div></div>
+    </div>
+  </div>
+
+  <div class="result" id="result">
+    <div class="r">เปลี่ยนจาก "<span class="b">ลุ้น</span>ทั้งคืน 60 นาที" → "<span class="g">รู้ก่อน</span> กดยืนยัน 3 นาที" · ประหยัด <span class="g">฿13.23M/เดือน</span></div>
+    <div class="secure">🛡️ ปลอดภัย 100%: ระบบ <b>แนะนำเท่านั้น (Advisory)</b> · Operator ตัดสินใจเอง · ข้อมูลขึ้น Cloud ทางเดียวตาม IEC 62443</div>
+  </div>
+
+  <div class="controls">
+    <button onclick="restart()">↻ เล่นใหม่</button>
+    <button id="btnPause" onclick="togglePause()">⏸ พัก</button>
+  </div>
+</div>
+
+<script>
+  const $=id=>document.getElementById(id);
+  let timers=[],paused=false;
+  const SEQ=[
+    [200,()=>{$('chb').classList.add('on');$('cha').classList.add('on');}],
+    [800,()=>$('p1').classList.add('on')],
+    [1900,()=>$('p2').classList.add('on')],
+    [3000,()=>$('p3').classList.add('on')],
+    [4100,()=>{$('fb').classList.add('on');$('fa').classList.add('on');$('fillb').style.width='95%';$('filla').style.width='12%';}],
+    [5200,()=>$('result').classList.add('on')],
+  ];
+  function run(){timers.forEach(clearTimeout);timers=SEQ.map(([t,fn])=>setTimeout(fn,t));}
+  function restart(){document.querySelectorAll('.on').forEach(e=>e.classList.remove('on'));
+    $('fillb').style.width='0';$('filla').style.width='0';paused=false;$('btnPause').textContent='⏸ พัก';run();}
+  function togglePause(){paused=!paused;$('btnPause').textContent=paused?'▶ เล่น':'⏸ พัก';if(paused)timers.forEach(clearTimeout);else restart();}
+  run();
+</script>
+</body>
+</html>
