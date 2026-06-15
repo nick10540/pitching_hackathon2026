@@ -10,33 +10,28 @@ import PocArchitecture from "./slides/PocArchitecture";
 import RealArchitecture from "./slides/RealArchitecture";
 import CapexOpex from "./slides/CapexOpex";
 import RoiPayback from "./slides/RoiPayback";
-import BusinessModel from "./slides/BusinessModel";
 import TeamPartners from "./slides/TeamPartners";
 import RecursivePrediction from "./slides/RecursivePrediction";
 import LiveDemoScreens from "./slides/LiveDemoScreens";
 
-// Slides with `src` reuse the original self-contained animated HTML files
-// (embedded via iframe so their timelines play exactly as designed);
-// slides with `Comp` are native React components.
 const SLIDES = [
   { id: "cover", chapter: "ปก", Comp: Cover },
   { id: "intro", chapter: "Teaser", Comp: IntroVideo },
   { id: "hook", chapter: "As-is → Pain", src: "/slides/hook.html" },
-  { id: "journey", chapter: "As-is → Pain", src: "/slides/operator.html" },
+  { id: "journey", chapter: "As-is → Pain", src: "/slides/EMS_Journey_Solution.html" },
   { id: "opp", chapter: "ค่าเสียโอกาส", src: "/slides/opportunity.html" },
-  { id: "story", chapter: "Pain → Solution", src: "/slides/story.html" },
   { id: "forecast", chapter: "พิสูจน์ด้วยข้อมูลจริง", src: "/slides/forecast.html" },
-  { id: "poc-arch", chapter: "สถาปัตยกรรม", Comp: PocArchitecture },
-  { id: "real-arch", chapter: "สถาปัตยกรรม", Comp: RealArchitecture },
-  { id: "capex", chapter: "การลงทุน", Comp: CapexOpex },
-  { id: "roi", chapter: "คืนทุน", Comp: RoiPayback },
-  { id: "biz", chapter: "รูปแบบธุรกิจ", Comp: BusinessModel },
-  { id: "scale", chapter: "Scale-Out", src: "/slides/scaleout.html" },
-  { id: "team", chapter: "ทีม & พันธมิตร", Comp: TeamPartners },
   { id: "demo", chapter: "Live Demo", Comp: LiveDemo },
   { id: "demo-screens", chapter: "Live Demo", Comp: LiveDemoScreens },
+  { id: "poc-arch", chapter: "สถาปัตยกรรม", Comp: PocArchitecture },
+  { id: "capex", chapter: "การลงทุน", Comp: CapexOpex },
+  { id: "roi", chapter: "คืนทุน", Comp: RoiPayback },
+  { id: "biz", chapter: "รูปแบบธุรกิจ", src: "/slides/EMS_BusinessModel_v2.html" },
+  { id: "scale", chapter: "Scale-Out", src: "/slides/scale_strategy.html" },
+  { id: "team", chapter: "ทีม & พันธมิตร", Comp: TeamPartners },
   { id: "recursive", chapter: "Backup — Recursive", Comp: RecursivePrediction },
   { id: "savings", chapter: "Backup — หลักการประหยัด", Comp: SavingsPrinciple },
+  { id: "real-arch", chapter: "Backup — สถาปัตยกรรม", Comp: RealArchitecture },
 ];
 
 export default function Deck() {

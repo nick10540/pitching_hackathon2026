@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Business Model v2 — PEA-Owned Platform (animated)</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Prompt','Segoe UI',sans-serif;background:#fff;width:1280px;height:720px;overflow:hidden}
+  .stage{width:1280px;height:720px;background:#fff;padding:30px 40px;position:relative}
+
+  .t1{font-size:29px;font-weight:800;color:#0f172a;opacity:0;transform:translateY(-8px);transition:all .6s ease}
+  .t1.on{opacity:1;transform:translateY(0)}
+  .t1 .hl{color:#0284c7}
+  .t2{font-size:14.5px;color:#64748b;font-weight:300;margin-top:2px;opacity:0;transition:opacity .6s ease}
+  .t2.on{opacity:1}
+  .brand{position:absolute;top:32px;right:42px;text-align:right;font-size:12px;color:#94a3b8}
+  .brand b{color:#0284c7;font-weight:700;font-size:14px}
+
+  .row{display:flex;gap:16px;margin-top:18px;align-items:stretch}
+  .arrow{display:flex;align-items:center;font-size:26px;color:#cbd5e1;font-weight:800;flex-shrink:0;
+    opacity:0;transform:scale(.4);transition:all .5s cubic-bezier(.2,.9,.3,1.5)}
+  .arrow.on{opacity:1;transform:scale(1)}
+
+  .card{flex:1;border-radius:18px;padding:18px 18px 14px;position:relative;display:flex;flex-direction:column;min-height:466px;
+    opacity:0;transform:translateY(34px) scale(.96);transition:all .6s cubic-bezier(.2,.9,.3,1.2)}
+  .card.on{opacity:1;transform:translateY(0) scale(1)}
+  .c1{background:linear-gradient(180deg,#f0f9ff,#fff);border:2px solid #7dd3fc}
+  .c2{background:linear-gradient(180deg,#f0fdf4,#fff);border:2.5px solid #22c55e}
+  .c2.on{box-shadow:0 12px 34px rgba(34,197,94,.20)}
+  .c3{background:linear-gradient(180deg,#fffbeb,#fff);border:2px solid #fcd34d}
+
+  .badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%) scale(.4);background:#15803d;color:#fff;
+    font-size:12px;font-weight:700;border-radius:999px;padding:5px 16px;white-space:nowrap;opacity:0;transition:all .5s cubic-bezier(.2,.9,.3,1.6)}
+  .badge.on{opacity:1;transform:translateX(-50%) scale(1)}
+  .tier{font-size:12px;font-weight:700;letter-spacing:1px}
+  .c1 .tier{color:#0284c7} .c2 .tier{color:#15803d} .c3 .tier{color:#b45309}
+  .en{font-size:12.5px;color:#94a3b8;font-weight:500;margin-top:1px}
+  .nm{font-size:21px;font-weight:800;color:#0f172a;margin-top:5px;line-height:1.15}
+  .nm .ic{font-size:19px}
+
+  ul{list-style:none;margin-top:12px;flex:1}
+  li{font-size:13px;color:#334155;padding:4px 0 4px 20px;position:relative;line-height:1.4;
+    opacity:0;transform:translateX(-6px);transition:all .4s ease}
+  li.on{opacity:1;transform:translateX(0)}
+  li::before{content:'✓';position:absolute;left:0;font-weight:800}
+  .c1 li::before{color:#0284c7} .c2 li::before{color:#22c55e} .c3 li::before{color:#f59e0b}
+
+  .rev{border-radius:11px;padding:9px 12px;margin-top:8px;opacity:0;transform:translateY(8px);transition:all .5s cubic-bezier(.2,.9,.3,1.3)}
+  .rev.on{opacity:1;transform:translateY(0)}
+  .rev .rl{font-size:10.5px;font-weight:700;letter-spacing:.5px}
+  .rev .rv{font-size:12.5px;color:#0f172a;font-weight:600;margin-top:1px;line-height:1.3}
+  .rev.pcs{background:#e0f2fe;border:1px solid #bae6fd} .rev.pcs .rl{color:#0369a1}
+  .rev.pea{background:#dcfce7;border:1px solid #86efac} .rev.pea .rl{color:#15803d}
+  .rev.pea.on{animation:pop 1.4s ease 1}
+  @keyframes pop{0%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}60%{box-shadow:0 0 0 12px rgba(34,197,94,0)}}
+
+  .msg{margin-top:9px;font-size:12px;font-weight:600;line-height:1.35;padding:8px 12px;border-radius:10px;background:rgba(15,23,42,.04);
+    opacity:0;transition:opacity .5s ease}
+  .msg.on{opacity:1}
+  .c1 .msg{color:#075985} .c2 .msg{color:#15803d} .c3 .msg{color:#b45309}
+
+  .bottom{margin-top:16px;background:linear-gradient(135deg,#eff6ff,#f0fdf4);border:1.5px solid #93c5fd;border-radius:13px;
+    padding:12px 24px;text-align:center;opacity:0;transform:scale(.95);transition:all .6s cubic-bezier(.2,.9,.3,1.2)}
+  .bottom.on{opacity:1;transform:scale(1)}
+  .bottom .l{font-size:16px;font-weight:800;color:#0f172a}
+  .bottom .l .b1{color:#0284c7} .bottom .l .b2{color:#15803d}
+
+  .controls{position:absolute;bottom:6px;left:14px;display:flex;gap:8px;opacity:.25;z-index:40}
+  .controls:hover{opacity:1}
+  .controls button{background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;border-radius:8px;font-family:'Prompt';font-size:12px;padding:5px 12px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="t1" id="t1">Business Model — จาก<span class="hl">แพลตฟอร์มของ PEA</span> สู่บริการพลังงานรูปแบบใหม่</div>
+  <div class="t2" id="t2">PEA เป็นเจ้าของระบบ · ข้อมูลอยู่ในมือ PEA · ไม่กระทบระบบควบคุมจริง · ต่อยอดเป็นรายได้ใหม่</div>
+  <div class="brand">⚡ <b>Smart Energy IQ</b><br>Business Model</div>
+
+  <div class="row">
+    <div class="card c1" id="card1">
+      <div class="tier">STEP 1 · START TOMORROW</div>
+      <div class="en">PoC / Evaluation License</div>
+      <div class="nm"><span class="ic">🚀</span> เริ่มพรุ่งนี้ได้เลย</div>
+      <ul>
+        <li>ติดตั้งบน VM / Server ของ PEA</li>
+        <li>ใช้ historical + read-only SCADA เพื่อ validate</li>
+        <li>ส่งมอบ Forecast · EMS Recommend · Early Warning + รายงานผล</li>
+      </ul>
+      <div class="rev pcs"><div class="rl">▶ รายได้ Precise Nextxus</div><div class="rv">ค่า PoC + Implementation (ครั้งเดียว)</div></div>
+      <div class="msg">เริ่มเร็ว · ไม่แตะระบบควบคุมจริง · เห็นผลใน 20 วัน</div>
+    </div>
+
+    <div class="arrow" id="arr1">→</div>
+
+    <div class="card c2" id="card2">
+      <div class="badge" id="badge2">★ หัวใจของโมเดล</div>
+      <div class="tier">STEP 2 · PEA-OWNED PLATFORM</div>
+      <div class="en">On-Premise Perpetual License</div>
+      <div class="nm"><span class="ic">🏛️</span> PEA เป็นเจ้าของระบบ</div>
+      <ul>
+        <li>PEA ซื้อขาด ติดตั้งในระบบของตนเอง</li>
+        <li>ข้อมูลอยู่ภายใต้การควบคุมของ PEA ทั้งหมด</li>
+        <li>รองรับ On-premise / Private Cloud</li>
+        <li>Annual Maintenance — support · update · model tuning · security patch</li>
+      </ul>
+      <div class="rev pcs"><div class="rl">▶ รายได้ Precise Nextxus</div><div class="rv">License + Implementation + Maintenance รายปี</div></div>
+      <div class="msg">ตรงรูปแบบจัดซื้อ PEA · ตรวจรับได้ · ถือครองเป็นทรัพย์สินองค์กร</div>
+    </div>
+
+    <div class="arrow" id="arr2">→</div>
+
+    <div class="card c3" id="card3">
+      <div class="tier">STEP 3 · NEW REVENUE</div>
+      <div class="en">PEA Energy Service (Subscription)</div>
+      <div class="nm"><span class="ic">📈</span> PEA ต่อยอดเป็นบริการ</div>
+      <ul>
+        <li>PEA นำแพลตฟอร์มไปให้บริการลูกค้าของตัวเอง</li>
+        <li>บ้าน Solar · โรงแรม · รีสอร์ต · โรงงาน · EV · microgrid</li>
+        <li>Energy Monitor · Peak Alert · Solar+Battery · AI Advisor · ESG Report</li>
+      </ul>
+      <div class="rev pea"><div class="rl">▶ รายได้ PEA (รายใหม่!)</div><div class="rv">Subscription รายเดือน/ปี จากลูกค้า PEA</div></div>
+      <div class="msg">จากระบบลดต้นทุนภายใน → แพลตฟอร์มสร้างรายได้ใหม่ให้ PEA</div>
+    </div>
+  </div>
+
+  <div class="bottom" id="bottom">
+    <div class="l">แพลตฟอร์มเดียว — พิสูจน์ที่<span class="b1">เกาะเต่า</span> → <span class="b1">PEA เป็นเจ้าของ</span> → ขยายเป็น<span class="b2">ธุรกิจบริการพลังงานของ PEA เอง</span></div>
+  </div>
+
+  <div class="controls">
+    <button onclick="restart()">↻ เล่นใหม่</button>
+    <button id="btnPause" onclick="togglePause()">⏸ พัก</button>
+  </div>
+</div>
+
+<script>
+  const $=id=>document.getElementById(id);
+  function showCard(id, baseDelay){
+    const c=$(id); c.classList.add('on');
+    const lis=c.querySelectorAll('li'); lis.forEach((li,i)=>seq.push([baseDelay+300+i*180,()=>li.classList.add('on')]));
+    seq.push([baseDelay+300+lis.length*180+100,()=>c.querySelector('.rev').classList.add('on')]);
+    seq.push([baseDelay+300+lis.length*180+350,()=>c.querySelector('.msg').classList.add('on')]);
+  }
+  let seq=[], timers=[], paused=false;
+  function build(){
+    seq=[];
+    seq.push([200,()=>{$('t1').classList.add('on');}]);
+    seq.push([500,()=>{$('t2').classList.add('on');}]);
+    seq.push([900,()=>$('card1').classList.add('on')]); showCard('card1',900);
+    seq.push([2300,()=>{$('arr1').classList.add('on');}]);
+    seq.push([2600,()=>{$('card2').classList.add('on');$('badge2').classList.add('on');}]); showCard('card2',2600);
+    seq.push([4400,()=>{$('arr2').classList.add('on');}]);
+    seq.push([4700,()=>$('card3').classList.add('on')]); showCard('card3',4700);
+    seq.push([6700,()=>$('bottom').classList.add('on')]);
+  }
+  function run(){
+    timers.forEach(clearTimeout); timers=[];
+    seq.forEach(([t,fn])=>timers.push(setTimeout(fn,t)));
+  }
+  function restart(){
+    document.querySelectorAll('.on').forEach(e=>e.classList.remove('on'));
+    paused=false; $('btnPause').textContent='⏸ พัก';
+    build(); run();
+  }
+  function togglePause(){
+    paused=!paused; $('btnPause').textContent=paused?'▶ เล่น':'⏸ พัก';
+    if(paused) timers.forEach(clearTimeout); else restart();
+  }
+  build(); run();
+</script>
+</body>
+</html>
