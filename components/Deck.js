@@ -13,6 +13,7 @@ import RoiPayback from "./slides/RoiPayback";
 import TeamPartners from "./slides/TeamPartners";
 import RecursivePrediction from "./slides/RecursivePrediction";
 import LiveDemoScreens from "./slides/LiveDemoScreens";
+import OperatorView from "./slides/OperatorView";
 
 const SLIDES = [
   { id: "cover", chapter: "ปก", Comp: Cover },
@@ -23,8 +24,9 @@ const SLIDES = [
   { id: "forecast", chapter: "พิสูจน์ด้วยข้อมูลจริง", src: "/slides/forecast.html" },
   { id: "demo", chapter: "Live Demo", Comp: LiveDemo },
   { id: "demo-screens", chapter: "Live Demo", Comp: LiveDemoScreens },
+  { id: "operator", chapter: "Operator View", Comp: OperatorView },
+  { id: "roi", chapter: "impact", Comp: RoiPayback },
   { id: "capex", chapter: "การลงทุน", Comp: CapexOpex },
-  { id: "roi", chapter: "คืนทุน", Comp: RoiPayback },
   { id: "biz", chapter: "รูปแบบธุรกิจ", src: "/slides/EMS_BusinessModel_v2.html" },
   { id: "scale", chapter: "Scale-Out", src: "/slides/scale_strategy.html" },
   { id: "team", chapter: "ทีม & พันธมิตร", Comp: TeamPartners },
@@ -32,6 +34,7 @@ const SLIDES = [
   { id: "savings", chapter: "Backup — หลักการประหยัด", Comp: SavingsPrinciple },
   { id: "real-arch", chapter: "Backup — สถาปัตยกรรม", Comp: RealArchitecture },
   { id: "poc-arch", chapter: "Backup — สถาปัตยกรรม PoC", Comp: PocArchitecture },
+  { id: "forecast-detail", chapter: "Backup — วิธีพยากรณ์ (ละเอียด)", src: "/slides/koh-tao-forecast.html", scroll: true },
   { id: "energy-cost", chapter: "Backup — ค่าไฟฟ้า 14 เดือน", src: "/slides/island_c_energy_cost.html", scroll: true },
   { id: "biz-qa", chapter: "Backup — Business Model Q&A", src: "/livedemo/Backup_BusinessModel_QA.pdf#toolbar=0&navpanes=0&view=FitH" },
 ];

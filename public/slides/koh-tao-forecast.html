@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ระบบพยากรณ์โหลดไฟฟ้า เกาะเต่า — PEA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#081426;
+  --panel:#0F2138;
+  --panel2:#132A47;
+  --line:#1E3A5C;
+  --amber:#FFC23D;
+  --teal:#3FD8C7;
+  --purple:#C77DEB;
+  --red:#FF7A6B;
+  --text:#EAF1FB;
+  --muted:#8AA3C2;
+  --mono:'IBM Plex Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'IBM Plex Sans Thai',sans-serif;
+  overflow:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(63,216,199,.06), transparent 60%),
+    radial-gradient(900px 500px at 10% 110%, rgba(255,194,61,.05), transparent 60%);
+}
+
+/* ---------- deck ---------- */
+.slide{
+  position:absolute;inset:0;
+  display:none;
+  padding:48px 72px 110px;
+  flex-direction:column;
+  overflow-y:auto;
+}
+.slide::-webkit-scrollbar{width:8px}
+.slide::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+.slide.active{display:flex}
+.eyebrow{
+  font-family:var(--mono);font-size:13px;letter-spacing:.18em;
+  color:var(--muted);text-transform:uppercase;
+  display:flex;align-items:center;gap:12px;margin-bottom:14px;
+}
+.eyebrow::before{content:'';width:34px;height:1px;background:var(--amber)}
+h1{font-size:clamp(34px,4.6vw,58px);font-weight:700;line-height:1.15}
+h2{font-size:clamp(26px,3.2vw,40px);font-weight:700;line-height:1.2;margin-bottom:8px}
+.sub{color:var(--muted);font-size:clamp(15px,1.4vw,19px);font-weight:300;margin-top:10px;max-width:760px}
+.stage{flex:1;display:flex;align-items:center;justify-content:center;align-items:safe center;justify-content:safe center;min-height:min-content;margin-top:20px}
+.mono{font-family:'IBM Plex Mono',monospace}
+.amber{color:var(--amber)} .teal{color:var(--teal)} .purple{color:var(--purple)} .red{color:var(--red)}
+
+/* ---------- fragments: เผยทีละขั้นเมื่อกดถัดไป ---------- */
+[data-frag]{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease}
+[data-frag].show{opacity:1;transform:none}
+
+/* ---------- nav ---------- */
+#bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--amber),var(--teal));width:0;transition:width .45s ease;z-index:50}
+#hud{
+  position:fixed;bottom:0;left:0;right:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 28px;
+}
+#dots{display:flex;gap:9px}
+#dots button{
+  width:9px;height:9px;border-radius:50%;border:none;cursor:pointer;
+  background:var(--line);transition:.25s;
+}
+#dots button.on{background:var(--amber);transform:scale(1.35)}
+.navbtn{
+  background:var(--panel);border:1px solid var(--line);color:var(--text);
+  font-family:'IBM Plex Sans Thai',sans-serif;font-size:14px;
+  padding:9px 18px;border-radius:8px;cursor:pointer;transition:.2s;
+}
+.navbtn:hover{border-color:var(--amber);color:var(--amber)}
+#pageno{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.12em}
+.hint{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.kbd{border:1px solid var(--line);border-radius:5px;padding:1px 7px;background:var(--panel)}
+
+/* ---------- animations ---------- */
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{opacity:0;transform:scale(.85)}70%{transform:scale(1.04)}100%{opacity:1;transform:scale(1)}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes dash{to{stroke-dashoffset:-200}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes flowdot{0%{offset-distance:0%;opacity:0}8%{opacity:1}92%{opacity:1}100%{offset-distance:100%;opacity:0}}
+@keyframes growbar{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,194,61,.35)}50%{box-shadow:0 0 0 14px rgba(255,194,61,0)}}
+.slide.active .a{opacity:0;animation:rise .7s ease forwards}
+.slide.active .p{opacity:0;animation:pop .55s ease forwards}
+.d1{animation-delay:.15s!important}.d2{animation-delay:.4s!important}.d3{animation-delay:.65s!important}
+.d4{animation-delay:.9s!important}.d5{animation-delay:1.15s!important}.d6{animation-delay:1.4s!important}
+.d7{animation-delay:1.7s!important}.d8{animation-delay:2s!important}.d9{animation-delay:2.3s!important}
+.d10{animation-delay:2.6s!important}.d11{animation-delay:2.9s!important}.d12{animation-delay:3.2s!important}
+
+/* ---------- cards ---------- */
+.card{
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  padding:22px 24px;
+}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;max-width:1080px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;width:100%;max-width:1060px}
+.icon{font-size:30px;margin-bottom:10px}
+.ic{width:30px;height:30px;fill:none;stroke:var(--amber);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;display:block;margin-bottom:12px}
+.ic.teal{stroke:var(--teal)}
+.fnode .ic{margin:0 auto 8px}
+
+/* ---------- timeline แบ่งข้อมูล ---------- */
+.tl{width:100%;max-width:1020px;margin-bottom:30px;position:relative}
+.tlbar{display:flex;height:48px;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.seg{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;white-space:nowrap}
+.seg.lag{background:var(--panel2);color:var(--muted);font-size:11px}
+.seg.train{background:linear-gradient(90deg,rgba(255,194,61,.18),rgba(255,194,61,.42));color:var(--amber)}
+.seg.test{background:rgba(63,216,199,.22);color:var(--teal);position:relative}
+.seg.test::before{content:'';position:absolute;left:0;top:0;bottom:0;width:25%;background:rgba(63,216,199,.5)}
+.cut{position:absolute;top:-26px;bottom:-26px;left:91.5%;width:0;border-left:2px dashed var(--red)}
+.cut span{position:absolute;top:-2px;left:8px;font-family:var(--mono);font-size:11px;color:var(--red);white-space:nowrap}
+.tllab{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:8px}
+.card h3{font-size:18px;font-weight:600;margin-bottom:6px}
+.card p{font-size:14.5px;color:var(--muted);font-weight:300;line-height:1.65}
+.big{font-family:var(--mono);font-weight:600;font-size:clamp(40px,5vw,64px);line-height:1}
+.label{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+
+/* slide 1 */
+#s1 .stage{flex-direction:column;gap:0}
+.titlewrap{text-align:center;max-width:980px}
+.statrow{display:flex;gap:56px;justify-content:center;margin-top:42px}
+.stat{text-align:center}
+.stat .big{font-size:clamp(34px,4vw,52px)}
+.wavebox{width:min(900px,92%);margin-top:46px}
+.wavebox svg{width:100%;height:auto;display:block}
+.wave-actual{fill:none;stroke:var(--amber);stroke-width:3;stroke-linecap:round;
+  filter:drop-shadow(0 0 8px rgba(255,194,61,.55));
+  stroke-dasharray:1600;stroke-dashoffset:1600}
+.slide.active .wave-actual{animation:draw 2.8s .6s ease forwards}
+.wave-pred{fill:none;stroke:var(--teal);stroke-width:2.4;stroke-linecap:round;
+  stroke-dasharray:7 9;opacity:0}
+.slide.active .wave-pred{opacity:1;transition:opacity .6s 2.6s;animation:dash 6s 2.6s linear infinite}
+.legend{display:flex;gap:28px;justify-content:center;margin-top:14px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:22px;height:3px;border-radius:2px;vertical-align:middle;margin-right:8px}
+
+/* slide 2 — flow */
+.flow{display:flex;align-items:center;gap:0;justify-content:center;width:100%;max-width:1100px}
+.fnode{
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  padding:20px 22px;width:240px;text-align:center;flex-shrink:0;
+}
+.fnode .icon{margin-bottom:6px}
+.fnode b{display:block;font-size:17px;margin-bottom:4px}
+.fnode span{font-size:13px;color:var(--muted);font-weight:300}
+.farrow{flex:1;max-width:90px;height:2px;background:linear-gradient(90deg,var(--line),var(--amber));position:relative;margin:0 6px}
+.farrow::after{content:'';position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left-color:var(--amber)}
+.fnode.hl{border-color:var(--amber)}
+.fnode.hl.show{animation:pulse 2.4s .8s ease-out infinite}
+
+/* slide 3 — data */
+.datawrap{display:grid;grid-template-columns:1fr 1.15fr;gap:40px;width:100%;max-width:1120px;align-items:center}
+.counterbox{text-align:center}
+.counterbox .big{color:var(--amber)}
+.tickrow{display:flex;gap:10px;justify-content:center;margin:26px 0 8px;height:38px;align-items:flex-end}
+.tick{width:7px;background:var(--teal);border-radius:2px;transform-origin:bottom;transform:scaleY(0)}
+.slide.active .tick{animation:growbar .5s ease forwards}
+.featlist{display:flex;flex-direction:column;gap:9px}
+.feat{
+  display:flex;align-items:center;gap:14px;background:var(--panel);
+  border:1px solid var(--line);border-radius:10px;padding:10px 16px;font-size:14.5px;
+}
+.feat code{font-family:var(--mono);color:var(--teal);font-size:13px;min-width:128px}
+.feat span{color:var(--muted);font-weight:300}
+
+/* slide 4 — patterns */
+.brain{display:grid;grid-template-columns:1fr 1fr;gap:34px;width:100%;max-width:1100px;align-items:start}
+.rule{
+  background:var(--panel);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;
+  padding:13px 18px;font-size:15px;margin-bottom:12px;
+}
+.rule b{color:var(--amber);font-weight:600}
+.learn{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 24px}
+.learn h3{font-size:16px;margin-bottom:16px;color:var(--muted);font-weight:500}
+.try{display:flex;align-items:center;gap:12px;margin-bottom:14px;font-family:var(--mono);font-size:14px}
+.try .tag{font-family:'IBM Plex Sans Thai';font-size:12px;color:var(--muted);min-width:56px}
+.errbar{height:12px;border-radius:6px;background:var(--red);transform-origin:left;transform:scaleX(0)}
+.slide.active .errbar{animation:growbar .8s ease forwards;transform-origin:left}
+@keyframes growx{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.slide.active .errbar{animation-name:growx}
+
+/* slide 5 — recursive */
+.chain{display:flex;flex-direction:column;gap:16px;width:100%;max-width:980px}
+.day{
+  display:grid;grid-template-columns:96px 1fr 170px;gap:18px;align-items:center;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 20px;
+}
+.day .dlab{font-family:var(--mono);font-size:14px;color:var(--muted)}
+.day .src{font-size:14px;line-height:1.7;font-weight:300}
+.pill{display:inline-block;font-family:var(--mono);font-size:11.5px;border-radius:20px;padding:1px 10px;margin-left:6px;vertical-align:1px}
+.pill.real{background:rgba(63,216,199,.14);color:var(--teal);border:1px solid rgba(63,216,199,.4)}
+.pill.pred{background:rgba(255,194,61,.13);color:var(--amber);border:1px solid rgba(255,194,61,.4)}
+.errcell{text-align:right}
+.errcell .mono{font-size:20px;font-weight:600}
+.errcell small{display:block;color:var(--muted);font-size:11.5px;margin-top:2px}
+.honest{
+  max-width:980px;width:100%;margin-top:8px;
+  background:rgba(63,216,199,.07);border:1px solid rgba(63,216,199,.35);
+  border-radius:12px;padding:14px 20px;font-size:14.5px;color:var(--text);font-weight:300;
+}
+.honest b{color:var(--teal);font-weight:600}
+
+/* slide 6 — backtest */
+.chartwrap{width:100%;max-width:1020px}
+.chartwrap svg{width:100%;height:auto}
+.axis{stroke:var(--line);stroke-width:1}
+.axlab{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.bt-actual{fill:none;stroke:var(--amber);stroke-width:2.6;stroke-dasharray:2400;stroke-dashoffset:2400;
+  filter:drop-shadow(0 0 6px rgba(255,194,61,.4))}
+.slide.active .bt-actual{animation:draw 3s .4s ease forwards}
+.bt-pred{fill:none;stroke:var(--teal);stroke-width:2.2;stroke-dasharray:6 8;opacity:0}
+.slide.active .bt-pred{opacity:1;transition:opacity .8s 2.8s}
+.btstats{display:flex;gap:48px;justify-content:center;margin-top:18px}
+.btstats .stat .big{font-size:clamp(28px,3vw,40px)}
+
+/* slide 7 — production */
+.mode{position:relative}
+.mode h3{font-size:19px;margin-bottom:4px}
+.mode .mape{font-family:var(--mono);font-size:30px;font-weight:600;margin:12px 0 8px}
+.mode ul{list-style:none;margin-top:8px}
+.mode li{font-size:14px;color:var(--muted);font-weight:300;padding:4px 0 4px 18px;position:relative}
+.mode li::before{content:'·';position:absolute;left:4px;color:var(--amber)}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin-top:14px;font-family:var(--mono);font-size:12.5px}
+.mixbar div{display:flex;align-items:center;justify-content:center;color:#08131f;font-weight:600}
+.mx{background:var(--amber);width:70%}
+.ms{background:var(--teal);width:30%}
+
+/* slide 8 — benefit */
+.benefit{display:grid;grid-template-columns:1fr 1fr;gap:26px;width:100%;max-width:1080px}
+.price{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px dashed var(--line);padding:10px 2px;font-size:15px}
+.price .mono{font-size:17px;font-weight:600}
+.decide{
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 24px;
+}
+.step{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.step .n{
+  font-family:var(--mono);font-size:13px;color:var(--amber);border:1px solid rgba(255,194,61,.45);
+  width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;
+}
+.step p{font-size:14.5px;font-weight:300;color:var(--text);line-height:1.6}
+.step p span{color:var(--muted)}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0ms!important;transition:none!important}
+  .wave-actual,.bt-actual{stroke-dashoffset:0!important}
+  .wave-pred,.bt-pred{opacity:1!important}
+  .slide.active .a,.slide.active .p{opacity:1}
+}
+@media (max-width:900px){
+  .slide{padding:32px 24px 84px}
+  .grid3,.grid2,.datawrap,.brain,.benefit{grid-template-columns:1fr;gap:14px}
+  .flow{flex-direction:column}
+  .farrow{display:none}
+  .day{grid-template-columns:1fr;gap:8px}
+  .errcell{text-align:left}
+  .statrow{gap:26px;flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
+  <symbol id="ic-model" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2.2"/><circle cx="19" cy="6" r="2.2"/><circle cx="19" cy="18" r="2.2"/><path d="M7.1 11.1l9.6-4.2M7.1 12.9l9.6 4.2"/></symbol>
+  <symbol id="ic-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M6.5 15l4-5 3 3 5-7"/></symbol>
+  <symbol id="ic-engine" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></symbol>
+  <symbol id="ic-plug" viewBox="0 0 24 24"><path d="M9 2.5V8M15 2.5V8M7 8h10v3.5a5 5 0 0 1-10 0z"/><path d="M12 16.5v5"/></symbol>
+  <symbol id="ic-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.6h3.4a2.1 2.1 0 1 1 0 4.2H9.5"/></symbol>
+  <symbol id="ic-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+  <symbol id="ic-shield" viewBox="0 0 24 24"><path d="M12 2.5l8 3v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10v-6z"/><path d="M8.5 12l2.4 2.4 4.6-4.8"/></symbol>
+</svg>
+
+<div id="bar"></div>
+
+<!-- ════════ SLIDE 1 : TITLE ════════ -->
+<section class="slide" id="s1">
+  <div class="eyebrow a">PEA · เกาะเต่า · AI Load Forecast</div>
+  <div class="stage">
+    <div class="titlewrap">
+      <h1 class="a d1">ระบบพยากรณ์โหลดไฟฟ้า<br>ล่วงหน้า <span class="amber">24 ชั่วโมง</span></h1>
+      <p class="sub a d2" style="margin:14px auto 0">ให้ AI ช่วยตอบ 2 คำถามทุกวัน — เปิด DG9 เมื่อไร · ประหยัดต้นทุนได้แค่ไหน</p>
+      <div class="statrow">
+        <div class="stat p d3"><div class="big amber">4.92<span style="font-size:.5em">%</span></div><div class="label" style="margin-top:8px">ความคลาดเคลื่อนเฉลี่ย (MAPE)</div></div>
+        <div class="stat p d4"><div class="big teal">40,032</div><div class="label" style="margin-top:8px">จุดข้อมูลทั้งหมด (เทรน + ทดสอบ)</div></div>
+        <div class="stat p d5"><div class="big purple">96</div><div class="label" style="margin-top:8px">ช่วงพยากรณ์ / วัน (ทุก 15 นาที)</div></div>
+      </div>
+    </div>
+    <div class="wavebox">
+      <svg viewBox="0 0 900 190" aria-label="กราฟโหลด 24 ชั่วโมง">
+        <line x1="0" y1="160" x2="900" y2="160" class="axis"/>
+        <text x="2"   y="178" class="axlab">00:00</text>
+        <text x="430" y="178" class="axlab">12:00</text>
+        <text x="858" y="178" class="axlab">24:00</text>
+        <path class="wave-actual" d="M0,118 C60,128 100,138 150,134 C210,128 240,96 300,78 C350,64 400,60 450,56 C500,52 540,58 590,52 C640,46 680,30 730,34 C780,38 840,72 900,96"/>
+        <path class="wave-pred"   d="M0,122 C60,132 100,142 150,138 C210,131 240,100 300,83 C350,69 400,66 450,61 C500,57 540,63 590,57 C640,50 680,36 730,40 C780,44 840,77 900,100"/>
+      </svg>
+      <div class="legend a d6">
+        <span><i style="background:var(--amber)"></i>โหลดจริง (MW)</span>
+        <span><i style="background:repeating-linear-gradient(90deg,var(--teal) 0 6px,transparent 6px 11px)"></i>AI พยากรณ์</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ SLIDE 2 : WHAT ════════ -->
+<section class="slide" id="s2">
+  <div class="eyebrow a">01 · ระบบทำอะไร</div>
+  <h2 class="a d1">มองเห็นโหลดวันพรุ่งนี้ <span class="amber">ก่อนที่มันจะเกิดขึ้น</span></h2>
+  <p class="sub a d2">ทุกวัน ระบบจะพยากรณ์โหลดไฟฟ้าของเกาะเต่า ล่วงหน้า 24 ชั่วโมง ทีละ 15 นาที (96 ช่วง) เพื่อใช้วางแผนเดินเครื่องและซื้อไฟ</p>
+  <div class="stage" style="flex-direction:column;gap:42px">
+    <div class="flow">
+      <div class="fnode" data-frag="1"><svg class="ic teal"><use href="#ic-db"/></svg><b>ข้อมูลย้อนหลัง 1 ปี</b><span>โหลดจริงทุก 15 นาที</span></div>
+      <div class="farrow" data-frag="2"></div>
+      <div class="fnode hl" data-frag="2"><svg class="ic"><use href="#ic-model"/></svg><b>โมเดลหา Pattern</b><span>XGBoost · 100 Decision Trees</span></div>
+      <div class="farrow" data-frag="3"></div>
+      <div class="fnode" data-frag="3"><svg class="ic teal"><use href="#ic-chart"/></svg><b>พยากรณ์ 24 ชม.</b><span>โหลดพรุ่งนี้ ทีละ 15 นาที</span></div>
+    </div>
+    <div class="grid2" style="max-width:760px">
+      <div class="card" data-frag="4"><svg class="ic"><use href="#ic-engine"/></svg><h3>เปิด DG9 เมื่อไร</h3><p>รู้ล่วงหน้าว่าช่วงไหนโหลดจะพีค จึงวางแผนเดินเครื่องดีเซลได้พอดี ไม่เปิดเผื่อทิ้งไว้</p></div>
+      <div class="card" data-frag="5"><svg class="ic"><use href="#ic-coin"/></svg><h3>ประหยัดต้นทุนได้เท่าไร</h3><p>ระบบเทียบต้นทุน DG9 กับค่าไฟ Peak / Off-peak ให้อัตโนมัติ เลือกทางที่ถูกที่สุด</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ SLIDE 3 : DATA ════════ -->
+<section class="slide" id="s3">
+  <div class="eyebrow a">02 · ข้อมูลที่ใช้เรียนรู้</div>
+  <h2 class="a d1">บันทึกทุก <span class="teal">15 นาที</span> ต่อเนื่อง <span class="teal">389 วัน</span></h2>
+  <p class="sub a d2">คนจำโหลดย้อนหลังได้ 10–20 วัน แต่ AI จำได้ทั้งปี ละเอียดกว่าประมาณ 1,000 เท่า</p>
+  <div class="stage">
+    <div class="datawrap">
+      <div class="counterbox card a d3" style="padding:38px 24px">
+        <div class="label">จุดข้อมูลที่ใช้เทรน</div>
+        <div class="big" id="counter" data-target="37344" style="margin:14px 0 4px">0</div>
+        <div class="label">จุด · 8 ม.ค. 2025 → 31 ม.ค. 2026 (อีก 2,688 จุดเก็บไว้ทดสอบ)</div>
+        <div class="tickrow">
+          <div class="tick" style="height:14px;animation-delay:.4s"></div>
+          <div class="tick" style="height:20px;animation-delay:.5s"></div>
+          <div class="tick" style="height:28px;animation-delay:.6s"></div>
+          <div class="tick" style="height:22px;animation-delay:.7s"></div>
+          <div class="tick" style="height:32px;animation-delay:.8s"></div>
+          <div class="tick" style="height:38px;animation-delay:.9s"></div>
+          <div class="tick" style="height:30px;animation-delay:1s"></div>
+          <div class="tick" style="height:24px;animation-delay:1.1s"></div>
+          <div class="tick" style="height:34px;animation-delay:1.2s"></div>
+          <div class="tick" style="height:26px;animation-delay:1.3s"></div>
+          <div class="tick" style="height:18px;animation-delay:1.4s"></div>
+        </div>
+        <div class="label" style="font-size:11px">1 แท่ง = โหลด 1 ช่วงเวลา (15 นาที)</div>
+      </div>
+      <div class="featlist">
+        <div class="feat a d4"><code>load_mw</code><span>โหลดตอนนี้ เช่น 2.56 MW — สิ่งที่ AI ต้องทายให้ถูก</span></div>
+        <div class="feat a d5"><code>hour / dayofweek</code><span>เวลาในวัน + วันในสัปดาห์ (เที่ยงโหลดสูง, เสาร์คนเยอะ)</span></div>
+        <div class="feat a d6"><code>month / is_weekend</code><span>ฤดูกาลและวันหยุด (เมษายนร้อน เปิดแอร์เต็มที่)</span></div>
+        <div class="feat a d7"><code>load_lag_1h</code><span>โหลดเมื่อ 1 ชม.ก่อน → บอกแนวโน้มล่าสุด</span></div>
+        <div class="feat a d8"><code>load_lag_24h</code><span>โหลดเมื่อวานเวลาเดียวกัน → Pattern รายวัน</span></div>
+        <div class="feat a d9"><code>load_lag_168h</code><span>โหลดสัปดาห์ก่อนเวลาเดียวกัน → Pattern รายสัปดาห์</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ SLIDE : DATA SPLIT ════════ -->
+<section class="slide" id="s3b">
+  <div class="eyebrow a">03 · การแบ่งข้อมูล เทรน / ทดสอบ</div>
+  <h2 class="a d1">ตัดข้อมูลที่ <span class="red">1 ก.พ. 2026</span> — ก่อนหน้าใช้เทรน หลังจากนั้นใช้ Test</h2>
+  <p class="sub a d2">ข้อมูลทั้งหมด 1 ม.ค. 2025 – 28 ก.พ. 2026 · ใช้งานจริง 417 วัน (เทรน 389 + ทดสอบ 28)</p>
+  <div class="stage" style="flex-direction:column">
+    <div class="tl a d3" style="margin-top:30px">
+      <div class="tlbar">
+        <div class="seg lag" style="width:2.5%" title="1–7 ม.ค. 2025"></div>
+        <div class="seg train" style="width:89%">เทรน 389 วัน (92%)</div>
+        <div class="seg test" style="width:8.5%">28 วัน</div>
+      </div>
+      <div class="cut"><span>ตัด 1 ก.พ. 2026</span></div>
+      <div class="tllab"><span>1 ม.ค. 2025</span><span>8 ม.ค. 2025 — 31 ม.ค. 2026</span><span>28 ก.พ. 2026</span></div>
+    </div>
+    <div class="grid2" style="margin-top:26px">
+      <div class="card a d4">
+        <div class="label amber" style="margin-bottom:8px">Training</div>
+        <p style="font-size:15px;color:var(--text)">8 ม.ค. 2025 – 31 ม.ค. 2026<br><span class="mono amber" style="font-size:18px">389 วัน = 37,344 จุด</span></p>
+        <p style="margin-top:8px">สัปดาห์แรก (1–7 ม.ค. 2025) ใช้เป็นค่าอ้างอิงย้อนหลัง 168 ชม. ให้ lag features จึงไม่นับเป็นวันเทรน</p>
+      </div>
+      <div class="card a d5">
+        <div class="label teal" style="margin-bottom:8px">Validation (ทดสอบ)</div>
+        <p style="font-size:15px;color:var(--text)">1 – 28 ก.พ. 2026<br><span class="mono teal" style="font-size:18px">28 วัน = 2,688 จุด (7%)</span></p>
+        <p style="margin-top:8px">รายงานผลจาก Window 1 = 7 วันแรก (1–7 ก.พ. · 672 จุด) → <b style="color:var(--amber)">MAPE 4.92%</b></p>
+      </div>
+      <div class="card a d6">
+        <svg class="ic teal"><use href="#ic-shield"/></svg>
+        <h3>โมเดลไม่เคยเห็น ก.พ. 2026</h3>
+        <p>ข้อมูลทดสอบถูกแยกออกจากการเทรนโดยสิ้นเชิง ผลที่ได้จึงสะท้อนการทายข้อมูล "อนาคต" จริง ๆ</p>
+      </div>
+      <div class="card a d7">
+        <svg class="ic"><use href="#ic-chart"/></svg>
+        <h3>ทดสอบแบบ Recursive</h3>
+        <p>ระหว่างทดสอบใช้ค่าที่ทำนายเองต่อโซ่ ไม่แอบใช้ค่าจริง — เหมือนสภาพการใช้งานจริงทุกประการ (รายละเอียดในสไลด์วิธีพยากรณ์)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ SLIDE 4 : LEARN ════════ -->
+<section class="slide" id="s4">
+  <div class="eyebrow a">04 · โมเดลเรียนรู้อย่างไร</div>
+  <h2 class="a d1">หา Pattern จากข้อมูล แล้ว<span class="amber">เรียนรู้จากความผิดพลาด</span></h2>
+  <p class="sub a d2">XGBoost ใช้ Decision Trees 100 ต้นช่วยกันโหวต แต่ละต้นแก้จุดที่ต้นก่อนหน้าทายผิด</p>
+  <div class="stage">
+    <div class="brain">
+      <div>
+        <div class="label a d3" style="margin-bottom:14px">ตัวอย่าง Pattern ที่ AI ค้นพบ</div>
+        <div class="rule a d4">วันเสาร์ + เที่ยง → โหลด <b>4.5–5.0 MW</b> <span style="color:var(--muted)">(นักท่องเที่ยวเยอะ)</span></div>
+        <div class="rule a d5">วันจันทร์ + เช้า → โหลด <b>3.2–3.5 MW</b></div>
+        <div class="rule a d6">เมษายน สูงกว่าพฤศจิกายน <b>~30%</b> <span style="color:var(--muted)">(อากาศร้อน แอร์ทำงานหนัก)</span></div>
+        <div class="rule a d7">วันหยุด โหลดสูงกว่าวันธรรมดา <b>15–20%</b></div>
+      </div>
+      <div class="learn a d8">
+        <h3>วงจรการเรียนรู้ — ยิ่งฝึก ยิ่งผิดน้อยลง</h3>
+        <div class="try">
+          <span class="tag">รอบที่ 1</span>
+          <span>ทาย 3.5 → จริง 3.8</span>
+        </div>
+        <div class="errbar d9" style="width:78%;animation-delay:1.2s"></div>
+        <div class="label" style="margin:4px 0 18px">ผิด 0.30 MW</div>
+        <div class="try">
+          <span class="tag">รอบที่ 2</span>
+          <span>ปรับใหม่ → ทาย 3.7 → จริง 3.8</span>
+        </div>
+        <div class="errbar d10" style="width:26%;background:var(--amber);animation-delay:1.7s"></div>
+        <div class="label" style="margin:4px 0 18px">ผิด 0.10 MW</div>
+        <div class="try">
+          <span class="tag">รอบที่ N</span>
+          <span class="teal">ทำซ้ำจนความผิดพลาดต่ำสุด ✓</span>
+        </div>
+        <div class="errbar d11" style="width:8%;background:var(--teal);animation-delay:2.2s"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ SLIDE 5 : RECURSIVE ════════ -->
+<section class="slide" id="s5">
+  <div class="eyebrow a">05 · วิธีพยากรณ์แบบ Recursive</div>
+  <h2 class="a d1">วันแรกใช้ค่าจริง วันถัดไป<span class="amber">ใช้ค่าที่ตัวเองทายไว้</span></h2>
+  <p class="sub a d2">เหมือนการใช้งานจริง — พรุ่งนี้ยังไม่เกิดขึ้น จึงไม่มีค่าจริงให้ใช้ ต้องต่อโซ่จากค่าที่พยากรณ์เอง</p>
+  <div class="stage" style="flex-direction:column;gap:14px">
+    <div class="chain">
+      <div class="day p d3">
+        <div class="dlab">วันที่ 1</div>
+        <div class="src">โหลด 1 ชม.ก่อน = 3.50 <span class="pill real">จริง</span><br>โหลด 24 ชม.ก่อน = 3.20 <span class="pill real">จริง</span></div>
+        <div class="errcell"><span class="mono teal">0.57%</span><small>ความคลาดเคลื่อน — แม่นมาก</small></div>
+      </div>
+      <div class="day p d5">
+        <div class="dlab">วันที่ 2</div>
+        <div class="src">โหลด 1 ชม.ก่อน = 3.48 <span class="pill pred">ค่าทำนาย</span><br>โหลด 24 ชม.ก่อน = 3.20 <span class="pill real">จริง</span></div>
+        <div class="errcell"><span class="mono amber">4.2%</span><small>เริ่มสะสมความคลาดเคลื่อน</small></div>
+      </div>
+      <div class="day p d7">
+        <div class="dlab">วันที่ 3+</div>
+        <div class="src">โหลด 1 ชม.ก่อน = 3.52 <span class="pill pred">ค่าทำนาย</span><br>โหลด 24 ชม.ก่อน = 3.48 <span class="pill pred">ค่าทำนาย</span></div>
+        <div class="errcell"><span class="mono red">5.0%</span><small>ยิ่งไกล ยิ่งสะสม — เป็นเรื่องปกติ</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ SLIDE : HONEST TEST ════════ -->
+<section class="slide" id="s5b">
+  <div class="eyebrow a">06 · ความน่าเชื่อถือของตัวเลข</div>
+  <h2 class="a d1">ทำไมเราไม่แอบใช้ค่าจริงตอนทดสอบ</h2>
+  <p class="sub a d2">ตัวเลข MAPE จะเชื่อถือได้ ก็ต่อเมื่อวิธีทดสอบเหมือนการใช้งานจริงเท่านั้น</p>
+  <div class="stage">
+    <div class="grid2">
+      <div class="card p d3" style="border-color:rgba(255,122,107,.45)">
+        <div class="label red" style="margin-bottom:10px">แบบที่เราไม่ทำ</div>
+        <h3>ป้อนค่าจริงเป็น Input ตลอด</h3>
+        <div class="mape red" style="font-family:var(--mono);font-size:30px;font-weight:600;margin:12px 0 8px">MAPE ~0.5%</div>
+        <p>ตัวเลขสวยมาก แต่หลอกตัวเอง — เวลาใช้งานจริง "พรุ่งนี้" ยังไม่เกิดขึ้น จึงไม่มีค่าจริงให้ป้อน วิธีนี้ใช้นอกห้องทดลองไม่ได้</p>
+      </div>
+      <div class="card p d5" style="border-color:rgba(63,216,199,.5)">
+        <div class="label teal" style="margin-bottom:10px">แบบที่เราใช้</div>
+        <h3>Recursive — ใช้ค่าที่ทำนายเองต่อโซ่</h3>
+        <div class="mape teal" style="font-family:var(--mono);font-size:30px;font-weight:600;margin:12px 0 8px">MAPE 4.92%</div>
+        <p>เงื่อนไขเดียวกับการใช้งานจริงทุกประการ ตัวเลขที่ได้จึงเป็นความแม่นที่ "จะเกิดขึ้นจริง" เมื่อนำไปใช้วางแผน ไม่ใช่ตัวเลขโชว์</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ SLIDE 6 : BACKTEST ════════ -->
+<section class="slide" id="s6">
+  <div class="eyebrow a">07 · ผลทดสอบ Backtest</div>
+  <h2 class="a d1">ทายล่วงหน้า 7 วัน กับข้อมูลที่ AI <span class="teal">ไม่เคยเห็นมาก่อน</span></h2>
+  <p class="sub a d2">เทรนด้วยข้อมูล 8 ม.ค. 2025 – 31 ม.ค. 2026 แล้วให้ทาย 1–7 ก.พ. 2026 (Window 1) เทียบกับค่าจริง</p>
+  <div class="stage" style="flex-direction:column">
+    <div class="chartwrap a d3">
+      <svg viewBox="0 0 1000 300" aria-label="กราฟเทียบโหลดจริงกับค่าพยากรณ์ 7 วัน">
+        <line x1="50" y1="260" x2="980" y2="260" class="axis"/>
+        <line x1="50" y1="40"  x2="50"  y2="260" class="axis"/>
+        <text x="14" y="68"  class="axlab">5 MW</text>
+        <text x="14" y="158" class="axlab">3.5</text>
+        <text x="14" y="248" class="axlab">2 MW</text>
+        <text x="60"  y="282" class="axlab">1 ก.พ.</text>
+        <text x="490" y="282" class="axlab">4 ก.พ.</text>
+        <text x="930" y="282" class="axlab">7 ก.พ.</text>
+        <path class="bt-actual" d="M50,200 C70,150 85,95 110,90 C130,86 145,140 165,190 C185,235 200,210 215,160 C235,100 250,80 275,84 C295,88 310,150 330,195 C350,232 365,205 380,158 C400,102 415,78 440,82 C460,86 478,145 498,192 C518,230 532,200 548,152 C568,98 585,72 610,76 C630,80 648,140 668,188 C688,228 702,198 718,150 C738,98 755,70 780,74 C800,78 818,138 838,186 C858,226 872,196 888,148 C908,96 925,88 945,110 C960,128 970,170 980,196"/>
+        <path class="bt-pred"   d="M50,206 C70,158 85,104 110,98 C130,94 145,146 165,196 C185,238 200,214 215,166 C235,108 250,90 275,94 C295,98 310,156 330,200 C350,236 365,210 380,165 C400,110 415,88 440,92 C460,96 478,152 498,198 C518,234 532,206 548,160 C568,106 585,82 610,86 C630,90 648,148 668,194 C688,232 702,204 718,158 C738,106 755,80 780,84 C800,88 818,146 838,192 C858,230 872,202 888,156 C908,104 925,96 945,118 C960,136 970,176 980,202"/>
+      </svg>
+      <div class="legend">
+        <span><i style="background:var(--amber)"></i>โหลดจริง</span>
+        <span><i style="background:repeating-linear-gradient(90deg,var(--teal) 0 6px,transparent 6px 11px)"></i>AI พยากรณ์</span>
+      </div>
+    </div>
+    <div class="btstats">
+      <div class="stat p d6"><div class="big amber">4.92%</div><div class="label" style="margin-top:6px">MAPE เฉลี่ย 7 วัน</div></div>
+      <div class="stat p d7"><div class="big">±0.17<span style="font-size:.45em"> MW</span></div><div class="label" style="margin-top:6px">คลาดเคลื่อนทั่วไป ที่โหลด 3.5 MW</div></div>
+      <div class="stat p d8"><div class="big teal">672</div><div class="label" style="margin-top:6px">จุดทดสอบ Window 1 (7 วัน × 96)</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ SLIDE 7 : PRODUCTION ════════ -->
+<section class="slide" id="s7">
+  <div class="eyebrow a">08 · ระบบใช้งานจริงบน AWS</div>
+  <h2 class="a d1">โหมดพยากรณ์หลัก: <span class="amber">Ensemble</span></h2>
+  <p class="sub a d2">ระบบ Production พยากรณ์ครั้งละ 24 ชั่วโมง (96 ช่วง) อัตโนมัติทุกวัน</p>
+  <div class="stage">
+    <div class="card mode p d3" style="max-width:640px;width:100%;border-color:rgba(255,194,61,.5);padding:30px 34px">
+      <h3 style="margin-top:2px">Ensemble <span style="color:var(--muted);font-weight:300;font-size:14px">— ผสม 2 วิธีเพื่อความแม่นสูงสุด</span></h3>
+      <div class="mape amber">~4.92% <span style="font-size:13px;color:var(--muted)">MAPE (ทดสอบ 7 วัน)</span></div>
+      <div class="mixbar a d5">
+        <div class="mx">XGBoost 70%</div>
+        <div class="ms">Similar Day 30%</div>
+      </div>
+      <ul style="margin-top:14px">
+        <li><b style="color:var(--amber)">XGBoost (70%)</b> — โมเดลหลัก แม่นมาก เรียนรู้จากข้อมูลทั้งปี</li>
+        <li><b style="color:var(--teal)">Similar Day (30%)</b> — ค่าเฉลี่ยจากวันลักษณะเดียวกัน 5 วันย้อนหลัง ช่วยถ่วงไม่ให้พยากรณ์เหวี่ยงสุดโต่ง</li>
+        <li>ผสม 70/30 → ได้ทั้งความแม่นและความนิ่ง เหมาะกับการวางแผนรายวัน</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ SLIDE : COST ════════ -->
+<section class="slide" id="s8">
+  <div class="eyebrow a">09 · ต้นทุนที่ระบบใช้คำนวณ</div>
+  <h2 class="a d1">แต่ละทางเลือก <span class="amber">ราคาต่างกันมาก</span></h2>
+  <p class="sub a d2">ระบบเทียบต้นทุนทุกทางเลือกให้อัตโนมัติ แล้วเสนอแผนเดินเครื่องที่คุ้มที่สุด</p>
+  <div class="stage">
+    <div class="card a d3" style="max-width:680px;width:100%;padding:30px 34px">
+      <svg class="ic"><use href="#ic-coin"/></svg>
+      <div class="price"><span>DG9 (ดีเซล)</span><span class="mono red">12 Token/kWh × fuel curve</span></div>
+      <div class="price"><span>ไฟแผ่นดิน ช่วง Peak</span><span class="mono amber">4.5 THB/kWh</span></div>
+      <div class="price"><span>ไฟแผ่นดิน ช่วง Off-peak</span><span class="mono teal">3.0 THB/kWh</span></div>
+      <p style="font-size:14.5px;color:var(--muted);font-weight:300;margin-top:18px;line-height:1.75">
+        ถ้ารู้โหลดล่วงหน้า ก็เดินเครื่อง DG9 เฉพาะช่วงที่จำเป็นจริง ๆ และซื้อไฟช่วง Off-peak ให้มากที่สุด — ความแม่นของการพยากรณ์จึงแปลงเป็นเงินที่ประหยัดได้โดยตรง</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ SLIDE : DAILY ════════ -->
+<section class="slide" id="s9">
+  <div class="eyebrow a">10 · ภาพการทำงานในแต่ละวัน</div>
+  <h2 class="a d1">พยากรณ์แม่น = <span class="amber">วางแผนถูก = ประหยัดจริง</span></h2>
+  <div class="stage">
+    <div class="decide a d3" style="max-width:760px;width:100%">
+      <div class="step a d4"><div class="n">1</div><p>ระบบพยากรณ์โหลดพรุ่งนี้ 96 ช่วง <span>(ทุก 15 นาที)</span></p></div>
+      <div class="step a d5"><div class="n">2</div><p>ชี้ช่วงพีคล่วงหน้า <span>— รู้ก่อนว่าเย็นพรุ่งนี้โหลดจะแตะเท่าไร</span></p></div>
+      <div class="step a d6"><div class="n">3</div><p>คำนวณต้นทุน DG9 เทียบไฟแผ่นดิน Peak / Off-peak อัตโนมัติ</p></div>
+      <div class="step a d7"><div class="n">4</div><p>เสนอแผนที่ถูกที่สุด <span>— เปิด DG9 เท่าที่จำเป็น ซื้อไฟให้พอดี ไม่ขาด ไม่เกิน</span></p></div>
+      <div class="honest a d8" style="margin-top:14px;max-width:none">
+        ด้วยความแม่น <b>4.92%</b> แผนที่วางไว้ล่วงหน้าจึงใกล้เคียงความจริงมาก — ลดทั้งความเสี่ยงไฟไม่พอ และต้นทุนที่จ่ายเกินจำเป็น
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ HUD ════════ -->
+<div id="hud">
+  <span class="hint">กด <span class="kbd">→</span> เผยทีละขั้น / ไปสไลด์ถัดไป · <span class="kbd">←</span> ย้อนกลับ</span>
+  <div id="dots"></div>
+  <div style="display:flex;align-items:center;gap:16px">
+    <span id="pageno">1 / 8</span>
+    <button class="navbtn" id="prev">← ก่อนหน้า</button>
+    <button class="navbtn" id="next">ถัดไป →</button>
+  </div>
+</div>
+
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+const dots=document.getElementById('dots');
+const bar=document.getElementById('bar');
+const pageno=document.getElementById('pageno');
+let cur=0;
+
+slides.forEach((s,i)=>{
+  const b=document.createElement('button');
+  b.setAttribute('aria-label','สไลด์ '+(i+1));
+  b.onclick=()=>go(i);
+  dots.appendChild(b);
+});
+const dotEls=[...dots.children];
+
+function animateCounter(el){
+  const target=+el.dataset.target;
+  const dur=1800, t0=performance.now();
+  function tick(t){
+    const p=Math.min((t-t0)/dur,1);
+    const ease=1-Math.pow(1-p,3);
+    el.textContent=Math.round(target*ease).toLocaleString('en-US');
+    if(p<1)requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+function fragGroups(slide){
+  const els=[...slide.querySelectorAll('[data-frag]')];
+  const ids=[...new Set(els.map(e=>+e.dataset.frag))].sort((a,b)=>a-b);
+  return {els,ids};
+}
+let fragPos=0; // จำนวนกลุ่มที่เผยแล้วในสไลด์ปัจจุบัน
+
+function applyFrags(){
+  const {els,ids}=fragGroups(slides[cur]);
+  els.forEach(e=>e.classList.toggle('show', ids.indexOf(+e.dataset.frag)<fragPos));
+}
+
+function go(n,revealAll){
+  if(n<0||n>=slides.length)return;
+  slides[cur].classList.remove('active');
+  cur=n;
+  // force reflow so CSS animations restart
+  void slides[cur].offsetWidth;
+  slides[cur].classList.add('active');
+  const {ids}=fragGroups(slides[cur]);
+  fragPos=revealAll?ids.length:0;
+  applyFrags();
+  dotEls.forEach((d,i)=>d.classList.toggle('on',i===cur));
+  bar.style.width=((cur+1)/slides.length*100)+'%';
+  pageno.textContent=(cur+1)+' / '+slides.length;
+  slides[cur].querySelectorAll('[data-target]').forEach(animateCounter);
+  slides[cur].scrollTop=0;
+}
+
+function stepNext(){
+  const {ids}=fragGroups(slides[cur]);
+  if(fragPos<ids.length){fragPos++;applyFrags();}
+  else go(cur+1);
+}
+function stepPrev(){
+  if(fragPos>0){fragPos--;applyFrags();}
+  else go(cur-1,true); // ย้อนกลับ → เห็นสไลด์ก่อนหน้าแบบเต็ม
+}
+
+document.getElementById('next').onclick=stepNext;
+document.getElementById('prev').onclick=stepPrev;
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();stepNext();}
+  if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();stepPrev();}
+  if(e.key==='Home')go(0);
+  if(e.key==='End')go(slides.length-1,true);
+});
+// swipe for tablet
+let tx=null;
+document.addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+document.addEventListener('touchend',e=>{
+  if(tx===null)return;
+  const dx=e.changedTouches[0].clientX-tx;
+  if(dx<-50)stepNext(); else if(dx>50)stepPrev();
+  tx=null;
+},{passive:true});
+
+go(0);
+</script>
+</body>
+</html>
