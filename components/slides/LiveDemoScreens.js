@@ -85,29 +85,6 @@ export default function LiveDemoScreens({ active }) {
             </figcaption>
           </figure>
         ))}
-
-        <aside className={"oa" + (s >= 2 ? " show" : "")}>
-          <div className="oa-eyebrow">🔴 รับ Alert สดเดี๋ยวนี้</div>
-          <div className="qr">
-            <img
-              src="/img/line-oa-qr.png"
-              alt="LINE OA — สแกนรับ Broadcast Alert จริงจากระบบ"
-              onError={(e) => {
-                e.currentTarget.style.display = "none";
-                e.currentTarget.parentElement.classList.add("noqr");
-              }}
-            />
-            <span className="qr-fallback">
-              วาง QR LINE&nbsp;OA<br />ที่ /public/img/<br />line-oa-qr.png
-            </span>
-          </div>
-          <div className="oa-name">
-            <span className="oa-badge">LINE</span> Official Account
-          </div>
-          <div className="oa-desc">
-            สแกนเข้าเป็นเพื่อน → รับ <b>Broadcast Alert จริง</b> จากระบบทันที
-          </div>
-        </aside>
       </div>
 
       <div className="tag">⚡ Smart Energy IQ · Live Demo · PEA Hackathon 2026</div>
@@ -163,14 +140,14 @@ export default function LiveDemoScreens({ active }) {
         .wall {
           flex: 1;
           display: flex;
-          gap: 14px;
+          gap: 22px;
           justify-content: center;
           align-items: center;
           margin-top: 14px;
           min-height: 0;
         }
         .phone {
-          width: 176px;
+          width: 210px;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -184,8 +161,8 @@ export default function LiveDemoScreens({ active }) {
         }
         .frame {
           position: relative;
-          width: 176px;
-          height: 364px;
+          width: 210px;
+          height: 434px;
           background: #0b1424;
           border: 3px solid #1e2f4d;
           border-radius: 26px;
@@ -272,95 +249,6 @@ export default function LiveDemoScreens({ active }) {
           right: 16px;
           font-size: 11px;
           color: #44597a;
-        }
-
-        /* ── LINE OA broadcast-alert QR ── */
-        .oa {
-          width: 224px;
-          flex-shrink: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 10px;
-          padding: 16px 14px;
-          background: linear-gradient(160deg, rgba(6, 78, 59, 0.55), rgba(13, 31, 58, 0.5));
-          border: 1.5px solid #16a34a;
-          border-radius: 22px;
-          box-shadow: 0 14px 40px rgba(22, 163, 74, 0.22);
-          opacity: 0;
-          transform: translateY(26px) scale(0.95);
-          transition: all 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.25);
-        }
-        .oa.show {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
-        .oa-eyebrow {
-          font-size: 13px;
-          font-weight: 800;
-          color: #4ade80;
-          letter-spacing: 0.3px;
-        }
-        .oa .qr {
-          position: relative;
-          width: 184px;
-          height: 184px;
-          background: #fff;
-          padding: 10px;
-          border-radius: 14px;
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-        }
-        .oa .qr img {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-          display: block;
-        }
-        .qr-fallback {
-          display: none;
-          position: absolute;
-          inset: 10px;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          font-size: 12px;
-          font-weight: 600;
-          color: #64748b;
-          background: #f1f5f9;
-          border: 2px dashed #94a3b8;
-          border-radius: 8px;
-          line-height: 1.5;
-        }
-        .qr.noqr .qr-fallback {
-          display: flex;
-        }
-        .oa-name {
-          font-size: 14px;
-          font-weight: 700;
-          color: #f1f5f9;
-          display: flex;
-          align-items: center;
-          gap: 7px;
-        }
-        .oa-badge {
-          background: #06c755;
-          color: #fff;
-          font-size: 11px;
-          font-weight: 800;
-          padding: 2px 8px;
-          border-radius: 6px;
-          letter-spacing: 0.5px;
-        }
-        .oa-desc {
-          font-size: 11.5px;
-          color: #bbf7d0;
-          text-align: center;
-          line-height: 1.5;
-          padding: 0 2px;
-        }
-        .oa-desc b {
-          color: #fff;
         }
       `}</style>
     </div>

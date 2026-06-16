@@ -7,7 +7,7 @@ import { useSteps } from "../anim";
  * no internet; if that asset is ever missing it falls back to a live QR API.
  */
 const DEMO_URL = "https://smartenergyiq.precise.co.th/login";
-const QR_URL = "https://smartenergyiq.precise.co.th/login?viewer=1";
+const QR_URL = "http://47.130.226.9:3000/login?viewer=1";
 const QR_FALLBACK =
   "https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=" +
   encodeURIComponent(QR_URL);
